@@ -1,0 +1,19 @@
+{
+  "files.exclude": {
+    "**/CORE": true,
+    "**/FWLIB":true,
+    "**/OBJ":true,
+    "**/SYSTEM":true,
+    "**/*.bat":true,
+    "**/*.ini":true,
+    "**/*.bak":true,
+    "**/*.uvgui.*":true,
+    "**/*.uvopt":true,
+    "**/*.hex":true,
+    "**/*.uvguix.*":true,
+    "**/*.uvprojx":true,
+    "**/*.dep":true,
+    "**/*.uvoptx":true,
+    "**/USER":true
+  }
+}
