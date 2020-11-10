@@ -885,7 +885,7 @@ Memory Map of the image
     0x08000220   0x00000006   Code   RO         1124    .ARM.Collect$$rtexit$$00000004  c_w.l(rtexit2.o)
     0x08000226   0x00000002   PAD
     0x08000228   0x0000004c   Code   RO            3    .text               main.o
-    0x08000274   0x00000040   Code   RO          144    .text               led.o
+    0x08000274   0x00000040   Code   RO          147    .text               led.o
     0x080002b4   0x00000104   Code   RO          167    .text               delay.o
     0x080003b8   0x00000154   Code   RO          207    .text               usart.o
     0x0800050c   0x00000040   Code   RO          239    .text               startup_stm32f40_41xxx.o
