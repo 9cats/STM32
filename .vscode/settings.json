@@ -1,9 +1,6 @@
 {
   "files.exclude": {
-    "**/CORE": true,
-    "**/FWLIB":true,
     "**/OBJ":true,
-    "**/SYSTEM":true,
     "**/*.bat":true,
     "**/*.ini":true,
     "**/*.bak":true,
@@ -11,9 +8,8 @@
     "**/*.uvopt":true,
     "**/*.hex":true,
     "**/*.uvguix.*":true,
-    "**/*.uvprojx":true,
+    "**/*.uvproj":true,
     "**/*.dep":true,
-    "**/*.uvoptx":true,
-    "**/USER":true
+    "**/*.uvoptx":true
   }
 }
