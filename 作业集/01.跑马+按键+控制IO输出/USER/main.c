@@ -1,6 +1,8 @@
 #include "usart.h"
 #include "delay.h"
 #include "led.h"
+#include "key.h"
+#include "beep.h"
 /********************************************************************
 ** 作者: 9cats🐧
 ** 创建时间: 📅2020-11-12 🕑21:30
@@ -16,21 +18,40 @@
 ** 📙思考题：
 ** ♟利用串口通信实现电脑端控制单片机I/O输出。（不参与此次评分）
 ** 备注: 🈚
-** 最终评分：👀👀👀
 *********************************************************************/
 
 int main(void) {
+	/* 跑马状态，1表示跑马 */
+    u8 Run_State = 1;
 	
 	delay_init(168);
 	LED_Init();
-	
+	KEY_Init();
+
 	while(1) {
-		LED0 = 0, LED1 = 1, LED2 = 1;
-		delay_ms(500);
-		LED1 = 0, LED0 = 1, LED2 = 1;
-		delay_ms(500);
-		LED2 = 0, LED0 = 1, LED1 = 1;
-		delay_ms(500);
+		u32 i;
+		for(i=0; i<3; i++) {
+			/* 扫描KEY0是否按下，改变跑马状态 */
+			if(KEY_Scan(0) == KEY0_PRES) Run_State = !Run_State; 
+			switch(i) {
+				case 0: 
+					LED0 = 0 & Run_State;
+					LED1 = 1 & Run_State;
+					LED2 = 1 & Run_State;
+					break;
+				case 1:
+					LED0 = 1 & Run_State;
+					LED1 = 0 & Run_State;
+					LED2 = 1 & Run_State;
+					break;
+				case 2: 
+					LED0 = 1 & Run_State;
+					LED1 = 1 & Run_State;
+					LED2 = 0 & Run_State;
+					break;
+			}
+			delay_ms(300);
+		}
 	}
 }
 
