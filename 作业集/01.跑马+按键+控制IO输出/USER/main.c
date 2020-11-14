@@ -89,18 +89,19 @@ void run_hrose(void) {
 \*------------------------------------------------------*/
 void output(void) {
 	/* 频率改变标记和状态改变标记 */
-	static u8 output1_cycle = 100;				//默认周期是1s
+	static u32 output1_cycle = 100;				//默认周期是1s
 	static double output1_proportion = 1;        //默认占空比
-	static u32 output0_prograss = 0, output1_prograss = 0;	//记录当前进度
+	static u32 output0_prograss = 0, output1_prograss = 0, output2_prograss;	//记录当前进度
 	
 	/* 进度分别增加 */
 	output0_prograss = output0_prograss % (      100     * 5) + 1;         
 	output1_prograss = output1_prograss % (output1_cycle * 5) + 1;
+	output2_prograss = output2_prograss % (      100     * 5) + 1;
 	
 	/* 按下KEY1改变频率 */
 	if(key == KEY1_PRES) {
 		/* 周期变化为：100 140 180 220 20 60 -> 100*/
-		output1_cycle = output1_cycle > 200? output1_cycle+40: 20;
+		output1_cycle = (output1_cycle > 200)? 20 : output1_cycle+40;
 		output0_prograss = 0;
 		output1_prograss = 0;
 	}
@@ -120,6 +121,9 @@ void output(void) {
 	if(output0_prograss %      100      > (90 - output0_prograss/     100     *20)*       1          ) 
 		 OUTPUT0 = 0;
 	else OUTPUT0 = 1;
-	LED2 = OUTPUT1;
+	if(output2_prograss %      100      > (50                                     )*       1          ) 
+		 OUTPUT2 = 0;
+	else OUTPUT2 = 1;
+	
 }
 

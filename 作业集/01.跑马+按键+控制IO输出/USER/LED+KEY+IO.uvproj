@@ -330,7 +330,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\..\.COMMON\SYSTEM\delay;..\..\.COMMON\SYSTEM\sys;..\..\.COMMON\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\BEEP</IncludePath>
+              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\..\.COMMON\SYSTEM\delay;..\..\.COMMON\SYSTEM\sys;..\..\.COMMON\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\OUTPUT</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -402,6 +402,16 @@
               <FileName>beep.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\HARDWARE\BEEP\beep.h</FilePath>
+            </File>
+            <File>
+              <FileName>output.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\OUTPUT\output.c</FilePath>
+            </File>
+            <File>
+              <FileName>output.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\HARDWARE\OUTPUT\output.h</FilePath>
             </File>
           </Files>
         </Group>

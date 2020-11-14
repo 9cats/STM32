@@ -23,7 +23,17 @@ void OUTPUT_Init(void) {
 	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;		//下拉
 	GPIO_Init(GPIOC, &GPIO_InitStructure);				//初始化GPIO
 	
+	/* 配置GPIOA */
+	GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_1;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;		//普通输出模式
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;		//推挽输出
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	//100MHz
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;		//下拉
+	GPIO_Init(GPIOA, &GPIO_InitStructure);				//初始化GPIO
+	
+	
 	/* 初始化值 */
-	GPIO_setBits(GPIOD,GPIO_Pin_0 | GPIO_Pin_2);
+	GPIO_SetBits(GPIOD,GPIO_Pin_0 | GPIO_Pin_2);
+	GPIO_SetBits(GPIOA,GPIO_Pin_1);
 }
 
