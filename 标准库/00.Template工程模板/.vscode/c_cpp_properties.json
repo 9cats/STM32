@@ -4,9 +4,14 @@
             "name": "全局通用",
             "includePath": [
                 "${workspaceFolder}/../.COMMON/**",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "D:/Keil uVision/ARM/ARMCC/include"
             ],
-            "defines": [],
+            "defines": [
+                "USE_STDPERIPH_DRIVER",
+                "STM32F40_41xxx",
+                "__CC_ARM"
+            ],
             "intelliSenseMode": "msvc-x64",
             "cStandard": "c17",
             "cppStandard": "c++17"
