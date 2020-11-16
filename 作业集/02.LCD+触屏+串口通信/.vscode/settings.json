@@ -11,8 +11,5 @@
     "**/*.uvproj":true,
     "**/*.dep":true,
     "**/*.uvoptx":true
-  },
-  "files.associations": {
-    "output.h": "c"
   }
 }
