@@ -85,7 +85,6 @@ u16 BACK_COLOR=0xFFFF;  //背景色
 //管理LCD重要参数
 //默认为竖屏
 _lcd_dev lcddev;
-	 
 //写寄存器函数
 //regval:寄存器值
 void LCD_WR_REG(vu16 regval)
@@ -439,7 +438,6 @@ void LCD_SSD_BackLightSet(u8 pwm)
 	LCD_WR_DATA(0x00);	//5设置E
 	LCD_WR_DATA(0x00);	//6设置F
 }
-
 //设置LCD显示方向
 //dir:0,竖屏；1,横屏
 void LCD_Display_Dir(u8 dir)
@@ -2956,11 +2954,9 @@ void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p)
         p++;
     }  
 }
-
 //显示已经取好模的字模 
 //x,y:起点坐标
 // index 汉子在数组中的序号  逐列送字模
-
 void LCD_Show_CH_Font16(u16 x,u16 y,u8 index)
 {      
    u8 temp,t,t1;
@@ -2986,7 +2982,6 @@ void LCD_Show_CH_Font16(u16 x,u16 y,u8 index)
  
     }          
 }
-
 void LCD_Show_CH_Font24(u16 x,u16 y,u8 index)
 {      
     u8 temp,t,t1;
