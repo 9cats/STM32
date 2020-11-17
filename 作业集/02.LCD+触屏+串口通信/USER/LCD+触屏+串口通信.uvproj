@@ -330,7 +330,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\..\.COMMON\SYSTEM\delay;..\..\.COMMON\SYSTEM\sys;..\..\.COMMON\SYSTEM\usart;..\USER;..\HARDWARE\LCD</IncludePath>
+              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LCD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -401,17 +401,17 @@
             <File>
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\.COMMON\SYSTEM\delay\delay.c</FilePath>
+              <FilePath>..\SYSTEM\delay\delay.c</FilePath>
             </File>
             <File>
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\.COMMON\SYSTEM\sys\sys.c</FilePath>
+              <FilePath>..\SYSTEM\sys\sys.c</FilePath>
             </File>
             <File>
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\.COMMON\SYSTEM\usart\usart.c</FilePath>
+              <FilePath>..\SYSTEM\usart\usart.c</FilePath>
             </File>
           </Files>
         </Group>
