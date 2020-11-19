@@ -48,7 +48,11 @@ int fputc(int ch, FILE *f)
 	return ch;
 }
 #endif
- 
+//__use_no_semihosting was requested, but _ttywrch was 
+void _ttywrch(int ch)
+{
+    ch = ch;
+}
 #if EN_USART1_RX   //如果使能了接收
 //串口1中断服务程序
 //注意,读取USARTx->SR能避免莫名其妙的错误   	
