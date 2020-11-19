@@ -184,7 +184,7 @@
             <hadIRAM2>1</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>1</useUlib>
+            <useUlib>0</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
@@ -330,7 +330,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LCD;..\HARDWARE\24CXX;..\HARDWARE\IIC;..\HARDWARE\KEY;..\HARDWARE\LED;..\HARDWARE\TOUCH;..\HARDWARE\EXIT</IncludePath>
+              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LCD;..\HARDWARE\24CXX;..\HARDWARE\IIC;..\HARDWARE\KEY;..\HARDWARE\LED;..\HARDWARE\TOUCH;..\HARDWARE\EXIT;..\SYSTEM\eval</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -462,6 +462,11 @@
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\usart\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>eval.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\eval\eval.c</FilePath>
             </File>
           </Files>
         </Group>

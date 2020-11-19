@@ -43,7 +43,6 @@ void KEY_Init(void){
 *|			 4，WKUP按下 WK_UP    
 *|注意:此函数有响应优先级,KEY0>KEY1>KEY2>WK_UP
 \*------------------------------------------------------*/
-
 u8 KEY_Scan(u8 mode)
 {	 
 	static u8 key_up=1;//按键按松开标志

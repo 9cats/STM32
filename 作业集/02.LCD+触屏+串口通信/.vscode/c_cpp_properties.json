@@ -6,7 +6,7 @@
                 "${workspaceFolder}/../.COMMON/**",
                 "${workspaceFolder}/**",
                 "D:/Keil uVision/ARM/ARMCC/include",
-                "${workspaceFolder}/SYSTEM/eval",
+                "${workspaceFolder}/SYSTEM/eval"
             ],
             "defines": [
                 "USE_STDPERIPH_DRIVER",

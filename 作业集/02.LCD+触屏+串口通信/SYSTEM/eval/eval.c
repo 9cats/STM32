@@ -4,14 +4,18 @@
 #include "string.h"
 #include "stdlib.h"
 
-/**
- * Developed by sandyz987
- * Function 'eval'
- * @param Expression string (chars' length <= MAX_SIZE)
- * @return Answer : double
- * @isError 0:no error  1:wrong number of decimal points  2:can't get top item at an empty stack  3:can't pop item at an empty stack(number of brackets is invalid?)
- *          4:can't get priority   5:too many arguments   6:unexpect character   7:wrong number of arguments   8:math error
- */
+/********************************************************************
+** 作者: sandyz987
+** 作用: 计算表达式
+** 形参: Expression string
+** 返回: double结果
+** 备注: 错误结果如下：
+**      0:no error              1:wrong number of decimal points    
+**      2:can't get top item at an empty stack  
+**      3:can't pop item at an empty stack(number of brackets is invalid?)
+**      4:can't get priority    5:too many arguments                
+**      6:unexpect character   7:wrong number of arguments   8:math error
+*********************************************************************/
 
 #define PI 3.141592653
 #define MAX_SIZE 1024
