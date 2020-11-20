@@ -2955,7 +2955,6 @@ void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p)
     }  
 }
 
-
 //显示字符串
 //x,y:起点坐标
 //width,height:区域大小  
@@ -3029,7 +3028,6 @@ void LCD_Show_CH_Font24(u16 x,u16 y,u8 index)
 
 
 }
-
 
 
 

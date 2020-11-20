@@ -170,6 +170,8 @@ void LCD_ShowNum(u16 x,u16 y,u32 num,u8 len,u8 size);  						//显示一个数�
 void LCD_ShowxNum(u16 x,u16 y,u32 num,u8 len,u8 size,u8 mode);				//显示 数字
 void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p);		//显示一个字符串,12/16字体
 void LCD_ShowString2(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p);       //无覆盖
+void LCD_Show_CH_Font16(u16 x,u16 y,u8 index);								//显示一个16字节数
+void LCD_Show_CH_Font24(u16 x,u16 y,u8 index);								//显示一个24字节数
 
 void LCD_WriteReg(u16 LCD_Reg, u16 LCD_RegValue);
 u16 LCD_ReadReg(u16 LCD_Reg);
