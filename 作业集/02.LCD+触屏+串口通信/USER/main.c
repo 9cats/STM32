@@ -66,8 +66,14 @@ int main(void)
 			for(i=0;i<USART_REC_LEN;i++) USART_RX_BUF[i] = 0;
 
 			if(current_page == 0) {
-				if 		(str[0]=='+' && str[1] == '1')num++;  //+1
-				else if (str[0]=='-' && str[1] == '1')num--;  //-1
+				if 		(str[0]=='+' && str[1] == '1') {
+					num++;
+					printf("Num: %d\r\n",num);
+				}  //+1
+				else if (str[0]=='-' && str[1] == '1') {
+					num--;
+					printf("Num: %d\r\n",num);
+				}  //-1
 				else { //表达式
 					/* 向LCD和串口打印计算式及结果 */
 					printf("%s", str);

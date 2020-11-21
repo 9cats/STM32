@@ -423,11 +423,6 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\TOUCH\touch.c</FilePath>
             </File>
-            <File>
-              <FileName>exit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\EXIT\exit.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
