@@ -34,7 +34,7 @@ u8 image_sans[] = {
 int main(void)
 { 
 	u8 *str = (u8 *)malloc(USART_REC_LEN * sizeof(u8));	//用于存储单次串口接收到的信息
-	u16 num = 50;	//LCD上显示的数字
+	double num = 50;	//LCD上显示的数字
 	u8 key;         //按键值
 	
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//设置系统中断优先级分组2
@@ -56,33 +56,41 @@ int main(void)
 	while(1) {
 		/* 检测串口是否接收完成 */
 		if(USART_RX_STA&0x8000) {
-			u16 i,len;				//i为循环变量,len标记接收到的长度
+			u16 i,j,len;				//i为循环变量,len标记接收到的长度
+			u8 flag = 0;
 			len=USART_RX_STA&0x3fff;//得到此次接收到的数据长度
 
 			/* 将接收到的值计算，把计算式及结果赋值给str */
 			sprintf((char *)str,"%s = %.0f\n", USART_RX_BUF, eval((char *)USART_RX_BUF));
+			num = eval((char *)USART_RX_BUF);
 
+			
+			if(USART_RX_BUF[0] == 'p' || USART_RX_BUF[1] == '0') show_page(current_page = 0);
+			if(USART_RX_BUF[0] == 'p' || USART_RX_BUF[1] == '1') show_page(current_page = 1);
 			/* 清空接收到的信息 */
 			for(i=0;i<USART_REC_LEN;i++) USART_RX_BUF[i] = 0;
 
 			if(current_page == 0) {
-				if 		(str[0]=='+' && str[1] == '1') {
-					num++;
-					printf("Num: %d\r\n",num);
-				}  //+1
-				else if (str[0]=='-' && str[1] == '1') {
-					num--;
-					printf("Num: %d\r\n",num);
-				}  //-1
+				for(j=0;j<USART_REC_LEN;j++) {
+					if(str[j] == '+' || str[j] == '-' || str[j] == '*' || str[j] == '/') {
+						flag = 1;
+						break;
+					}
+				}
+				if 	(!flag) {
+					LCD_Fill( 30, 150, 210, 180, WHITE);	//先清空该区域
+					sprintf((char *)str,"Num: %.2f", num+1);
+					LCD_ShowString( 30, 150, 200, 16, 16, str);  //显示+1或者-1
+					sprintf((char *)str,"%.2f", num-1);
+					LCD_ShowString( 130, 150, 200, 16, 16, str);  //显示+1或者-1
+					printf("Num: %.2f  %.2f\r\n",num+1,num-1);
+				}
 				else { //表达式
 					/* 向LCD和串口打印计算式及结果 */
 					printf("%s", str);
 					LCD_Fill( 30, 180, 210, 210, WHITE);	//先清空该区域
 					LCD_ShowString( 30,  180,   200,  16,  16, str);
 				}
-				sprintf((char *)str,"Num: %d", num);
-				LCD_Fill( 30, 150, 210, 180, WHITE);	//先清空该区域
-				LCD_ShowString( 30, 150, 200, 16, 16, str);  //显示+1或者-1
 			}
 			
 			while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);	//等待发送结束
@@ -91,16 +99,18 @@ int main(void)
 
 		/* 扫描触摸屏是否被按下 */
 		tp_dev.scan(0);
-		if(current_page == 0) {
+//		if(current_page == 0) {
 			if(tp_dev.sta&TP_PRES_DOWN) {
 				//判断按下位置是否正常
 			 	if(tp_dev.x[0]<lcddev.width  &&  tp_dev.y[0]<lcddev.height) {
 					//分别按下 Turn on  和  Turn off
 					if(tp_dev.x[0]> 30 && tp_dev.y[0]> 100 && tp_dev.x[0]<100 && tp_dev.y[0]<140) LED = 0;
 					if(tp_dev.x[0]>140 && tp_dev.y[0]> 100 && tp_dev.x[0]<210 && tp_dev.y[0]<140) LED = 1;
+					if(tp_dev.x[0]>220 && tp_dev.y[0]>   0 && tp_dev.x[0]<240 && tp_dev.y[0]< 20) show_page(current_page = 0);
+					if(tp_dev.x[0]>220 && tp_dev.y[0]>  20 && tp_dev.x[0]<240 && tp_dev.y[0]< 40) show_page(current_page = 1);
 				}
 			}else delay_ms(10);
-		}
+//		}
 
 		/* 页面2动画效果 */
 		if(current_page == 1) {
@@ -135,9 +145,15 @@ void show_page(u8 page) {
 		LCD_ShowString2(  35, 115,   70,  16,  16,"Turn On");
 		LCD_ShowString2( 145, 115,   70,  16,  16,"Turn Off");
 		LCD_ShowString (  30, 150,   70,  16,  16,"Num: 50");
+		LCD_Fill( lcddev.width-20, 0, lcddev.width, 20, GREEN);
+		LCD_ShowString2 (  lcddev.width-15,  2,  20,  16,  16,"1");
+		LCD_Fill( lcddev.width-20,20, lcddev.width, 40, YELLOW);
+		LCD_ShowString2 (  lcddev.width-15, 22,  20,  16,  16,"2");
 		break;
 	case 1:
 		LCD_Show_Image(100, 50, 25, 32, image_sans);
+		LCD_Fill( 220, 0, 240, 20, GREEN);
+		LCD_ShowString2 (  lcddev.width-15, 2,  20,  16,  16,"2");
 		break;
 	}
 }
@@ -185,6 +201,12 @@ void sans(void) {
 	if(x_way ==  1 && x == lcddev.width - width  ) x_way = -x_way;
 	if(y_way == -1 && y == 0                     ) y_way = -y_way;
 	if(y_way ==  1 && y == lcddev.height - height) y_way = -y_way;
+	
+	
+	LCD_Fill( lcddev.width-20, 0, lcddev.width, 20, GREEN);
+	LCD_ShowString2 (  lcddev.width-15,  2,  20,  16,  16,"1");
+	LCD_Fill( lcddev.width-20, 20, lcddev.width, 40, YELLOW);
+	LCD_ShowString2 (  lcddev.width-15, 22,  20,  16,  16,"2");
 
 }
 
