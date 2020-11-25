@@ -24,8 +24,8 @@ int main(void)
 	delay_init(168);  //初始化延时函数
 	LED_Init();				//初始化LED端口
 	uart_init(115200);//初始化串口波特率为115200
- 	TIM3_PWM_Init(500-1,840-1);	//84M/84=1Mhz的计数频率,重装载值500，所以PWM频率为 1M/500=2Khz.
+ 	TIM2_PWM_Init(1000-1,84-1);	//84M/84=1Mhz的计数频率,重装载值500，所以PWM频率为 1M/500=2Khz.
 
-	TIM_SetCompare1(TIM3,100);	//修改比较值，修改占空比
+	TIM_SetCompare1(TIM2,500);	//修改比较值，修改占空比
 	while(1);
 }
