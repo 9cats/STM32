@@ -330,7 +330,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\OUTPUT;..\HARDWARE\PWM</IncludePath>
+              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\OUTPUT;..\HARDWARE\PWM;..\HARDWARE\EXTI;..\HARDWARE\TIMER</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -398,6 +398,21 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\PWM\pwm.c</FilePath>
             </File>
+            <File>
+              <FileName>exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\EXTI\exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\KEY\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -447,6 +462,16 @@
               <FileName>stm32f4xx_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_syscfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_syscfg.c</FilePath>
             </File>
           </Files>
         </Group>

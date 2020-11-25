@@ -9,11 +9,13 @@
 ** 备注: 
 *********************************************************************/
 
+extern u32 CRRx;
 //TIM2 PWM部分初始化
 //PWM输出初始化
 //arr：自动重装值
 //psc：时钟预分频数
 
+/* 定时器2初始化 */
 void TIM2_PWM_Init(u32 arr, u32 psc)
 {
 	//此部分需手动修改IO口设置
@@ -45,6 +47,7 @@ void TIM2_PWM_Init(u32 arr, u32 psc)
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;			  //选择定时器模式:TIM脉冲宽度调制模式2
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //比较输出使能
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;	  //输出极性:TIM输出比较极性低
+	TIM_OCInitStructure.TIM_Pulse = CRRx;
 	TIM_OC1Init(TIM2, &TIM_OCInitStructure);					  //根据T指定的参数初始化外设TIM1 4OC1
 
 	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Enable); //使能TIM2在CCR1上的预装载寄存器
