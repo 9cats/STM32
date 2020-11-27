@@ -1,6 +1,8 @@
 #include "exti.h"
 #include "key.h"
 #include "delay.h"
+#include "pwm.h"
+#include "led.h"
 /********************************************************************
 ** 作者: 9cats
 ** 创建时间: 2020-11-25 18:20
@@ -69,10 +71,11 @@ void EXTIX_Init(void)
 /* 外部中断0服务程序-按下WK_UP */
 void EXTI0_IRQHandler(void)
 {
+	extern u8 Pluse_Change;
 	delay_ms(10); //消抖
-	if (WK_UP == 1)
+	if (WK_UP == 0)
 	{
-        //TODO:内容
+		Pluse_Change = !Pluse_Change;
 	}
 	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位
 }
@@ -124,10 +127,13 @@ void EXTI3_IRQHandler(void)
 /* 外部中断4服务程序-按下KEY0 */
 void EXTI4_IRQHandler(void)
 {
+	static u32 frequency[] = {84/1, 84/2, 84/3, 84/4, 84/5, 84/6, 84/7, 84/8};
+	static u8 i = 0;
 	delay_ms(10); //消抖
 	if (KEY0 == 0)
 	{
-        //TODO:内容
+		if (i++ == 7) i = 0;
+        TIM4_PWM_Init(500-1, frequency[i]-1);
 	}
 	EXTI_ClearITPendingBit(EXTI_Line4); //清除LINE4上的中断标志位
 }

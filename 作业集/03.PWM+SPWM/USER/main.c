@@ -20,22 +20,29 @@
 ** 备注: 🈚
 *********************************************************************/
 /* 从此配置TIM2 */
-u32 arr = 1000;		//TIM2的自动重装载值
-u32 psc = 84;		//TIM2的时钟预分频数
-u32 CRRx = 300;		//TIM2的CRRx,默认为300
-u8 CRRx_Change = 0; //标记TIM2的CRRX是否持续变化
-int CRRx_Way = 1;   //标记TIM2的变大方向
+u32 arr = 1000;		 //TIM2的自动重装载值
+u32 psc = 84;		 //TIM2的时钟预分频数
+u32 CRRx = 300;		 //TIM2的CRRx,默认为300
+u32 arr2 = 500;		 //TIM2的自动重装载值
+u32 psc2 = 84;		 //TIM2的时钟预分频数
+u32 CRRx2 = 300;	 //TIM2的CRRx,默认为300
+u8 CRRx_Change = 0;	 //标记TIM2的CRRX是否持续变化
+int CRRx_Way = 1;	 //标记TIM2的变大方向
+u8 Pluse_Change = 0; //标记TIM4得Pluse是否持续变化
 
 int main(void)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置系统中断优先级分组2
 
-	delay_init(168);				 //初始化延时函数
-	uart_init(115200);				 //初始化串口波特率为115200
-	LED_Init();						 //初始化LED端口
-	EXTIX_Init();					 //初始化外部中断输入
-	TIM2_PWM_Init(arr - 1, psc - 1); //初始化定时器TIM2，溢出频率为1kHz
-	TIM3_Int_Init(100 - 1, 8400 -1); //初始化定时器TIM3，溢出频率为100Hz
+	delay_init(168);				   //初始化延时函数
+	uart_init(115200);				   //初始化串口波特率为115200
+	LED_Init();						   //初始化LED端口
+	EXTIX_Init();					   //初始化外部中断输入
+	TIM2_PWM_Init(arr - 1, psc - 1);   //初始化定时器TIM2，溢出频率为1kHz
+	TIM3_Int_Init(100 - 1, 8400 - 1);  //初始化定时器TIM3，溢出频率为100Hz
+	TIM4_PWM_Init(arr2 - 1, psc2 - 1); //初始化定时器TIM4，溢出频率为1kHz
+	TIM5_Int_Init(100 - 1, 8400 - 1);  //初始化定时器TIM3，溢出频率为100Hz
 
-	while (1);
+	while (1)
+		;
 }
