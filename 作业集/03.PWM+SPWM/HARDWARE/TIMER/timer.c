@@ -1,5 +1,5 @@
 #include "timer.h"
-#include "led.h"
+#include "sin.h"
 /********************************************************************
 ** 作者: 9cats
 ** 创建时间: 2020-11-24 20:10
@@ -40,12 +40,27 @@ void TIM3_Int_Init(u16 arr, u16 psc)
 /* 定时器3中断服务函数 */
 void TIM3_IRQHandler(void)
 {
+    TIM_OCInitTypeDef TIM_OCInitStructure;
+    static u32 Pluse = 0;
+    extern u32 arr2;
+    extern u8 Pluse_Change;
     extern int CRRx_Way;
     extern u8 CRRx_Change;
     extern u32 arr;
     extern u32 CRRx;
+
     if (TIM_GetITStatus(TIM3, TIM_IT_Update) == SET) //溢出中断
     {
+        if (Pluse_Change)
+        {
+            if (Pluse++ == arr2 - 1)
+                Pluse = 0;
+            TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;           //选择定时器模式:TIM脉冲宽度调制模式2
+            TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //比较输出使能
+            TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;     //输出极性:TIM输出比较极性低
+            TIM_OCInitStructure.TIM_Pulse = Pluse;
+            TIM_OC1Init(TIM4, &TIM_OCInitStructure); //根据T指定的参数初始化外设TIM1 4OC1
+        }
         if (CRRx_Change)
         {
             if (CRRx == arr)
@@ -61,53 +76,31 @@ void TIM3_IRQHandler(void)
 }
 
 /* 定时器5初始化 */
-void TIM5_Int_Init(u16 arr, u16 psc)
+void TIM5_Int_Init(void)
 {
-    TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
 
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE); ///使能TIM3时钟
-
-    TIM_TimeBaseInitStructure.TIM_Period = arr;                     //自动重装载值
-    TIM_TimeBaseInitStructure.TIM_Prescaler = psc;                  //定时器分频
-    TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up; //向上计数模式
-    TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-
-    TIM_TimeBaseInit(TIM5, &TIM_TimeBaseInitStructure); //初始化TIM3
-
     TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE); //允许定时器3更新中断
-    TIM_Cmd(TIM5, ENABLE);                     //使能定时器3
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;              //定时器3中断
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级1
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;        //子优先级3
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
+	
+    TIM_Cmd(TIM5, ENABLE);                     //使能定时器3
 }
 
 /* 定时器5中断服务函数 */
 void TIM5_IRQHandler(void)
 {
-    TIM_OCInitTypeDef TIM_OCInitStructure;
-    static u32 Pluse = 0;
-    extern u32 arr2;
-    extern u8 Pluse_Change;
+	extern u32 arr3;
+    static u8 i=0;
     if (TIM_GetITStatus(TIM5, TIM_IT_Update) == SET) //溢出中断
     {
-        if (Pluse_Change)
-        {
-			if (Pluse++ == arr2-1)
-            Pluse = 0;
-            TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;           //选择定时器模式:TIM脉冲宽度调制模式2
-            TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //比较输出使能
-            TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;     //输出极性:TIM输出比较极性低
-            TIM_OCInitStructure.TIM_Pulse = Pluse;
-            TIM_OC1Init(TIM4, &TIM_OCInitStructure); //根据T指定的参数初始化外设TIM1 4OC1
-        }
+        if(i++ == 100) i = 0;
+        TIM_SetCompare2(TIM5, (u32)(sinc[i]*arr3));
     }
     TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位
 }
 
-// TIM_PrescalerConfig(TIM2,fres[i],TIM_PSCReloadMode_Update);
-
-// TIM_Cmd(TIM2,ENABLE);
