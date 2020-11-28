@@ -42,6 +42,7 @@ int main(void)
 //	TIM4_PWM_Init(arr2 - 1, psc2 - 1); //初始化定时器TIM4，溢出频率为1kHz
 	TIM5_PWM_Init(arr3 - 1, 7-1);  	   //初始化定时器TIM4，溢出频率为2kHz
 	TIM5_Int_Init();
+	TIM_SetCompare3(TIM5, 0);
 
 	while (1)
 		;

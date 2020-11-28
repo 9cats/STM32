@@ -99,12 +99,8 @@ void TIM5_IRQHandler(void)
 	static u16 j=0;
     if (TIM_GetITStatus(TIM5, TIM_IT_Update) == SET) //溢出中断
     {
-		TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位
-		if(j++ == 100){
-			j = 0;
 		if(i++ == 480) i = 0;
 		TIM_SetCompare3(TIM5, 500+sinc[i]);
-		}
     }
     TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位
 }
