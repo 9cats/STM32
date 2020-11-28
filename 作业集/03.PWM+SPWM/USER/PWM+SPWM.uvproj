@@ -330,7 +330,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\OUTPUT;..\HARDWARE\PWM;..\HARDWARE\EXTI;..\HARDWARE\TIMER</IncludePath>
+              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\OUTPUT;..\HARDWARE\PWM;..\HARDWARE\EXTI;..\HARDWARE\TIMER;..\SYSTEM\sin</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

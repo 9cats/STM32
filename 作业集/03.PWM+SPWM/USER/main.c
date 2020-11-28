@@ -1,9 +1,8 @@
 #include "pwm.h"
 #include "delay.h"
-#include "usart.h"
-#include "led.h"
 #include "exti.h"
 #include "timer.h"
+#include "stm32f4xx_it.h"
 
 /********************************************************************
 ** 作者: 9cats🐧
@@ -29,29 +28,21 @@ u32 CRRx2 = 300;	 //TIM2的CRRx,默认为300
 u8 CRRx_Change = 0;	 //标记TIM2的CRRX是否持续变化
 int CRRx_Way = 1;	 //标记TIM2的变大方向
 u8 Pluse_Change = 0; //标记TIM4得Pluse是否持续变化
-u32 arr3 = 500;
+u32 arr3 = 1000;
 
 int main(void)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置系统中断优先级分组2
 
 	delay_init(168);				 //初始化延时函数
-	uart_init(115200);				 //初始化串口波特率为115200
-	LED_Init();						 //初始化LED端口
-	EXTIX_Init();					 //初始化外部中断输入
-	TIM2_PWM_Init(arr - 1, psc - 1); //初始化定时器TIM2，溢出频率为1kHz
-	TIM_SetCompare1(TIM2, CRRx);
-	TIM3_Int_Init(100 - 1, 8400 - 1);  //初始化定时器TIM3，溢出频率为100Hz
-	TIM4_PWM_Init(arr2 - 1, psc2 - 1); //初始化定时器TIM4，溢出频率为1kHz
-	TIM5_PWM_Init(400 - 1, 84 - 1);   //初始化定时器TIM4，溢出频率为1kHz
-	TIM_SetCompare2(TIM5, 100);
+//	EXTIX_Init();					 //初始化外部中断输入
+//	TIM2_PWM_Init(arr - 1, psc - 1); //初始化定时器TIM2，溢出频率为1kHz
+//	TIM_SetCompare1(TIM2, CRRx);
+//	TIM3_Int_Init(100 - 1, 8400 - 1);  //初始化定时器TIM3，溢出频率为100Hz
+//	TIM4_PWM_Init(arr2 - 1, psc2 - 1); //初始化定时器TIM4，溢出频率为1kHz
+	TIM5_PWM_Init(arr3 - 1, 7-1);  	   //初始化定时器TIM4，溢出频率为2kHz
 	TIM5_Int_Init();
 
-	while (1);
+	while (1)
+		;
 }
-
-//  50 HZ ---0.0200s一个正弦
-//  1次正弦波有200个点  50Hz*50Hz = 2500HZ
-//  每秒改变2500次，频率为2500
-//  400 * 84 --- 2500Hz
-

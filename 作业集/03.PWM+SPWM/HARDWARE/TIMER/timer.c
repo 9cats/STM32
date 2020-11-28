@@ -83,7 +83,7 @@ void TIM5_Int_Init(void)
     TIM_ITConfig(TIM5, TIM_IT_Update, ENABLE); //允许定时器3更新中断
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;              //定时器3中断
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级1
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级1
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;        //子优先级3
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
@@ -95,11 +95,16 @@ void TIM5_Int_Init(void)
 void TIM5_IRQHandler(void)
 {
 	extern u32 arr3;
-    static u8 i=0;
+    static u16 i=0;
+	static u16 j=0;
     if (TIM_GetITStatus(TIM5, TIM_IT_Update) == SET) //溢出中断
     {
-        if(i++ == 100) i = 0;
-        TIM_SetCompare2(TIM5, (u32)(sinc[i]*arr3));
+		TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位
+		if(j++ == 100){
+			j = 0;
+		if(i++ == 480) i = 0;
+		TIM_SetCompare3(TIM5, 500+sinc[i]);
+		}
     }
     TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位
 }
