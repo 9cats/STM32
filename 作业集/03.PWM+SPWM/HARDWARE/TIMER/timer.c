@@ -55,11 +55,7 @@ void TIM3_IRQHandler(void)
         {
             if (Pluse++ == arr2 - 1)
                 Pluse = 0;
-            TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;           //选择定时器模式:TIM脉冲宽度调制模式2
-            TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable; //比较输出使能
-            TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;     //输出极性:TIM输出比较极性低
-            TIM_OCInitStructure.TIM_Pulse = Pluse;
-            TIM_OC1Init(TIM4, &TIM_OCInitStructure); //根据T指定的参数初始化外设TIM1 4OC1
+			TIM_SetCompare1(TIM4, Pluse);
         }
         if (CRRx_Change)
         {
@@ -84,7 +80,7 @@ void TIM5_Int_Init(void)
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;              //定时器3中断
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级1
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x03;        //子优先级3
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x00;        //子优先级3
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 	
@@ -96,11 +92,10 @@ void TIM5_IRQHandler(void)
 {
 	extern u32 arr3;
     static u16 i=0;
-	static u16 j=0;
     if (TIM_GetITStatus(TIM5, TIM_IT_Update) == SET) //溢出中断
     {
 		if(i++ == 480) i = 0;
-		TIM_SetCompare3(TIM5, 500+sinc[i]);
+		TIM_SetCompare3(TIM5, sinc[i]);
     }
     TIM_ClearITPendingBit(TIM5, TIM_IT_Update); //清除中断标志位
 }
