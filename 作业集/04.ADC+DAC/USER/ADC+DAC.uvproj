@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>LED+KEY+IO</TargetName>
+      <TargetName>ADC+DAC</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
@@ -46,7 +46,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>..\OBJ\</OutputDirectory>
-          <OutputName>ADC+DCA</OutputName>
+          <OutputName>ADC+DAC</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -330,7 +330,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\ADC;..\HARDWARE\DAC;..\HARDWARE\EXTI;..\HARDWARE\LCD;..\HARDWARE\TIM</IncludePath>
+              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\ADC;..\HARDWARE\DAC;..\HARDWARE\EXTI;..\HARDWARE\KEY;..\HARDWARE\LCD;..\HARDWARE\TIM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -389,19 +389,24 @@
           <GroupName>HARDWARE</GroupName>
           <Files>
             <File>
-              <FileName>dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\DAC\dac.c</FilePath>
-            </File>
-            <File>
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\ADC\adc.c</FilePath>
             </File>
             <File>
+              <FileName>dac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\DAC\dac.c</FilePath>
+            </File>
+            <File>
               <FileName>exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\EXTI\exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\KEY\key.c</FilePath>
             </File>
             <File>
               <FileName>lcd.c</FileName>
@@ -433,11 +438,6 @@
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\usart\usart.c</FilePath>
             </File>
-            <File>
-              <FileName>stm32f4xx_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_usart.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -459,14 +459,34 @@
               <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_rcc.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_syscfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_syscfg.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f4xx_fsmc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_fsmc.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f4xx_usart.c</FileName>
+              <FileName>stm32f4xx_dac.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_usart.c</FilePath>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_dac.c</FilePath>
             </File>
           </Files>
         </Group>

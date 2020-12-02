@@ -1,8 +1,9 @@
 #include "exti.h"
+#include "key.h"
 #include "delay.h"
 /********************************************************************
 ** 作者: 9cats
-** 创建时间: 2020-11-25 18:20
+** 创建时间: 2020-12-2 19:36
 ** 适用环境: ALIENTEK STM32F407开发板
 ** 作用: 中断函数及配置
 ** 资源: EXTI0,2,3,4
@@ -40,19 +41,19 @@ void EXTIX_Init(void)
 	EXTI_Init(&EXTI_InitStructure);							//配置
 
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;			 //外部中断0
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级0
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级0
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		 //子优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				 //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure);								 //配置
 
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;			 //外部中断2
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x03; //抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级3
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		 //子优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				 //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure);								 //配置
 
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;			 //外部中断3
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //抢占优先级2
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级2
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		 //子优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				 //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure);								 //配置
@@ -65,75 +66,48 @@ void EXTIX_Init(void)
 }
 
 
-// /* 外部中断0服务程序-按下WK_UP */
-// void EXTI0_IRQHandler(void)
-// {
-// 	extern u8 Pluse_Change;
-// 	delay_ms(10); //消抖
-// 	if (WK_UP == 0)
-// 	{
-// 		Pluse_Change = !Pluse_Change;
-// 	}
-// 	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位
-// }
+/* 外部中断0服务程序-按下WK_UP-切换模式 */
+void EXTI0_IRQHandler(void)
+{
+    extern u8 mode;
+	delay_ms(10); //消抖
+	if (WK_UP == 0)
+	{
+        if (mode == 3) mode = 0;
+        else  mode++;
+	}
+	EXTI_ClearITPendingBit(EXTI_Line0); //清除LINE0上的中断标志位
+}
 
-// /* 外部中断2服务程序-按下KEY2 */
-// void EXTI2_IRQHandler(void)
-// {
-//     /* 引入全局变量 */
-//     extern u32 arr;
-//     extern u32 CRRx;
-// 	extern int CRRx_Way;
+/* 外部中断2服务程序-按下KEY2 */
+void EXTI2_IRQHandler(void)
+{
+	delay_ms(10); //消抖
+	if (KEY2 == 0)
+	{
+	}
+	EXTI_ClearITPendingBit(EXTI_Line2); //清除LINE2上的中断标志位
+}
 
-// 	delay_ms(10); //消抖
-// 	if (KEY2 == 0)
-// 	{
-// 		if(CRRx_Way == 1)
-// 		{
-// 			if((float)CRRx + arr/10 > arr) 
-// 			{
-// 				CRRx = 2*arr - CRRx - arr/10;
-// 				CRRx_Way = -CRRx_Way;
-// 			}	
-// 			else CRRx += arr/10;
-// 		}
-// 		else {
-// 			if((float)CRRx - arr/10 <  0 )
-// 			{
-// 				CRRx = arr/10 - CRRx;
-// 				CRRx_Way = -CRRx_Way;
-// 			}
-// 			else CRRx -= arr/10;
-// 		}
-		
-//         TIM_SetCompare1(TIM2, CRRx);
-// 	}
-// 	EXTI_ClearITPendingBit(EXTI_Line2); //清除LINE2上的中断标志位
-// }
+/* 外部中断3服务程序-按下KEY1 */
+void EXTI3_IRQHandler(void)
+{
+	delay_ms(10); //消抖
+	if (KEY1 == 0){
 
-// /* 外部中断3服务程序-按下KEY1 */
-// void EXTI3_IRQHandler(void)
-// {
-//     extern u8 CRRx_Change;
+    }
+	EXTI_ClearITPendingBit(EXTI_Line3); //清除LINE3上的中断标志位
+}
 
-// 	delay_ms(10); //消抖
-// 	if (KEY1 == 0) CRRx_Change = !CRRx_Change;
-// 	EXTI_ClearITPendingBit(EXTI_Line3); //清除LINE3上的中断标志位
-// }
-
-// /* 外部中断4服务程序-按下KEY0 */
-// void EXTI4_IRQHandler(void)
-// {
-// 	static u32 frequency[] = {84/1, 84/2, 84/3, 84/4, 84/5, 84/6, 84/7, 84/8};
-// 	static u8 i = 0;
-// 	delay_ms(10); //消抖
-// 	if (KEY0 == 0)
-// 	{
-// 		if (i++ == 7) i = 0;
-//         TIM4_PWM_Init(500-1, frequency[i]-1);
-// 	}
-// 	EXTI_ClearITPendingBit(EXTI_Line4); //清除LINE4上的中断标志位
-// }
+/* 外部中断4服务程序-按下KEY0 */
+void EXTI4_IRQHandler(void)
+{
+	delay_ms(10); //消抖
+	if (KEY0 == 0)
+	{
+	}
+	EXTI_ClearITPendingBit(EXTI_Line4); //清除LINE4上的中断标志位
+}
 
 
 
