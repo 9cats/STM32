@@ -54,6 +54,8 @@ void TIM3_Int_Init2(u16 arr, u16 psc)
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;	   //下拉
 	GPIO_Init(GPIOA, &GPIO_InitStructure);			   //初始化PA0
 
+	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_TIM3); //复用
+
 	TIM_TimeBaseInitStructure.TIM_Period = arr;						//自动重装载值
 	TIM_TimeBaseInitStructure.TIM_Prescaler = psc;					//定时器分频
 	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up; //向上计数模式
@@ -69,7 +71,7 @@ void TIM3_Int_Init2(u16 arr, u16 psc)
 	TIM3_ICInitStructure.TIM_ICFilter = 0x00;						 //IC1F=0000 配置输入滤波器 不滤波
 	TIM_ICInit(TIM3, &TIM3_ICInitStructure);
 
-	TIM_ITConfig(TIM3, TIM_IT_Update | TIM_IT_CC1, ENABLE); //允许定时器3更新中断 ,允许CC1IE捕获中断
+	TIM_ITConfig(TIM3, TIM_IT_Update | TIM_IT_CC2, ENABLE); //允许定时器3更新中断 ,允许CC1IE捕获中断
 	TIM_Cmd(TIM3, ENABLE);									//使能定时器3
 
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;				 //定时器3中断
@@ -86,11 +88,7 @@ void TIM3_IRQHandler(void)
 	extern u8 mode;
 	static u8 i = 0;
 
-	if (TIM_GetITStatus(TIM3, TIM_IT_Update)) {
-		if(TIM_GetITStatus(TIM3, TIM_IT_CC1))
-			i = 0;
-	}
-	if (TIM_GetITStatus(TIM3, TIM_IT_Update) || TIM_GetITStatus(TIM3, TIM_IT_CC1)) //溢出中断
+	if (TIM_GetITStatus(TIM3, TIM_IT_Update) || TIM_GetITStatus(TIM3, TIM_IT_CC2)) //溢出中断
 	{
 		switch (mode)
 		{
@@ -111,29 +109,32 @@ void TIM3_IRQHandler(void)
 		case 3:
 		{
 			extern u8 TIM3CH2_CAPTURE_STA;
-			extern u32 TIM3CH2_CAPTURE_VAL;
-			extern u8 captureDirect;			   //捕获方向
+			static u32 TIM3CH2_CAPTURE_VAL;
+			static u32 TIM3CH2_CAPTURE_CIR;
+			static u8 captureDirect = 0;			   //捕获方向
 			if ((TIM3CH2_CAPTURE_STA & 0X80) == 0) //还未成功捕获
 			{
 				if (TIM_GetITStatus(TIM3, TIM_IT_Update)) //溢出
 				{
 					if (TIM3CH2_CAPTURE_STA & 0X40) //已经捕获到高电平了
 					{
-						if ((TIM3CH2_CAPTURE_STA & 0X3F) == 0X3F) //高电平太长了
-						{
-							TIM3CH2_CAPTURE_STA |= 0X80; //标记成功捕获了一次
-							TIM3CH2_CAPTURE_VAL = 0XFFFFFFFF;
-						}
-						else
-							TIM3CH2_CAPTURE_STA++;
+						TIM3CH2_CAPTURE_CIR++;
 					}
 				}
-				if (TIM_GetITStatus(TIM3, TIM_IT_CC1)) //捕获1发生捕获事件
+				if (TIM_GetITStatus(TIM3, TIM_IT_CC2)) //捕获1发生捕获事件
 				{
-					if (TIM3CH2_CAPTURE_STA & 0X40) //捕获到一个
+					if (TIM3CH2_CAPTURE_STA & 0X40) //捕获到
 					{
-						TIM3CH2_CAPTURE_STA |= 0X80;				 //标记成功捕获到一次高电平脉宽
 						TIM3CH2_CAPTURE_VAL = TIM_GetCapture1(TIM3); //获取当前的捕获值.
+						if(captureDirect) {
+							extern u32 TIM3CH2_HIGH;
+							TIM3CH2_HIGH = TIM3CH2_CAPTURE_CIR*10 + TIM3CH2_CAPTURE_VAL;
+						}
+						else {
+							extern u32 TIM3CH2_LOW;
+							TIM3CH2_LOW  = TIM3CH2_CAPTURE_CIR*10 + TIM3CH2_CAPTURE_VAL;
+							TIM3CH2_CAPTURE_STA |= 0X80;
+						}
 						captureDirect = !captureDirect;				 //改变方向
 					}
 					else //还未开始,第一次捕获上升沿
@@ -141,11 +142,12 @@ void TIM3_IRQHandler(void)
 						TIM3CH2_CAPTURE_STA = 0; //清空
 						TIM3CH2_CAPTURE_VAL = 0;
 						TIM3CH2_CAPTURE_STA |= 0X40; //标记捕获
-						TIM_Cmd(TIM3, DISABLE);		 //关闭定时器5
-						TIM_SetCounter(TIM3, 0);
-						TIM_OC1PolarityConfig(TIM3, captureDirect ? TIM_ICPolarity_Rising : TIM_ICPolarity_Falling); //设置捕获方向
-						TIM_Cmd(TIM3, ENABLE);																		 //使能定时器5
 					}
+					TIM3CH2_CAPTURE_VAL = TIM3CH2_CAPTURE_CIR = 0;
+					TIM_Cmd(TIM3, DISABLE); //关闭定时器5
+					TIM_SetCounter(TIM3, 0);
+					TIM_OC2PolarityConfig(TIM3, captureDirect ? TIM_ICPolarity_Rising : TIM_ICPolarity_Falling); //设置捕获方向
+					TIM_Cmd(TIM3, ENABLE);																		 //使能定时器5
 				}
 			}
 			break;
@@ -153,5 +155,5 @@ void TIM3_IRQHandler(void)
 		}
 	}
 
-	TIM_ClearITPendingBit(TIM3, TIM_IT_CC1 | TIM_IT_Update); //清除中断标志位
+	TIM_ClearITPendingBit(TIM3, TIM_IT_CC2 | TIM_IT_Update); //清除中断标志位
 }
