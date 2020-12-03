@@ -24,15 +24,22 @@ void showPage(u8 mode); //显示静态页面
 
 u16 adc1 = 0; //adc采样值
 u8 mode = 0;
-u8 toGet = 0; //表示正弦波时是否采样
 //0：采样直流信号0-3.3V，DAC输出1KHZ的PWM波
 //1：ADC采集0-100Hz正弦信号 DAC输出原正弦信号
 //2: ADC采样交流信号1kHz（0-3.3V）VPP正弦信号显示峰峰值、有效值、偏置
 //3: 对1Hz-10kHz的方波信号测频同时可以测量方波占空比
+u8 toGet = 0; //表示正弦波时是否采样
+//捕获状态
+//[7]:0,没有成功的捕获;1,成功捕获到一次.
+//[6]:0,还没捕获到低电平;1,已经捕获到低电平了.
+//[5:0]:捕获低电平后溢出的次数(对于32位定时器来说,1us计数器加1,溢出时间:4294秒)
+u8 TIM3CH2_CAPTURE_STA = 0; //输入捕获状态
+u32 TIM3CH2_CAPTURE_VAL;	//输入捕获值(TIM2/TIM5是32位)
+u8 captureDirect = 0;		//捕获方向
 
 int main(void)
 {
-	float temp;
+	float temp, temp2;
 	u8 currentMode = 0; //当前正在经行的模式
 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); //设置系统中断优先级分组2
@@ -96,14 +103,38 @@ int main(void)
 		break;
 		case 3:
 		{
-			
+			if (TIM3CH2_CAPTURE_STA & 0x80)
+			{
+				if (captureDirect == 0) //下降沿捕获
+				{
+					temp = TIM3CH2_CAPTURE_STA & 0X3F;
+					temp *= 0XFFFFFFFF;			 //溢出时间总和
+					temp += TIM3CH2_CAPTURE_STA; //得到总的高电平时间
+					TIM3CH2_CAPTURE_STA = 0;
+				}
+				else //上升沿捕获
+				{
+					temp2 = TIM3CH2_CAPTURE_STA & 0X3F;
+					temp2 *= 0XFFFFFFFF;												 //溢出时间总和
+					temp2 += TIM3CH2_CAPTURE_STA;										 //得到总的高电平时间
+					LCD_ShowxNum(30, 200, (u32)TIM3CH2_CAPTURE_STA, 10, 16, 0);
+					LCD_ShowxNum(30, 220, (u32)temp2,10, 16, 0);
+					LCD_ShowxNum(110, 100, (u32)((float)1e5 / (temp + temp2)), 3, 16, 0);		 //显示电压值的整数部分，3.1111的话，这里就是显示3
+					LCD_ShowxNum(110, 120, (u32)(temp / (temp + temp2) * 100), 3, 16, 0); //显示电压值的整数部分，3.1111的话，这里就是显示3
+					delay_ms(300);
+					TIM3CH2_CAPTURE_STA = 0;
+				}
+			}
 		}
 		break;
 		}
 		if (mode != currentMode)
+		{
+			temp = temp2 = 0;
 			showPage(currentMode = mode);
+		}
 		//Dac1_Set_Vol(2000);
-			//TODO:表格
+		//TODO:表格
 	}
 }
 
@@ -114,8 +145,8 @@ void showPage(u8 mode)
 	switch (mode)
 	{
 	case 0:
-		TIM3_Int_Init(10 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为100000Hz
-		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); //允许定时器3更新中断
+		TIM3_Int_Init(10 - 1, 84 - 1);						//初始化定时器TIM3，溢出频率为100000Hz
+		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			//允许定时器3更新中断
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:0");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample DC singal and");
@@ -124,8 +155,8 @@ void showPage(u8 mode)
 		LCD_ShowString(30, 120, 200, 16, 16, (u8 *)"VOL:0.000V"); //先在固定位置显示小数点
 		break;
 	case 1:
-		TIM3_Int_Init(10 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为100000Hz
-		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); //允许定时器3更新中断
+		TIM3_Int_Init(10 - 1, 84 - 1);						//初始化定时器TIM3，溢出频率为100000Hz
+		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			//允许定时器3更新中断
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:1");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample Sin singal and");
@@ -135,7 +166,7 @@ void showPage(u8 mode)
 		break;
 	case 2:
 		TIM3_Int_Init(10 - 1, 84 - 1);						 //初始化定时器TIM3，溢出频率为100000Hz
-		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); //允许定时器3更新中断
+		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			 //允许定时器3更新中断
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, DISABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:2");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample Sin singal and");
@@ -145,8 +176,11 @@ void showPage(u8 mode)
 		LCD_ShowString(30, 140, 200, 16, 16, (u8 *)"OFFSET:0.000V"); //先在固定位置显示小数点
 		break;
 	case 3:
-		TIM3_Int_Init(10 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为100000Hz
-		TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE); //允许定时器3更新中断
+		captureDirect = 0;
+		TIM3CH2_CAPTURE_STA = 0;
+		TIM3CH2_CAPTURE_VAL = 0;
+		TIM3_Int_Init2(10 - 1, 84 - 1);						 //初始化定时器TIM3，溢出频率为100000Hz
+		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			 //允许定时器3更新中断
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, DISABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:3");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample wave singal and");

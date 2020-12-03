@@ -4,4 +4,5 @@
 
 /* 定时器3初始化 */
 void TIM3_Int_Init(u16 arr,u16 psc);
+void TIM3_Int_Init2(u16 arr,u16 psc);
 #endif
