@@ -24,6 +24,7 @@ void showPage(u8 mode); //显示静态页面
 
 u16 adc1 = 0; //adc采样值
 u8 mode = 0;
+u8 toGet = 0; //表示正弦波时是否采样
 //0：采样直流信号0-3.3V，DAC输出1KHZ的PWM波
 //1：ADC采集0-100Hz正弦信号 DAC输出原正弦信号
 //2: ADC采样交流信号1kHz（0-3.3V）VPP正弦信号显示峰峰值、有效值、偏置
@@ -64,23 +65,32 @@ int main(void)
 		case 2: //2: ADC采样交流信号1kHz（0-3.3V）VPP正弦信号显示峰峰值、有效值、偏置
 		{
 			static u8 i = 0;
-			static double VPP = 0, VRMS = 0, OFFSET = 0;
-			adc1 = Get_Adc(6);
-			temp = (float)adc1 * (3.0 / 4096);
-			if (temp > VPP)
-				VPP = temp;
-			VRMS += temp * temp;
-			OFFSET += temp;
-			if (++i == 100)
+			static double VMAX = 0, VMIN = 3, VRMS = 0, OFFSET = 0;
+			if (toGet)
 			{
-				LCD_ShowxNum(86, 100, (u16)VPP, 1, 16, 0);							//显示电压值的整数部分，3.1111的话，这里就是显示3
-				LCD_ShowxNum(102, 100, (VPP - (u16)VPP) * 1000, 3, 16, 0X80);		//显示小数部分（前面转换为了整形显示），这里显示的就是111.
-				LCD_ShowxNum(86, 120, (u16)VRMS, 1, 16, 0);							//显示电压值的整数部分，3.1111的话，这里就是显示3
-				LCD_ShowxNum(102, 120, (VRMS - (u16)VRMS) * 1000, 3, 16, 0X80);		//显示小数部分（前面转换为了整形显示），这里显示的就是111.
-				LCD_ShowxNum(86, 140, (u16)OFFSET, 1, 16, 0);						//显示电压值的整数部分，3.1111的话，这里就是显示3
-				LCD_ShowxNum(102, 140, (OFFSET - (u16)OFFSET) * 1000, 3, 16, 0X80); //显示小数部分（前面转换为了整形显示），这里显示的就是111.
-				VPP = VRMS = OFFSET = i = 0;
-				delay_ms(50);
+				adc1 = Get_Adc(6);
+				temp = (float)adc1 * (3.0 / 4096);
+				if (temp > VMAX)
+					VMAX = temp;
+				if (temp < VMIN)
+					VMIN = temp;
+				VRMS += temp * temp;
+				OFFSET += temp;
+				toGet = !toGet;
+				if (++i == 100)
+				{
+					VRMS = sqrt(VRMS / 100);
+					OFFSET = OFFSET / 100;
+					LCD_ShowxNum(86, 100, (u16)(VMAX - VMIN), 1, 16, 0);							  //显示电压值的整数部分，3.1111的话，这里就是显示3
+					LCD_ShowxNum(102, 100, ((VMAX - VMIN) - (u16)(VMAX - VMIN)) * 1000, 3, 16, 0X80); //显示小数部分（前面转换为了整形显示），这里显示的就是111.
+					LCD_ShowxNum(86, 120, (u16)VRMS, 1, 16, 0);										  //显示电压值的整数部分，3.1111的话，这里就是显示3
+					LCD_ShowxNum(102, 120, (VRMS - (u16)VRMS) * 1000, 3, 16, 0X80);					  //显示小数部分（前面转换为了整形显示），这里显示的就是111.
+					LCD_ShowxNum(86, 140, (u16)OFFSET, 1, 16, 0);									  //显示电压值的整数部分，3.1111的话，这里就是显示3
+					LCD_ShowxNum(102, 140, (OFFSET - (u16)OFFSET) * 1000, 3, 16, 0X80);				  //显示小数部分（前面转换为了整形显示），这里显示的就是111.
+					VMAX = VRMS = OFFSET = i = 0;
+					VMIN = 3;
+					delay_ms(300);
+				}
 			}
 		}
 		break;

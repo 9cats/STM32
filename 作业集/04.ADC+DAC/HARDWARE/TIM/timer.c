@@ -8,7 +8,7 @@
 ** 资源: TIM3、TIM5
 ** 备注: 
 *********************************************************************/
-
+extern u8 toGet;
 //arr：自动重装值
 //psc：时钟预分频数
 
@@ -71,7 +71,7 @@ void TIM3_IRQHandler(void)
 	{
 		if (TIM_GetITStatus(TIM3, TIM_IT_Update) == SET) //溢出中断
 		{
-			DAC_SetChannel1Data(DAC_Align_12b_R, adc1);
+			toGet = 1;
 		}
 	}
 	break;
