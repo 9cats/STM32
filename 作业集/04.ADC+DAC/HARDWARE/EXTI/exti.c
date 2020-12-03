@@ -41,25 +41,25 @@ void EXTIX_Init(void)
 	EXTI_Init(&EXTI_InitStructure);							//配置
 
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;			 //外部中断0
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级0
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级0
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		 //子优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				 //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure);								 //配置
 
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn;			 //外部中断2
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级3
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级3
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		 //子优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				 //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure);								 //配置
 
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI3_IRQn;			 //外部中断3
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级2
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级2
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		 //子优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				 //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure);								 //配置
 
 	NVIC_InitStructure.NVIC_IRQChannel = EXTI4_IRQn;			 //外部中断4
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01; //抢占优先级1
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x00; //抢占优先级1
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x02;		 //子优先级2
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;				 //使能外部中断通道
 	NVIC_Init(&NVIC_InitStructure);								 //配置
@@ -71,7 +71,7 @@ void EXTI0_IRQHandler(void)
 {
     extern u8 mode;
 	delay_ms(10); //消抖
-	if (WK_UP == 0)
+	if (WK_UP == 1)
 	{
         if (mode == 3) mode = 0;
         else  mode++;

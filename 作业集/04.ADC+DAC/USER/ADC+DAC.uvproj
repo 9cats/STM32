@@ -488,6 +488,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_dac.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f4xx_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\.COMMON\FWLIB\src\stm32f4xx_tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

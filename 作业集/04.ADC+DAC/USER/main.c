@@ -20,7 +20,7 @@
 ** 备注: 🈚
 *********************************************************************/
 u16 adc1 = 0; //adc采样值
-u8 mode = 0;
+u8 mode = 1;
 //0：采样直流信号0-3.3V，DAC输出1KHZ的PWM波
 //1：ADC采集0-100Hz正弦信号 DAC输出原正弦信号
 //2: ADC采样交流信号1kHz（0-3.3V）VPP正弦信号显示峰峰值、有效值、偏置
@@ -45,7 +45,7 @@ int main(void)
 	{
 		switch (mode)
 		{
-		case 0:
+		case 0://0：采样直流信号0-3.3V，DAC输出1KHZ的PWM波
 		{
 			adc1 = Get_Adc_Average(ADC_Channel_6, 20); //获取通道6的转换值，20次取平均
 			LCD_ShowxNum(134, 130, adc1, 4, 16, 0);	   //显示ADCC采样后的原始值
@@ -56,9 +56,18 @@ int main(void)
 			temp *= 1000;							   //小数部分乘以1000，例如：0.1111就转换为111.1，相当于保留三位小数。
 			LCD_ShowxNum(150, 150, temp, 3, 16, 0X80); //显示小数部分（前面转换为了整形显示），这里显示的就是111.
 		}break;
-		case 1:
+		case 1://1：ADC采集0-100Hz正弦信号 DAC输出原正弦信号
 		{
-			adc1 = Get_Adc_Average(ADC_Channel_6, 20);
+			adc1 = Get_Adc(6);
+		}break;
+		case 2://2: ADC采样交流信号1kHz（0-3.3V）VPP正弦信号显示峰峰值、有效值、偏置
+		{
+			static u16 i=0;
+			adc1 = Get_Adc(6);
+			if(i++ == 1000) {
+				LCD_ShowxNum(134, 130, 123, 4, 16, 0);
+				i=0;
+			}
 		}break;
 		}
 

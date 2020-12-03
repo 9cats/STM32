@@ -30,7 +30,7 @@ void Adc1_Init(void)
 	ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;					 //独立模式
 	ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles; //两个采样阶段之间的延迟5个时钟
 	ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;		 //DMA失能
-	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;					 //预分频4分频。ADCCLK=PCLK2/4=84/4=21Mhz,ADC时钟最好不要超过36Mhz
+	ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2;					 //预分频4分频。ADCCLK=PCLK2/4=84/4=21Mhz,ADC时钟最好不要超过36Mhz
 	ADC_CommonInit(&ADC_CommonInitStructure);									 //初始化
 
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;						//12位模式
