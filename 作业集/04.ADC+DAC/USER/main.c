@@ -107,10 +107,10 @@ int main(void)
 			{
 				temp = (float)1e6 / (TIM3CH2_HIGH + TIM3CH2_LOW);
 				LCD_ShowxNum(110, 100, (u32)temp, 5, 16, 0);
-				LCD_ShowxNum(158, 100, (u32)((temp - (u32)temp)*100), 2, 16, 0);
+				LCD_ShowxNum(158, 100, (u32)((temp - (u32)temp) * 100), 2, 16, 0);
 				temp = (float)TIM3CH2_HIGH / (TIM3CH2_HIGH + TIM3CH2_LOW) * 100;
 				LCD_ShowxNum(110, 120, (u32)temp, 5, 16, 0);
-				LCD_ShowxNum(158, 120, (u32)((temp - (u32)temp)*100), 2, 16, 0);
+				LCD_ShowxNum(158, 120, (u32)((temp - (u32)temp) * 100), 2, 16, 0);
 				delay_ms(200);
 				TIM3CH2_CAPTURE_STA = 0;
 			}
@@ -134,9 +134,7 @@ void showPage(u8 mode)
 	switch (mode)
 	{
 	case 0:
-		TIM3_Int_Init(10 - 1, 84 - 1);						//初始化定时器TIM3，溢出频率为100000Hz
-		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			//允许定时器3更新中断
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE); //使能DAC时钟
+		TIM3_Int_Init(10 - 1, 84 - 1);			   //初始化定时器TIM3，溢出频率为100000Hz
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:0");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample DC singal and");
 		LCD_ShowString(30, 70, 200, 16, 16, (u8 *)"Output PWM");
@@ -144,9 +142,7 @@ void showPage(u8 mode)
 		LCD_ShowString(30, 120, 200, 16, 16, (u8 *)"VOL:0.000V"); //先在固定位置显示小数点
 		break;
 	case 1:
-		TIM3_Int_Init(40 - 1, 21 - 1);						//初始化定时器TIM3，溢出频率为100000Hz
-		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			//允许定时器3更新中断
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE); //使能DAC时钟
+		TIM3_Int_Init(40 - 1, 21 - 1); //初始化定时器TIM3，溢出频率为100000Hz
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:1");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample Sin singal and");
 		LCD_ShowString(30, 70, 200, 16, 16, (u8 *)"Output Sin");
@@ -155,8 +151,6 @@ void showPage(u8 mode)
 		break;
 	case 2:
 		TIM3_Int_Init(10 - 1, 84 - 1);						 //初始化定时器TIM3，溢出频率为100000Hz
-		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			 //允许定时器3更新中断
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, DISABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:2");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample Sin singal and");
 		LCD_ShowString(30, 70, 200, 16, 16, (u8 *)"Calculate");
@@ -167,8 +161,6 @@ void showPage(u8 mode)
 	case 3:
 		TIM3CH2_CAPTURE_STA = 0;
 		TIM3_Int_Init2(100 - 1, 84 - 1);					 //初始化定时器TIM3，溢出频率为0.25MHz
-		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			 //允许定时器3更新中断
-		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, DISABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:3");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample wave singal and");
 		LCD_ShowString(30, 70, 200, 16, 16, (u8 *)"Calculate");

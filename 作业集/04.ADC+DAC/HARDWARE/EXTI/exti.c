@@ -2,6 +2,7 @@
 #include "key.h"
 #include "delay.h"
 #include "lcd.h"
+#include "timer.h"
 /********************************************************************
 ** 作者: 9cats
 ** 创建时间: 2020-12-2 19:36
@@ -66,7 +67,7 @@ void EXTIX_Init(void)
 	NVIC_Init(&NVIC_InitStructure);								 //配置
 }
 
-
+u8 i;
 /* 外部中断0服务程序-按下WK_UP-切换模式 */
 void EXTI0_IRQHandler(void)
 {
@@ -74,6 +75,7 @@ void EXTI0_IRQHandler(void)
 	delay_ms(10); //消抖
 	if (WK_UP == 1)
 	{
+		i = 1;
         if (mode == 3) mode = 0;
         else  mode++;
 	}
@@ -86,6 +88,8 @@ void EXTI2_IRQHandler(void)
 	delay_ms(10); //消抖
 	if (KEY2 == 0)
 	{
+		if(i++ ==                                              10) i=0;
+		TIM3_Int_Init(40*(i+1) - 1, 21 - 1); //初始化定时器TIM3，溢出频率为100000Hz
 	}
 	EXTI_ClearITPendingBit(EXTI_Line2); //清除LINE2上的中断标志位
 }

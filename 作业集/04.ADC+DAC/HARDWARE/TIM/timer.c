@@ -146,13 +146,6 @@ void TIM3_IRQHandler(void)
 
 							captureDirect = !captureDirect;
 							TIM3CH2_CAPTURE_STA |= 0X80;
-
-							// TIM_Cmd(TIM3, DISABLE); //关闭定时器5
-							// TIM_SetCounter(TIM3, 0);
-							// captureDirect = !captureDirect;
-							// TIM_OC2PolarityConfig(TIM3, TIM_ICPolarity_Rising); //设置捕获方向
-							// TIM_Cmd(TIM3, ENABLE);
-							// TIM3CH2_CAPTURE_STA |= 0X80;
 						}
 					}
 					else //还未开始,第一次捕获↑
