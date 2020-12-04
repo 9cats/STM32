@@ -34,8 +34,8 @@ u8 toGet = 0; //表示正弦波时是否采样
 //[6]:0,还没捕获到低电平;1,已经捕获到低电平了.
 //[5:0]:捕获低电平后溢出的次数(对于32位定时器来说,1us计数器加1,溢出时间:4294秒)
 u8 TIM3CH2_CAPTURE_STA = 0; //输入捕获状态
-u32 TIM3CH2_HIGH = 0;
-u32 TIM3CH2_LOW = 0;
+long long TIM3CH2_HIGH = 0;
+long long TIM3CH2_LOW = 0;
 
 int main(void)
 {
@@ -105,13 +105,27 @@ int main(void)
 		{
 			if (TIM3CH2_CAPTURE_STA & 0x80)
 			{
-				temp = (float)1e6 / (TIM3CH2_HIGH + TIM3CH2_LOW);
+				temp = (float)21e6 / (TIM3CH2_HIGH + TIM3CH2_LOW);
 				LCD_ShowxNum(110, 100, (u32)temp, 5, 16, 0);
-				LCD_ShowxNum(158, 100, (u32)((temp - (u32)temp) * 100), 2, 16, 0);
+				temp = (u32)((temp - (u32)temp) * 100);
+				if (temp < 10)
+				{
+					LCD_ShowxNum(158, 100, 0, 1, 16, 0);
+					LCD_ShowxNum(166, 100, temp, 1, 16, 0);
+				}
+				else
+					LCD_ShowxNum(158, 100, temp, 1, 16, 0);
 				temp = (float)TIM3CH2_HIGH / (TIM3CH2_HIGH + TIM3CH2_LOW) * 100;
 				LCD_ShowxNum(110, 120, (u32)temp, 5, 16, 0);
-				LCD_ShowxNum(158, 120, (u32)((temp - (u32)temp) * 100), 2, 16, 0);
-				delay_ms(200);
+				temp = (u32)((temp - (u32)temp) * 100);
+				if (temp < 10)
+				{
+					LCD_ShowxNum(158, 120, 0, 1, 16, 0);
+					LCD_ShowxNum(166, 120, temp, 1, 16, 0);
+				}
+				else
+					LCD_ShowxNum(158, 120, temp, 1, 16, 0);
+				delay_ms(600);
 				TIM3CH2_CAPTURE_STA = 0;
 			}
 		}
@@ -134,7 +148,7 @@ void showPage(u8 mode)
 	switch (mode)
 	{
 	case 0:
-		TIM3_Int_Init(10 - 1, 84 - 1);			   //初始化定时器TIM3，溢出频率为100000Hz
+		TIM3_Int_Init(100 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为100000Hz
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:0");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample DC singal and");
 		LCD_ShowString(30, 70, 200, 16, 16, (u8 *)"Output PWM");
@@ -150,7 +164,7 @@ void showPage(u8 mode)
 		LCD_ShowString(30, 120, 200, 16, 16, (u8 *)"OUTPUTING...");
 		break;
 	case 2:
-		TIM3_Int_Init(10 - 1, 84 - 1);						 //初始化定时器TIM3，溢出频率为100000Hz
+		TIM3_Int_Init(10 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为100000Hz
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:2");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample Sin singal and");
 		LCD_ShowString(30, 70, 200, 16, 16, (u8 *)"Calculate");
@@ -160,7 +174,7 @@ void showPage(u8 mode)
 		break;
 	case 3:
 		TIM3CH2_CAPTURE_STA = 0;
-		TIM3_Int_Init2(100 - 1, 84 - 1);					 //初始化定时器TIM3，溢出频率为0.25MHz
+		TIM3_Int_Init2(100 - 1, 4 - 1); //初始化定时器TIM3，溢出频率为0.25MHz
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:3");
 		LCD_ShowString(30, 50, 200, 16, 16, (u8 *)"Sample wave singal and");
 		LCD_ShowString(30, 70, 200, 16, 16, (u8 *)"Calculate");
