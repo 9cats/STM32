@@ -129,7 +129,7 @@ void TIM3_IRQHandler(void)
 						if (!captureDirect)							 //↑-↓
 						{
 							extern u32 TIM3CH2_HIGH;
-							TIM3CH2_HIGH = TIM3CH2_CAPTURE_CIR * 10 + TIM3CH2_CAPTURE_VAL;
+							TIM3CH2_HIGH = TIM3CH2_CAPTURE_CIR * 100 + TIM3CH2_CAPTURE_VAL;
 							TIM3CH2_CAPTURE_VAL = TIM3CH2_CAPTURE_CIR = 0;
 
 							captureDirect = !captureDirect;
@@ -141,7 +141,7 @@ void TIM3_IRQHandler(void)
 						else //↑-↓-↑
 						{
 							extern u32 TIM3CH2_LOW;
-							TIM3CH2_LOW = TIM3CH2_CAPTURE_CIR * 10 + TIM3CH2_CAPTURE_VAL;
+							TIM3CH2_LOW = TIM3CH2_CAPTURE_CIR * 100 + TIM3CH2_CAPTURE_VAL;
 							TIM3CH2_CAPTURE_VAL = TIM3CH2_CAPTURE_CIR = 0;
 
 							captureDirect = !captureDirect;
