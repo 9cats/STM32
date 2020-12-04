@@ -111,7 +111,7 @@ void TIM3_IRQHandler(void)
 			extern u8 TIM3CH2_CAPTURE_STA;
 			static u32 TIM3CH2_CAPTURE_VAL;
 			static u32 TIM3CH2_CAPTURE_CIR;
-			static u8 captureDirect = 0;			   //捕获方向
+			static u8 captureDirect = 0;		   //捕获方向
 			if ((TIM3CH2_CAPTURE_STA & 0X80) == 0) //还未成功捕获
 			{
 				if (TIM_GetITStatus(TIM3, TIM_IT_Update)) //溢出
@@ -125,29 +125,47 @@ void TIM3_IRQHandler(void)
 				{
 					if (TIM3CH2_CAPTURE_STA & 0X40) //捕获到
 					{
-						TIM3CH2_CAPTURE_VAL = TIM_GetCapture1(TIM3); //获取当前的捕获值.
-						if(captureDirect) {
+						TIM3CH2_CAPTURE_VAL = TIM_GetCapture2(TIM3); //获取当前的捕获值.
+						if (!captureDirect)							 //↑-↓
+						{
 							extern u32 TIM3CH2_HIGH;
-							TIM3CH2_HIGH = TIM3CH2_CAPTURE_CIR*10 + TIM3CH2_CAPTURE_VAL;
+							TIM3CH2_HIGH = TIM3CH2_CAPTURE_CIR * 10 + TIM3CH2_CAPTURE_VAL;
+							TIM3CH2_CAPTURE_VAL = TIM3CH2_CAPTURE_CIR = 0;
+
+							captureDirect = !captureDirect;
+							TIM_Cmd(TIM3, DISABLE); //关闭定时器5
+							TIM_SetCounter(TIM3, 0);
+							TIM_OC2PolarityConfig(TIM3, TIM_ICPolarity_Rising); //设置捕获方向
+							TIM_Cmd(TIM3, ENABLE);
 						}
-						else {
+						else //↑-↓-↑
+						{
 							extern u32 TIM3CH2_LOW;
-							TIM3CH2_LOW  = TIM3CH2_CAPTURE_CIR*10 + TIM3CH2_CAPTURE_VAL;
+							TIM3CH2_LOW = TIM3CH2_CAPTURE_CIR * 10 + TIM3CH2_CAPTURE_VAL;
+							TIM3CH2_CAPTURE_VAL = TIM3CH2_CAPTURE_CIR = 0;
+
+							captureDirect = !captureDirect;
 							TIM3CH2_CAPTURE_STA |= 0X80;
+
+							// TIM_Cmd(TIM3, DISABLE); //关闭定时器5
+							// TIM_SetCounter(TIM3, 0);
+							// captureDirect = !captureDirect;
+							// TIM_OC2PolarityConfig(TIM3, TIM_ICPolarity_Rising); //设置捕获方向
+							// TIM_Cmd(TIM3, ENABLE);
+							// TIM3CH2_CAPTURE_STA |= 0X80;
 						}
-						captureDirect = !captureDirect;				 //改变方向
 					}
-					else //还未开始,第一次捕获上升沿
+					else //还未开始,第一次捕获↑
 					{
 						TIM3CH2_CAPTURE_STA = 0; //清空
 						TIM3CH2_CAPTURE_VAL = 0;
 						TIM3CH2_CAPTURE_STA |= 0X40; //标记捕获
-					}
-					TIM3CH2_CAPTURE_VAL = TIM3CH2_CAPTURE_CIR = 0;
-					TIM_Cmd(TIM3, DISABLE); //关闭定时器5
-					TIM_SetCounter(TIM3, 0);
-					TIM_OC2PolarityConfig(TIM3, captureDirect ? TIM_ICPolarity_Rising : TIM_ICPolarity_Falling); //设置捕获方向
-					TIM_Cmd(TIM3, ENABLE);																		 //使能定时器5
+
+						TIM_Cmd(TIM3, DISABLE); //关闭定时器5
+						TIM_SetCounter(TIM3, 0);
+						TIM_OC2PolarityConfig(TIM3, TIM_ICPolarity_Falling); //设置捕获方向
+						TIM_Cmd(TIM3, ENABLE);
+					} //使能定时器5
 				}
 			}
 			break;

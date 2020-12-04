@@ -108,7 +108,7 @@ int main(void)
 					
 					LCD_ShowxNum(110, 200, (u32)(TIM3CH2_HIGH ), 5, 16, 0);	
 					LCD_ShowxNum(110, 220, (u32)( TIM3CH2_LOW ), 5, 16, 0);	
-					LCD_ShowxNum(110, 100, (u32)((float)2e6 / (TIM3CH2_HIGH + TIM3CH2_LOW)    ), 5, 16, 0);	
+					LCD_ShowxNum(110, 100, (u32)((float)1e6 / (TIM3CH2_HIGH + TIM3CH2_LOW)    ), 5, 16, 0);	
 					LCD_ShowxNum(110, 120, (u32)(TIM3CH2_HIGH / (TIM3CH2_HIGH + TIM3CH2_LOW) * 100    ), 5, 16, 0); 
 					delay_ms(200);
 					TIM3CH2_CAPTURE_STA = 0;
@@ -143,7 +143,7 @@ void showPage(u8 mode)
 		LCD_ShowString(30, 120, 200, 16, 16, (u8 *)"VOL:0.000V"); //先在固定位置显示小数点
 		break;
 	case 1:
-		TIM3_Int_Init(10 - 1, 84 - 1);						//初始化定时器TIM3，溢出频率为100000Hz
+		TIM3_Int_Init(40 - 1, 21 - 1);						//初始化定时器TIM3，溢出频率为100000Hz
 		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			//允许定时器3更新中断
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, ENABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:1");
@@ -165,7 +165,7 @@ void showPage(u8 mode)
 		break;
 	case 3:
 		TIM3CH2_CAPTURE_STA = 0;
-		TIM3_Int_Init2(10 - 1, 42 - 1);						 //初始化定时器TIM3，溢出频率为1000000Hz
+		TIM3_Int_Init2(10 - 1, 84 - 1);						 //初始化定时器TIM3，溢出频率为0.25MHz
 		TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE);			 //允许定时器3更新中断
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC, DISABLE); //使能DAC时钟
 		LCD_ShowString(30, 30, 200, 16, 16, (u8 *)"Mode:3");
