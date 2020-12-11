@@ -88,6 +88,7 @@ int main(void)
 				{
 					VRMS = sqrt(VRMS / 100);
 					OFFSET = OFFSET / 100;
+					VRMS = sqrt(OFFSET*OFFSET + 2*OFFSET*(VMAX - VMIN)/3.1415 + (VMAX - VMIN)*(VMAX - VMIN)/4/3.1415);
 					LCD_ShowxNum(86, 100, (u16)(VMAX - VMIN), 1, 16, 0);							  //显示电压值的整数部分，3.1111的话，这里就是显示3
 					LCD_ShowxNum(102, 100, ((VMAX - VMIN) - (u16)(VMAX - VMIN)) * 1000, 3, 16, 0X80); //显示小数部分（前面转换为了整形显示），这里显示的就是111.
 					LCD_ShowxNum(86, 120, (u16)VRMS, 1, 16, 0);										  //显示电压值的整数部分，3.1111的话，这里就是显示3

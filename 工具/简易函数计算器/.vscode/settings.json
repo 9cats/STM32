@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    "**/OBJ":true,
+    "**/*.bat":true,
+    "**/*.ini":true,
+    "**/*.bak":true,
+    "**/*.uvgui.*":true,
+    "**/*.uvopt":true,
+    "**/*.hex":true,
+    "**/*.uvguix.*":true,
+    "**/*.uvproj":true,
+    "**/*.dep":true,
+    "**/*.uvoptx":true
+  }
+}
