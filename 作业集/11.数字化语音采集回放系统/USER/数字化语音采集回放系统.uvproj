@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>LED+KEY+IO</TargetName>
+      <TargetName>数字化语言采集回放系统</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
@@ -330,7 +330,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\BEEP;..\HARDWARE\OUTPUT</IncludePath>
+              <IncludePath>..\..\.COMMON\CORE;..\..\.COMMON\FWLIB\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\USER;..\HARDWARE\ADC;..\HARDWARE\DAC;..\HARDWARE\EXTI;..\HARDWARE\FLASH;..\HARDWARE\LCD;..\HARDWARE\TIM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -389,44 +389,34 @@
           <GroupName>HARDWARE</GroupName>
           <Files>
             <File>
-              <FileName>led.c</FileName>
+              <FileName>adc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\LED\led.c</FilePath>
+              <FilePath>..\HARDWARE\ADC\adc.c</FilePath>
             </File>
             <File>
-              <FileName>led.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\HARDWARE\LED\led.h</FilePath>
-            </File>
-            <File>
-              <FileName>key.c</FileName>
+              <FileName>dac.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\KEY\key.c</FilePath>
+              <FilePath>..\HARDWARE\DAC\dac.c</FilePath>
             </File>
             <File>
-              <FileName>key.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\HARDWARE\KEY\key.h</FilePath>
-            </File>
-            <File>
-              <FileName>beep.c</FileName>
+              <FileName>exti.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\BEEP\beep.c</FilePath>
+              <FilePath>..\HARDWARE\EXTI\exti.c</FilePath>
             </File>
             <File>
-              <FileName>beep.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\HARDWARE\BEEP\beep.h</FilePath>
-            </File>
-            <File>
-              <FileName>output.c</FileName>
+              <FileName>flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\HARDWARE\OUTPUT\output.c</FilePath>
+              <FilePath>..\HARDWARE\FLASH\flash.c</FilePath>
             </File>
             <File>
-              <FileName>output.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\HARDWARE\OUTPUT\output.h</FilePath>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\LCD\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TIM\timer.c</FilePath>
             </File>
           </Files>
         </Group>
