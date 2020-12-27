@@ -26,6 +26,7 @@ int main(void) {
 	delay_init(168);
 	uart_init(115200);
 	LCD_Init();
+	EXTIX_Init();
 
 	while(1) {
 

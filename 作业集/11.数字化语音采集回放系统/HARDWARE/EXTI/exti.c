@@ -2,7 +2,7 @@
 #include "key.h"
 #include "delay.h"
 #include "lcd.h"
-#include "timer.h"
+#include "flash.h"
 /********************************************************************
 ** 作者: 9cats
 ** 创建时间: 2020-12-2 19:36
@@ -22,8 +22,6 @@ void EXTIX_Init(void)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	EXTI_InitTypeDef EXTI_InitStructure;
-
-	KEY_Init(); //按键对应的IO口初始化
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE); //使能SYSCFG时钟
 
