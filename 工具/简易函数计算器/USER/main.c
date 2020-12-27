@@ -4,6 +4,7 @@
 #include "touch.h"
 #include "eval.h"
 #include "string.h"
+#include "math.h"
 /******************************************************************************************************************************************
 ** 作者: 9cats🐧
 ** 创建时间: 📅2020-11-12 🕑21:30
@@ -35,14 +36,14 @@ double result = 0;
 int main(void)
 {
 	u16 i, j;
+	char s[] = "sin(3.14)";
 	delay_init(168);   //延时初始化
 	uart_init(115200); //串口初始化波特率为115200
 	LCD_Init();		   //初始化LCD FSMC接口
 	TP_Init();		   //初始化触摸屏
-	
-	
-	result =  eval("sin(3)");
-	LCD_ShowNum(10, 50, eval("sin(3)"), 28, 16);
+	LCD_ShowString2(10,10,320,20,16,(u8*)s);
+	result =  sqrt(4);
+	LCD_ShowNum(10, 50, eval("SQRT(12)"), 28, 16);
 	for (i = 0; i < sizeof(buttonValue1) / sizeof(buttonValue1[0]); i++)
 	{
 		for (j = 0; j < sizeof(buttonValue1[i]); j++)
