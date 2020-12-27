@@ -10,6 +10,7 @@
     "**/*.uvguix.*":true,
     "**/*.uvproj":true,
     "**/*.dep":true,
-    "**/*.uvoptx":true
+    "**/*.uvoptx":true,
+    "**/MarkdowmImg":true
   }
 }
