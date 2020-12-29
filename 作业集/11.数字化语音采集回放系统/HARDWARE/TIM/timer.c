@@ -70,7 +70,7 @@ void TIM3_Int_Init2(u16 arr, u16 psc)
 	TIM3_ICInitStructure.TIM_ICFilter = 0x00;						 //IC1F=0000 配置输入滤波器 不滤波
 	TIM_ICInit(TIM3, &TIM3_ICInitStructure);
 
-	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); //允许定时器3更新中断
+	TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE); //允许定时器3更新中断
 	TIM_Cmd(TIM3, ENABLE);					   //使能定时器3
 
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;				 //定时器3中断
@@ -86,7 +86,7 @@ extern u8 WRITE_FLAG;
 void TIM3_IRQHandler(void)
 {
 	static u8 step = 0;
-	static char DATE_BUFF[4] = 0;
+	static char DATE_BUFF[4] = {0};
 	static u16 volTemp1 = 0, volTemp2 = 0;
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update)) //溢出中断
 	{
@@ -95,7 +95,7 @@ void TIM3_IRQHandler(void)
 			WRITE_FLAG = 1;
 			volTemp1 = Get_Adc(6);
 			DATE_BUFF[0] = volTemp1 >> 4;
-			DATE_BUFF[1] = volTemp1 || 0xff;
+			DATE_BUFF[1] = volTemp1 | 0xff;
 			step = 2;
 		}
 		else
