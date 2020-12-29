@@ -19,8 +19,12 @@
 **（3）增加回放音量手动控制功能，可调节回放音量大小；
 ** 备注: 🈚
 \********************************************************************/
+void showPage(u8 mode); //显示静态页面
 
-int main(void) {
+u8 currentPage = 0; //当前页面 0为主页
+u8 page = 0;		//即将要呈现的页面
+int main(void)
+{
 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
 	delay_init(168);
@@ -28,7 +32,33 @@ int main(void) {
 	LCD_Init();
 	EXTIX_Init();
 
-	while(1) {
-		
+	while (1)
+	{
+
+		if (currentPage != page)
+		{
+			showPage(currentPage = page);
+		}
+	}
+}
+
+void showPage(u8 mode)
+{
+	/* 显示边框和标题 */
+	LCD_Fill(20, 20, lcddev.width - 20, lcddev.height - 20, WHITE);
+	LCD_DrawRectangle(20, 20, lcddev.width - 20, lcddev.height - 20);
+	LCD_ShowString(36, 25, 168, 16, 16, (u8 *)"Voice Playback System");
+	LCD_DrawLine(20, 46, 220, 46);
+
+	switch (mode)
+	{
+	case 0: //主页
+		break;
+	case 1: //主页->播放
+		break;
+	case 2: //主页->播放->录入
+		break;
+	default:
+		break;
 	}
 }
