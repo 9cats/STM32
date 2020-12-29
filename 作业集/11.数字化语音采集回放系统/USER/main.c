@@ -20,10 +20,12 @@
 **（3）增加回放音量手动控制功能，可调节回放音量大小；
 ** 备注: 🈚
 \********************************************************************/
-void showPage(u8 mode); //显示静态页面
+void showPage(u8 mode);		//显示静态页面
+void console(char *String); //输出当前进度
 
 u8 currentPage = 0; //当前页面 0为主页
 u8 page = 0;		//即将要呈现的页面
+u8 presStatus = 0;	//记录触摸屏的按下情况，用于防止连按
 int main(void)
 {
 
@@ -33,10 +35,55 @@ int main(void)
 	LCD_Init();
 	TP_Init();
 	EXTIX_Init();
-	
 
+	showPage(0);
 	while (1)
 	{
+		tp_dev.scan(0);
+		if (tp_dev.sta & TP_PRES_DOWN)
+		{
+			if (presStatus == 0)
+			{
+				presStatus = 1; //标记已经按下
+				switch (currentPage)
+				{
+				case 0: //主页
+					if (tp_dev.x[0] > 25 && tp_dev.y[0] > 195 && tp_dev.x[0] < 115 && tp_dev.y[0] < 295)
+					{
+						page = 1;
+					}
+					if (tp_dev.x[0] > 125 && tp_dev.y[0] > 195 && tp_dev.x[0] < 215 && tp_dev.y[0] < 295)
+					{
+						console("Playing");
+					}
+					break;
+				case 1: //主页->播放
+					if (tp_dev.x[0] > 25 && tp_dev.y[0] > 195 && tp_dev.x[0] < 115 && tp_dev.y[0] < 295)
+					{
+						page = 2;
+					}
+					if (tp_dev.x[0] > 125 && tp_dev.y[0] > 195 && tp_dev.x[0] < 215 && tp_dev.y[0] < 295)
+					{
+						page = 0;
+					}
+					break;
+				case 2: //主页->播放->录入
+					if (tp_dev.x[0] > 25 && tp_dev.y[0] > 195 && tp_dev.x[0] < 115 && tp_dev.y[0] < 295)
+					{
+						console("inputing");
+					}
+					if (tp_dev.x[0] > 125 && tp_dev.y[0] > 195 && tp_dev.x[0] < 215 && tp_dev.y[0] < 295)
+					{
+						page = 0;
+					}
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else
+			presStatus = 0; //标记没有继续按下
 
 		if (currentPage != page)
 		{
@@ -45,23 +92,40 @@ int main(void)
 	}
 }
 
-void showPage(u8 mode)
+void showPage(u8 page)
 {
 	/* 显示边框和标题 */
 	LCD_Fill(20, 20, lcddev.width - 20, lcddev.height - 20, WHITE);
 	LCD_DrawRectangle(20, 20, lcddev.width - 20, lcddev.height - 20);
 	LCD_ShowString(36, 25, 168, 16, 16, (u8 *)"Voice Playback System");
 	LCD_DrawLine(20, 46, 220, 46);
-
-	switch (mode)
+	/* 显示两个圆框 */
+	LCD_Draw_Circle(20 + 50, 240, 45);
+	LCD_Draw_Circle(20 + 150, 240, 45);
+	switch (page)
 	{
 	case 0: //主页
+		LCD_ShowString(20 + 50 - 12 * 3, 240 - 12, 12 * 6, 24, 24, (u8 *)"Record");
+		LCD_ShowString(20 + 150 - 12 * 2, 240 - 12, 12 * 4, 24, 24, (u8 *)"Play");
+		//TODO:根据flash区的值判断是否为空,来输出Console
 		break;
 	case 1: //主页->播放
+		LCD_ShowString(20 + 50 - 6 * 7, 240 - 12, 12 * 7, 24, 24, (u8 *)"Confirm");
+		LCD_ShowString(20 + 150 - 6 * 6, 240 - 12, 12 * 6, 24, 24, (u8 *)"Cancel");
+		console("Sure to delete the Flash?");
 		break;
 	case 2: //主页->播放->录入
+		LCD_ShowString(20 + 50 - 6 * 6, 240 - 12, 12 * 6, 24, 24, (u8 *)"Begin");
+		LCD_ShowString(20 + 150 - 6 * 6, 240 - 12, 12 * 6, 24, 24, (u8 *)"Cancel");
+		console("flash delete");
 		break;
 	default:
 		break;
 	}
+}
+
+void console(char *String)
+{
+	LCD_Fill(25, 60, lcddev.width - 25, 92, WHITE);
+	LCD_ShowString(25, 60, 190, 32, 16, (u8 *)String);
 }
