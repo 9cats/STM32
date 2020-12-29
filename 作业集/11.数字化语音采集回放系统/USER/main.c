@@ -3,6 +3,7 @@
 #include "lcd.h"
 #include "flash.h"
 #include "exti.h"
+#include "touch.h"
 /********************************************************************\
 ** 作者: 9cats🐧
 ** 创建时间: 📅2020-12-27 🕑13:56
@@ -30,7 +31,9 @@ int main(void)
 	delay_init(168);
 	uart_init(115200);
 	LCD_Init();
+	TP_Init();
 	EXTIX_Init();
+	
 
 	while (1)
 	{
