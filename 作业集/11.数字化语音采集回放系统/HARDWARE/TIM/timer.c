@@ -70,8 +70,8 @@ void TIM3_Int_Init2(u16 arr, u16 psc)
 	TIM3_ICInitStructure.TIM_ICFilter = 0x00;						 //IC1F=0000 配置输入滤波器 不滤波
 	TIM_ICInit(TIM3, &TIM3_ICInitStructure);
 
-	TIM_ITConfig(TIM3, TIM_IT_Update | TIM_IT_CC2, ENABLE); //允许定时器3更新中断 ,允许CC1IE捕获中断
-	TIM_Cmd(TIM3, ENABLE);									//使能定时器3
+	TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); //允许定时器3更新中断
+	TIM_Cmd(TIM3, ENABLE);					   //使能定时器3
 
 	NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;				 //定时器3中断
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x02; //抢占优先级1
@@ -80,12 +80,34 @@ void TIM3_Int_Init2(u16 arr, u16 psc)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
+extern u32 addrP;
+extern u8 WRITE_FLAG;
 /* 定时器3中断服务函数 */
 void TIM3_IRQHandler(void)
 {
-	if (TIM_GetITStatus(TIM3, TIM_IT_Update) || TIM_GetITStatus(TIM3, TIM_IT_CC2)) //溢出中断
+	static u8 step = 0;
+	static char DATE_BUFF[4] = 0;
+	static u16 volTemp1 = 0, volTemp2 = 0;
+	if (TIM_GetITStatus(TIM3, TIM_IT_Update)) //溢出中断
 	{
+		if (!WRITE_FLAG)
+		{
+			WRITE_FLAG = 1;
+			volTemp1 = Get_Adc(6);
+			DATE_BUFF[0] = volTemp1 >> 4;
+			DATE_BUFF[1] = volTemp1 || 0xff;
+			step = 2;
+		}
+		else
+		{
+			volTemp2 = Get_Adc(6);
+			DATE_BUFF[step] = volTemp2 -volTemp1;
+			if (++step == 4)
+			{
+				FLASH_ProgramWord(addrP, (u32)DATE_BUFF); //写入
+				step = 0;
+			}
+		}
 	}
-
-	TIM_ClearITPendingBit(TIM3, TIM_IT_CC2 | TIM_IT_Update); //清除中断标志位
+	TIM_ClearITPendingBit(TIM3, TIM_IT_Update); //清除中断标志位
 }

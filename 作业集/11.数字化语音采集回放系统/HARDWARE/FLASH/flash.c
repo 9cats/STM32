@@ -115,3 +115,32 @@ void STMFLASH_Read(u32 ReadAddr, u32 *pBuffer, u32 NumToRead)
 		ReadAddr += 4;							  //偏移4个字节.
 	}
 }
+
+//从指定地址开始删除指定长度的数据
+//ReadAddr:起始地址
+//Num:字(4位)数
+FLASH_Status STMFLASH_Clear(u32 addrx, u32 endaddr)
+{
+	FLASH_Status status = FLASH_COMPLETE;
+	if (addrx < STM32_FLASH_BASE || addrx % 4)
+		return FLASH_BUSY;		 //非法地址
+	FLASH_Unlock();				 //解锁
+	FLASH_DataCacheCmd(DISABLE); //FLASH擦除期间,必须禁止数据缓存
+	if (addrx < 0X1FFF0000)		 //只有主存储区,才需要执行擦除操作!!
+	{
+		while (addrx <= endaddr) //扫清一切障碍.(对非FFFFFFFF的地方,先擦除)
+		{
+			if (STMFLASH_ReadWord(addrx) != 0XFFFFFFFF) //有非0XFFFFFFFF的地方,要擦除这个扇区
+			{
+				status = FLASH_EraseSector(STMFLASH_GetFlashSector(addrx), VoltageRange_3); //VCC=2.7~3.6V之间!!
+				if (status != FLASH_COMPLETE)
+					break;
+			}
+			else
+				addrx += 4;
+		}
+	}
+	FLASH_DataCacheCmd(ENABLE); //FLASH擦除结束,开启数据缓存
+	FLASH_Lock();				//上锁
+	return status;
+}
