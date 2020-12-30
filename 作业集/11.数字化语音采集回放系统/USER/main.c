@@ -29,19 +29,20 @@
 
 #define TEXT_LENTH sizeof(TEXT_Buffer) //数组长度
 #define SIZE TEXT_LENTH / 4 + ((TEXT_LENTH % 4) ? 1 : 0)
-#define FLASH_SAVE_ADDR 0X080E0000 //设置FLASH 保存地址(必须为偶数，且所在扇区,要大于本代码所占用到的扇区. 
+#define FLASH_SAVE_ADDR 0X080E0000 //设置FLASH 保存地址(必须为偶数，且所在扇区,要大于本代码所占用到的扇区.
 const u8 TEXT_Buffer[] = {"STM32 FLASH TEST"};
-								   //否则,写操作的时候,可能会导致擦除整个扇区,从而引起部分程序丢失.引起死机
-u8 datatemp[SIZE];
+//否则,写操作的时候,可能会导致擦除整个扇区,从而引起部分程序丢失.引起死机
+u8 datatemp[88];
 u8 flash_status;
 //TODO:
 void showPage(u8 mode);		   //显示静态页面
 void consoleLog(char *String); //输出当前进度
-u8 currentPage = 0;	 //当前页面 0为主页
-u8 page = 0;		 //即将要呈现的页面
-u8 presStatus = 0;	 //记录触摸屏的按下情况，用于防止连按
-u8 WRITE_FLAG = 0;	 //用于标记写入开始
-u32 addrP = ADDRBEG; //当前指向地址
+u8 currentPage = 0;			   //当前页面 0为主页
+u8 page = 0;				   //即将要呈现的页面
+u8 presStatus = 0;			   //记录触摸屏的按下情况，用于防止连按
+u8 taskStatus = 0;			   //用于标记写入开始 0开始写入 1写入中 2写入完成
+u32 adcCount = 0;			   //ADC采样数
+u32 addrP = ADDRBEG;		   //当前指向地址
 int main(void)
 {
 
@@ -51,10 +52,9 @@ int main(void)
 	LCD_Init();
 	TP_Init();
 	EXTIX_Init();
-	Adc1_Init();					//初始化ADC1
-	Dac1_Init();					//初始化DAC1
-	//TIM3_Int_Init(100 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为10KHz
-	delay_ms(500);
+	Adc1_Init();				   //初始化ADC1
+	Dac1_Init();				   //初始化DAC1
+	TIM3_Int_Init(50 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为20KHz
 
 	showPage(0);
 	while (1)
@@ -74,11 +74,11 @@ int main(void)
 					}
 					if (tp_dev.x[0] > 125 && tp_dev.y[0] > 195 && tp_dev.x[0] < 215 && tp_dev.y[0] < 295)
 					{ //按下Play
-						consoleLog("Playing");
-						TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); //允许定时器3更新中断
-						while (addrP <= ADDREND)
-							;
-						TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE); //禁止定时器3更新中断
+						consoleLog("Playing...");
+						TIM_Cmd(TIM3, ENABLE); //使能定时器3
+						while (taskStatus != 2)
+							LCD_ShowNum(20, 150, adcCount, 16, 16);
+						TIM_Cmd(TIM3, DISABLE); //失能定时器3
 						addrP = ADDRBEG;
 						consoleLog("Playing finished");
 					}
@@ -96,19 +96,18 @@ int main(void)
 				case 2: //主页->播放->录入
 					if (tp_dev.x[0] > 25 && tp_dev.y[0] > 195 && tp_dev.x[0] < 115 && tp_dev.y[0] < 295)
 					{ //按下Begin
-						consoleLog("Sampling and recording");
-						FLASH_Unlock();							   //解锁
-						FLASH_DataCacheCmd(DISABLE);			   //FLASH擦除期间,必须禁止数据缓存
-						TIM_ITConfig(TIM3, TIM_IT_Update, ENABLE); //允许定时器3更新中断
-						while (addrP <= ADDREND)
-							;
+						consoleLog("Sampling and recording...");
+						FLASH_Unlock();				 //解锁
+						FLASH_DataCacheCmd(DISABLE); //FLASH写入期间,必须禁止数据缓存
+						TIM_Cmd(TIM3, ENABLE);		 //使能定时器3
+						while (taskStatus != 2)
+							LCD_ShowNum(20, 150, adcCount, 16, 16);
 						//TODO:之后显示动态进度条
-
-						addrP = ADDRBEG;							//地址回到最开始
-						WRITE_FLAG = 0;								//开始写入标记清零
-						TIM_ITConfig(TIM3, TIM_IT_Update, DISABLE); //禁止定时器3更新中断
-						FLASH_DataCacheCmd(ENABLE);					//FLASH擦除结束,开启数据缓存
-						FLASH_Lock();								//上锁
+						addrP = ADDRBEG;			//地址回到最开始
+						taskStatus = 0;				//开始写入标记清零
+						TIM_Cmd(TIM3, DISABLE);		//失能定时器3
+						FLASH_DataCacheCmd(ENABLE); //FLASH写入结束,开启数据缓存
+						FLASH_Lock();				//上锁
 						page = 0;
 					}
 					if (tp_dev.x[0] > 125 && tp_dev.y[0] > 195 && tp_dev.x[0] < 215 && tp_dev.y[0] < 295)
@@ -133,8 +132,6 @@ int main(void)
 
 void showPage(u8 page)
 {
-	u8 temp[8];
-
 	/* 显示边框和标题 */
 	LCD_Fill(20, 20, lcddev.width - 20, lcddev.height - 20, WHITE);
 	LCD_DrawRectangle(20, 20, lcddev.width - 20, lcddev.height - 20);
@@ -147,21 +144,12 @@ void showPage(u8 page)
 	{
 	case 0: //主页
 		//TODO:FLASH失效
-		flash_status = FLASH_EraseSector(FLASH_Sector_11,VoltageRange_3);
-		LCD_ShowNum(66, 100, flash_status, 5, 16);
-		STMFLASH_Write(FLASH_SAVE_ADDR,(u32*)TEXT_Buffer,SIZE);
-		STMFLASH_Read(FLASH_SAVE_ADDR,(u32*)datatemp,SIZE);
-		LCD_ShowString(20,150,200,16,16,datatemp);
 		/*
-		STMFLASH_Write(0X0800C004, (u32 *)"ddddddd", 2);
-		STMFLASH_Read(0X0800C004, (u32 *)temp, 2);
-		LCD_ShowString(33, 120, 66, 16, 16, temp);
-		FLASH_Unlock();				 //解锁
-		FLASH_DataCacheCmd(DISABLE); //FLASH擦除期间,必须禁止数据缓存
-
-		LCD_ShowNum(66, 100, FLASH_EraseSector(STMFLASH_GetFlashSector(0X0800C004), VoltageRange_3), 5, 16);
-		FLASH_DataCacheCmd(ENABLE); //FLASH擦除结束,开启数据缓存
-		FLASH_Lock();				//上锁
+		flash_status = FLASH_EraseSector(FLASH_Sector_11, VoltageRange_3);
+		LCD_ShowNum(66, 100, flash_status, 5, 16);
+		STMFLASH_Write(FLASH_SAVE_ADDR, (u32 *)TEXT_Buffer, SIZE);
+		STMFLASH_Read(FLASH_SAVE_ADDR, (u32 *)datatemp, SIZE);
+		LCD_ShowString(20, 150, 200, 16, 16, datatemp);
 		*/
 		//TODO:测试代码
 		LCD_ShowString(20 + 50 - 12 * 3, 240 - 12, 12 * 6, 24, 24, (u8 *)"Record");
@@ -171,15 +159,15 @@ void showPage(u8 page)
 		else
 			consoleLog("No video");
 		break;
-	case 1: //主页->播放
+	case 1: //主页->录入
 		LCD_ShowString(20 + 50 - 6 * 7, 240 - 12, 12 * 7, 24, 24, (u8 *)"Confirm");
 		LCD_ShowString(20 + 150 - 6 * 6, 240 - 12, 12 * 6, 24, 24, (u8 *)"Cancel");
 		consoleLog("Sure to erase the Flash?");
 		break;
-	case 2: //主页->播放->录入
-		LCD_ShowString(20 + 50 - 6 * 6, 240 - 12, 12 * 6, 24, 24, (u8 *)"Begin");
+	case 2: //主页->录入->确认
+		LCD_ShowString(20 + 50 - 6 * 5, 240 - 12, 12 * 6, 24, 24, (u8 *)"Begin");
 		LCD_ShowString(20 + 150 - 6 * 6, 240 - 12, 12 * 6, 24, 24, (u8 *)"Cancel");
-		consoleLog("Flash Erasing");
+		consoleLog("Flash Erasing...");
 		STMFLASH_Clear(ADDRBEG, ADDREND);
 		consoleLog("Flash deleted");
 		break;
