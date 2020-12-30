@@ -44,7 +44,7 @@ extern u32 adcCount;
 extern u8 taskStatus;
 extern u8 currentPage;
 //TODO:测试
-extern int vol;
+extern u32 vol;
 /* 定时器3中断服务函数 */
 void TIM3_IRQHandler(void)
 {
@@ -75,7 +75,12 @@ void TIM3_IRQHandler(void)
 			}
 			else
 			{
-				volTemp1 += DATE_BUFF[step];
+				if(DATE_BUFF[step] & 0x80) //判断正负
+					volTemp1 += DATE_BUFF[step] - 0x100;
+				else
+					volTemp1 += DATE_BUFF[step];
+				//TODO:测试用
+				vol = volTemp1;
 				if (++step == 4)
 				{
 					step = 0;
@@ -109,13 +114,13 @@ void TIM3_IRQHandler(void)
 				volTemp2 = Get_Adc(6);
 				DATE_BUFF[step] = volTemp2 - volTemp1;
 				//TODO:测试
-				vol = volTemp2 - volTemp1 + 30;
+				vol = volTemp2 - volTemp1 + 200;
 				//
 				volTemp1 = volTemp2;
 
 				if (++step == 4)
 				{
-					FLASH_ProgramWord(addrP, (u32)DATE_BUFF); //写入
+					FLASH_ProgramWord(addrP, *(u32 *)DATE_BUFF); //写入
 					step = 0;
 					addrP += 4;
 				}

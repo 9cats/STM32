@@ -26,7 +26,7 @@
 #define ADDRBEG 0x08020000
 #define ADDREND 0x080FFFFF
 //TODO:测试用
-int vol = 0;
+u32 vol = 0;
 //TODO:
 void showPage(u8 mode);		   //显示静态页面
 void consoleLog(char *String); //输出当前进度
@@ -145,7 +145,7 @@ void showPage(u8 page)
 	case 0: //主页
 		LCD_ShowString(20 + 50 - 12 * 3, 240 - 12, 12 * 6, 24, 24, (u8 *)"Record");
 		LCD_ShowString(20 + 150 - 12 * 2, 240 - 12, 12 * 4, 24, 24, (u8 *)"Play");
-		if (STMFLASH_ReadWord(ADDRBEG))
+		if (STMFLASH_ReadWord(ADDRBEG) != 0xff)
 			consoleLog("Loaded video");
 		else
 			consoleLog("No video");
