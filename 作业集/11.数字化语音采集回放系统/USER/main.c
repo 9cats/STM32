@@ -25,9 +25,18 @@
 \********************************************************************/
 #define ADDRBEG 0x08020000
 #define ADDREND 0x080FFFFF
+//TODO:测试用
+
+#define TEXT_LENTH sizeof(TEXT_Buffer) //数组长度
+#define SIZE TEXT_LENTH / 4 + ((TEXT_LENTH % 4) ? 1 : 0)
+#define FLASH_SAVE_ADDR 0X080E0000 //设置FLASH 保存地址(必须为偶数，且所在扇区,要大于本代码所占用到的扇区. 
+const u8 TEXT_Buffer[] = {"STM32 FLASH TEST"};
+								   //否则,写操作的时候,可能会导致擦除整个扇区,从而引起部分程序丢失.引起死机
+u8 datatemp[SIZE];
+u8 flash_status;
+//TODO:
 void showPage(u8 mode);		   //显示静态页面
 void consoleLog(char *String); //输出当前进度
-
 u8 currentPage = 0;	 //当前页面 0为主页
 u8 page = 0;		 //即将要呈现的页面
 u8 presStatus = 0;	 //记录触摸屏的按下情况，用于防止连按
@@ -44,7 +53,8 @@ int main(void)
 	EXTIX_Init();
 	Adc1_Init();					//初始化ADC1
 	Dac1_Init();					//初始化DAC1
-	TIM3_Int_Init(100 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为10KHz
+	//TIM3_Int_Init(100 - 1, 84 - 1); //初始化定时器TIM3，溢出频率为10KHz
+	delay_ms(500);
 
 	showPage(0);
 	while (1)
@@ -123,6 +133,8 @@ int main(void)
 
 void showPage(u8 page)
 {
+	u8 temp[8];
+
 	/* 显示边框和标题 */
 	LCD_Fill(20, 20, lcddev.width - 20, lcddev.height - 20, WHITE);
 	LCD_DrawRectangle(20, 20, lcddev.width - 20, lcddev.height - 20);
@@ -134,16 +146,23 @@ void showPage(u8 page)
 	switch (page)
 	{
 	case 0: //主页
-
-		//TODO:删除
-
+		//TODO:FLASH失效
+		flash_status = FLASH_EraseSector(FLASH_Sector_11,VoltageRange_3);
+		LCD_ShowNum(66, 100, flash_status, 5, 16);
+		STMFLASH_Write(FLASH_SAVE_ADDR,(u32*)TEXT_Buffer,SIZE);
+		STMFLASH_Read(FLASH_SAVE_ADDR,(u32*)datatemp,SIZE);
+		LCD_ShowString(20,150,200,16,16,datatemp);
+		/*
+		STMFLASH_Write(0X0800C004, (u32 *)"ddddddd", 2);
+		STMFLASH_Read(0X0800C004, (u32 *)temp, 2);
+		LCD_ShowString(33, 120, 66, 16, 16, temp);
 		FLASH_Unlock();				 //解锁
 		FLASH_DataCacheCmd(DISABLE); //FLASH擦除期间,必须禁止数据缓存
-		
-		LCD_ShowNum(66,100,FLASH_EraseSector(STMFLASH_GetFlashSector(ADDRBEG), VoltageRange_3),5,16);
-		FLASH_DataCacheCmd(ENABLE);	 //FLASH擦除结束,开启数据缓存
-		FLASH_Lock();				 //上锁
 
+		LCD_ShowNum(66, 100, FLASH_EraseSector(STMFLASH_GetFlashSector(0X0800C004), VoltageRange_3), 5, 16);
+		FLASH_DataCacheCmd(ENABLE); //FLASH擦除结束,开启数据缓存
+		FLASH_Lock();				//上锁
+		*/
 		//TODO:测试代码
 		LCD_ShowString(20 + 50 - 12 * 3, 240 - 12, 12 * 6, 24, 24, (u8 *)"Record");
 		LCD_ShowString(20 + 150 - 12 * 2, 240 - 12, 12 * 4, 24, 24, (u8 *)"Play");
