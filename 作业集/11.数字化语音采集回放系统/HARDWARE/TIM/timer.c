@@ -10,6 +10,7 @@
 ** 资源: TIM3、TIM3_CH2 & GPIOA_PIN7
 ** 备注: 
 *********************************************************************/
+#define ADDRBEG 0x08020000
 //arr：自动重装值
 //psc：时钟预分频数
 
@@ -42,18 +43,28 @@ extern u32 addrP;
 extern u32 adcCount;
 extern u8 taskStatus;
 extern u8 currentPage;
+//TODO:测试
+extern int vol;
 /* 定时器3中断服务函数 */
 void TIM3_IRQHandler(void)
 {
 	static u8 step = 0;
 	static char DATE_BUFF[4] = {0};
-	static u16 volTemp1 = 0, volTemp2 = 0;
+	static int volTemp1 = 0, volTemp2 = 0;
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update)) //溢出中断
 	{
+		if (!taskStatus)
+		{
+			addrP = ADDRBEG; //地址回到最开始
+			step = 0;
+			*(u32 *)DATE_BUFF = 0;
+			volTemp1 = volTemp2 = 0;
+		}
 		switch (currentPage)
 		{
-		case 0://播放
-			if(!step) {
+		case 0: //播放
+			if (!step)
+			{
 				*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
 			}
 			if (!taskStatus)
@@ -65,8 +76,17 @@ void TIM3_IRQHandler(void)
 			else
 			{
 				volTemp1 += DATE_BUFF[step];
-				if(++step == 4) step=0;
+				if (++step == 4)
+				{
+					step = 0;
+					addrP += 4;
+					*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
+				}
 			}
+
+			//TODO:测试
+			vol = (u32)volTemp1;
+			//TODO:测试
 			DAC_SetChannel1Data(DAC_Align_12b_R, volTemp1);
 			if (adcCount++ > 300000)
 			{
@@ -75,19 +95,24 @@ void TIM3_IRQHandler(void)
 				taskStatus = 2;
 			}
 			break;
-		case 2://录入
+		case 2: //录入
 			if (!taskStatus)
 			{
 				taskStatus = 1;
 				volTemp1 = Get_Adc(6);
 				DATE_BUFF[0] = volTemp1 >> 4;
-				DATE_BUFF[1] = volTemp1 | 0xff;
+				DATE_BUFF[1] = volTemp1 & 0xff;
 				step = 2;
 			}
 			else
 			{
 				volTemp2 = Get_Adc(6);
 				DATE_BUFF[step] = volTemp2 - volTemp1;
+				//TODO:测试
+				vol = volTemp2 - volTemp1 + 30;
+				//
+				volTemp1 = volTemp2;
+
 				if (++step == 4)
 				{
 					FLASH_ProgramWord(addrP, (u32)DATE_BUFF); //写入
