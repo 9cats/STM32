@@ -67,6 +67,7 @@ int main(void)
 					}
 					if (tp_dev.x[0] > 125 && tp_dev.y[0] > 195 && tp_dev.x[0] < 215 && tp_dev.y[0] < 295)
 					{ //按下Play
+						//TODO:解码方式修改
 						consoleLog("Playing...");
 						TIM_Cmd(TIM3, ENABLE); //使能定时器3
 						taskStatus = 0;
@@ -93,6 +94,7 @@ int main(void)
 				case 2: //主页->播放->录入
 					if (tp_dev.x[0] > 25 && tp_dev.y[0] > 195 && tp_dev.x[0] < 115 && tp_dev.y[0] < 295)
 					{ //按下Begin
+						//TODO:存码方式待修改
 						consoleLog("Sampling and recording...");
 						FLASH_Unlock();				 //解锁
 						FLASH_DataCacheCmd(DISABLE); //FLASH写入期间,必须禁止数据缓存

@@ -49,8 +49,7 @@ extern u32 vol;
 void TIM3_IRQHandler(void)
 {
 	static u8 step = 0;
-	static char DATE_BUFF[4] = {0};
-	static int volTemp1 = 0, volTemp2 = 0;
+	static u16 DATE_BUFF[2] = {0};
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update)) //溢出中断
 	{
 		if (!taskStatus)
@@ -58,11 +57,27 @@ void TIM3_IRQHandler(void)
 			addrP = ADDRBEG; //地址回到最开始
 			step = 0;
 			*(u32 *)DATE_BUFF = 0;
-			volTemp1 = volTemp2 = 0;
 		}
 		switch (currentPage)
 		{
 		case 0: //播放
+			if (!step) {
+				*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
+			}
+			//TODO:vol测试用
+			DAC_SetChannel1Data(DAC_Align_12b_R, vol = DATE_BUFF[step]);
+			if (step++) {
+				step = 0;
+				addrP += 4;
+			}
+			if (adcCount++ > 300000)
+			{
+				TIM_Cmd(TIM3, DISABLE);
+				adcCount = 0;
+				taskStatus = 2;
+			}
+
+			/*TODO:待删除
 			if (!step)
 			{
 				*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
@@ -99,8 +114,24 @@ void TIM3_IRQHandler(void)
 				adcCount = 0;
 				taskStatus = 2;
 			}
+			*/
 			break;
 		case 2: //录入
+			//TODO:vol测试用
+			vol = DATE_BUFF[step] = Get_Adc(6);
+			//TODO:测试
+			if(++step == 2) {
+				FLASH_ProgramWord(addrP, *(u32 *)DATE_BUFF);
+				step = 0;
+				addrP += 4;
+			}
+			if (adcCount++ > 300000)
+			{
+				TIM_Cmd(TIM3, DISABLE);
+				adcCount = 0;
+			}
+
+			/* TODO:待删除
 			if (!taskStatus)
 			{
 				taskStatus = 1;
@@ -131,6 +162,7 @@ void TIM3_IRQHandler(void)
 				adcCount = 0;
 				taskStatus = 2;
 			}
+			*/
 			break;
 		default:
 			break;
