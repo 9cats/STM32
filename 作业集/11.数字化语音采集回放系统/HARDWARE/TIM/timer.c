@@ -43,6 +43,7 @@ extern u32 addrP;
 extern u32 adcCount;
 extern u8 taskStatus;
 extern u8 currentPage;
+extern u16 volume;
 //TODO:测试
 extern u32 vol;
 /* 定时器3中断服务函数 */
@@ -67,7 +68,7 @@ void TIM3_IRQHandler(void)
 				*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
 			}
 			//TODO:vol测试用
-			DAC_SetChannel1Data(DAC_Align_12b_R, vol = DATE_BUFF[step]);
+			DAC_SetChannel1Data(DAC_Align_12b_R, vol = (DATE_BUFF[step] - 2047)*volume/100 + 2047);
 			if (step++)
 			{
 				step = 0;

@@ -64,7 +64,7 @@ void EXTIX_Init(void)
 	NVIC_Init(&NVIC_InitStructure);								 //配置
 }
 
-u8 i;
+extern u16 volume;
 /* 外部中断0服务程序-按下WK_UP-切换模式 */
 void EXTI0_IRQHandler(void)
 {
@@ -92,6 +92,7 @@ void EXTI3_IRQHandler(void)
 	delay_ms(10); //消抖
 	if (KEY1 == 0)
 	{
+		volume -= 10;
 	}
 	EXTI_ClearITPendingBit(EXTI_Line3); //清除LINE3上的中断标志位
 }
@@ -102,6 +103,7 @@ void EXTI4_IRQHandler(void)
 	delay_ms(10); //消抖
 	if (KEY0 == 0)
 	{
+		volume += 10;
 	}
 	EXTI_ClearITPendingBit(EXTI_Line4); //清除LINE4上的中断标志位
 }

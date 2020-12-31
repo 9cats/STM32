@@ -39,6 +39,7 @@ u8 presStatus = 0;							 //记录触摸屏的按下情况，用于防止连按
 u8 taskStatus = 0;							 //用于标记写入开始 0未完成 1完成
 u32 adcCount = 0;							 //ADC采样数
 u32 addrP = ADDRBEG;						 //当前指向地址
+u16 volume = 100;							 //音量，默认为100%
 int main(void)
 {
 
@@ -112,8 +113,9 @@ void Play(void)
 {
 	//TODO:解码方式修改
 	consoleLog("Playing...");
-	LCD_ShowString(25, 150, 48, 16, 16, (u8 *)" VOL :");
-	LCD_ShowString(25, 170, 48, 16, 16, (u8 *)"COUNT:");
+	LCD_ShowString(25, 130, 48, 16, 16, (u8 *)"VOLUME:   %");
+	LCD_ShowString(25, 150, 48, 16, 16, (u8 *)" VOL  :");
+	LCD_ShowString(25, 170, 48, 16, 16, (u8 *)"COUNT :");
 	LCD_DrawLine(40, 100, 40, 120);
 	LCD_DrawLine(200, 100, 200, 120);
 
@@ -122,8 +124,9 @@ void Play(void)
 
 	while (taskStatus != 2)
 	{
-		LCD_ShowNum(73, 150, vol, 6, 16); //测试
-		LCD_ShowNum(73, 170, adcCount, 6, 16);
+		LCD_ShowNum(81, 130, volume, 6, 16); //测试
+		LCD_ShowNum(81, 150, vol, 6, 16); //测试
+		LCD_ShowNum(81, 170, adcCount, 6, 16);
 		LCD_DrawLine(40 + adcCount * 160 / 300000, 100, 40 + adcCount * 160 / 300000, 120);
 	}
 	taskStatus = 0;
@@ -151,8 +154,8 @@ void Record(void)
 
 	while (taskStatus != 2)
 	{
-		LCD_ShowNum(73, 150, vol, 6, 16); //测试
-		LCD_ShowNum(73, 170, adcCount, 6, 16);
+		LCD_ShowNum(81, 150, vol, 6, 16); //测试
+		LCD_ShowNum(81, 170, adcCount, 6, 16);
 		LCD_DrawLine(40 + adcCount * 160 / 300000, 100, 40 + adcCount * 160 / 300000, 120);
 	}
 
