@@ -113,9 +113,9 @@ void Play(void)
 {
 	//TODO:解码方式修改
 	consoleLog("Playing...");
-	LCD_ShowString(25, 130, 48, 16, 16, (u8 *)"VOLUME:   %");
-	LCD_ShowString(25, 150, 48, 16, 16, (u8 *)" VOL  :");
-	LCD_ShowString(25, 170, 48, 16, 16, (u8 *)"COUNT :");
+	LCD_ShowString(25, 130, 100, 16, 16, (u8 *)"VOLUME:     %");
+	LCD_ShowString(25, 150, 100, 16, 16, (u8 *)" VOL  :");
+	LCD_ShowString(25, 170, 100, 16, 16, (u8 *)"COUNT :");
 	LCD_DrawLine(40, 100, 40, 120);
 	LCD_DrawLine(200, 100, 200, 120);
 
@@ -124,7 +124,7 @@ void Play(void)
 
 	while (taskStatus != 2)
 	{
-		LCD_ShowNum(81, 130, volume, 6, 16); //测试
+		LCD_ShowNum(81, 130, volume, 5, 16); //测试
 		LCD_ShowNum(81, 150, vol, 6, 16); //测试
 		LCD_ShowNum(81, 170, adcCount, 6, 16);
 		LCD_DrawLine(40 + adcCount * 160 / 300000, 100, 40 + adcCount * 160 / 300000, 120);
@@ -134,7 +134,7 @@ void Play(void)
 
 	consoleLog("Playing finished");
 	LCD_Fill(40, 100, 200, 120, WHITE);
-	LCD_Fill(21, 150, 219, 190, WHITE);
+	LCD_Fill(21, 130, 219, 190, WHITE);
 }
 
 /* 录音 */
@@ -142,8 +142,8 @@ void Record(void)
 {
 	//TODO:存码方式待修改
 	consoleLog("Sampling and recording...");
-	LCD_ShowString(25, 150, 48, 16, 16, (u8 *)" VOL :");
-	LCD_ShowString(25, 170, 48, 16, 16, (u8 *)"COUNT:");
+	LCD_ShowString(25, 150, 100, 16, 16, (u8 *)" VOL :");
+	LCD_ShowString(25, 170, 100, 16, 16, (u8 *)"COUNT:");
 	LCD_DrawLine(40, 100, 40, 120);
 	LCD_DrawLine(200, 100, 200, 120);
 

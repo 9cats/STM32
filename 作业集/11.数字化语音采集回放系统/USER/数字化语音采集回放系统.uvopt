@@ -149,25 +149,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>78</LineNumber>
+          <LineNumber>116</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134241182</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>D:\Program\MCU\STM32\HARDWARE\TIM\timer.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\______________________\../HARDWARE/TIM/timer.c\78</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>189</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134218574</Address>
+          <Address>134218992</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -176,7 +160,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>D:\Program\MCU\STM32\浣滀笟闆?11.鏁板瓧鍖栬闊抽噰闆嗗洖鏀剧郴缁?USER\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\______________________\main.c\189</Expression>
+          <Expression>\\______________________\main.c\116</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
