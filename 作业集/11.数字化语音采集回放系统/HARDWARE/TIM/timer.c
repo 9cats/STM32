@@ -61,111 +61,39 @@ void TIM3_IRQHandler(void)
 		switch (currentPage)
 		{
 		case 0: //播放
-			if (!step) {
-				*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
-			}
-			//TODO:vol测试用
-			DAC_SetChannel1Data(DAC_Align_12b_R, vol = DATE_BUFF[step]);
-			if (step++) {
-				step = 0;
-				addrP += 4;
-			}
-			if (adcCount++ > 300000)
-			{
-				TIM_Cmd(TIM3, DISABLE);
-				adcCount = 0;
-				taskStatus = 2;
-			}
-
-			/*TODO:待删除
+			taskStatus = 1;
 			if (!step)
 			{
 				*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
 			}
-			if (!taskStatus)
+			//TODO:vol测试用
+			DAC_SetChannel1Data(DAC_Align_12b_R, vol = DATE_BUFF[step]);
+			if (step++)
 			{
-				taskStatus = 1;
-				volTemp1 = (DATE_BUFF[0] << 4) + DATE_BUFF[1];
-				step = 2;
+				step = 0;
+				addrP += 4;
 			}
-			else
-			{
-				if(DATE_BUFF[step] & 0x80) //判断正负
-					volTemp1 += DATE_BUFF[step] - 0x100;
-				else
-					volTemp1 += DATE_BUFF[step];
-				//TODO:测试用
-				vol = volTemp1;
-				if (++step == 4)
-				{
-					step = 0;
-					addrP += 4;
-					*(u32 *)DATE_BUFF = STMFLASH_ReadWord(addrP);
-				}
-			}
-
-			//TODO:测试
-			vol = (u32)volTemp1;
-			//TODO:测试
-			DAC_SetChannel1Data(DAC_Align_12b_R, volTemp1);
-			if (adcCount++ > 300000)
-			{
-				TIM_Cmd(TIM3, DISABLE);
-				adcCount = 0;
-				taskStatus = 2;
-			}
-			*/
 			break;
 		case 2: //录入
+			taskStatus = 1;
 			//TODO:vol测试用
 			vol = DATE_BUFF[step] = Get_Adc(6);
 			//TODO:测试
-			if(++step == 2) {
+			if (step++)
+			{
 				FLASH_ProgramWord(addrP, *(u32 *)DATE_BUFF);
 				step = 0;
 				addrP += 4;
 			}
-			if (adcCount++ > 300000)
-			{
-				TIM_Cmd(TIM3, DISABLE);
-				adcCount = 0;
-			}
-
-			/* TODO:待删除
-			if (!taskStatus)
-			{
-				taskStatus = 1;
-				volTemp1 = Get_Adc(6);
-				DATE_BUFF[0] = volTemp1 >> 4;
-				DATE_BUFF[1] = volTemp1 & 0xff;
-				step = 2;
-			}
-			else
-			{
-				volTemp2 = Get_Adc(6);
-				DATE_BUFF[step] = volTemp2 - volTemp1;
-				//TODO:测试
-				vol = volTemp2 - volTemp1 + 200;
-				//
-				volTemp1 = volTemp2;
-
-				if (++step == 4)
-				{
-					FLASH_ProgramWord(addrP, *(u32 *)DATE_BUFF); //写入
-					step = 0;
-					addrP += 4;
-				}
-			}
-			if (adcCount++ > 300000)
-			{
-				TIM_Cmd(TIM3, DISABLE);
-				adcCount = 0;
-				taskStatus = 2;
-			}
-			*/
 			break;
 		default:
 			break;
+		}
+		if (adcCount++ > 300000)
+		{
+			TIM_Cmd(TIM3, DISABLE);
+			adcCount = 0;
+			taskStatus = 2;
 		}
 	}
 	TIM_ClearITPendingBit(TIM3, TIM_IT_Update); //清除中断标志位
