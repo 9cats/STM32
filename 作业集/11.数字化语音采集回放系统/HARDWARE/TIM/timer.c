@@ -78,7 +78,7 @@ void TIM3_IRQHandler(void)
 		case 2: //录入
 			taskStatus = 1;
 			//TODO:vol测试用
-			vol = DATE_BUFF[step] = Get_Adc(6);
+			vol = DATE_BUFF[step] = Get_Adc(7);
 			//TODO:测试
 			if (step++)
 			{

@@ -5,7 +5,7 @@
 ** 创建时间: 2020-12-2 16:09
 ** 适用环境: ALIENTEK STM32F407开发板
 ** 作用: 配置ADC 和 ADC采样函数
-** 资源: ADC1_IN6 GPIOA_PIN6
+** 资源: ADC1_IN7 GPIOA_PIN7
 ** 备注: 
 *********************************************************************/
 //初始化ADC
@@ -19,7 +19,7 @@ void Adc1_Init(void)
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);  //使能ADC1时钟
 
 	//先初始化ADC1通道6 IO口
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;		 //PA6 通道6
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;		 //PA7 通道7
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;	 //模拟输入
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL; //不带上下拉
 	GPIO_Init(GPIOA, &GPIO_InitStructure);			 //初始化
