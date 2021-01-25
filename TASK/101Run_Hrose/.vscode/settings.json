@@ -11,10 +11,14 @@
     "**/*.uvproj":true,
     "**/*.dep":true,
     "**/*.uvoptx":true,
+    "**/MarkdowmImg":true,
+    "**/Drivers":true,
+    "**/EWARM":true,
+    "**/MDK-ARM":true,
     "**/*.mxproject":true,
     "**/*.ioc":true
   },
   "files.associations": {
-    "output.h": "c"
+    "atomic": "cpp"
   }
 }
