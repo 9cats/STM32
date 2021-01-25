@@ -1,2 +1,15 @@
-OBJ
-Tem
+#忽略库函数例程和HAL库例程
+库函数
+HAL库
+
+#忽略
+
+#忽略 工具 的公用固件库(库函数版本)和本地固件库(HAL库版本)
+/MYTOOLS/.COMMON
+/MYTOOLS/**/Drivers
+/MYTOOLS/**/OBJ/
+
+#忽略 任务 的公用固件库(库函数版本)和本地固件库(HAL库版本)
+/TASK/.COMMON
+/TASK/**/Drivers
+/MYTOOLS/**/OBJ/
