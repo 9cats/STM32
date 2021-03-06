@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "STM32F407ZGx",
+            "name": "STM32F407ZGx_HAL",
             "includePath": [
                 "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc",
                 "${workspaceFolder}/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
