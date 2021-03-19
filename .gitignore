@@ -3,12 +3,15 @@
 HAL库
 
 #忽略编译文件
-.crf
-.d
-.o
-.htm
-.map
-.sct
+*.crf
+*.d
+*.o
+*.htm
+*.map
+*.sct
+*.lst
+*.lnp
+*.dep
 
 #忽略 工具 的公用固件库(库函数版本)和本地固件库(HAL库版本)
 /MYTOOLS/.COMMON
