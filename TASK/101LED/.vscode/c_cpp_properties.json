@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "name": "全局通用",
+            "includePath": [
+                "${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc",
+                "${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+                "${workspaceFolder}/Drivers/CMSIS/Include",
+                "${workspaceFolder}/inc"
+            ],
+            "defines": [
+                "USE_HAL_DRIVER",
+                "STM32F103xE",
+                "__STATIC_INLINE=static"
+            ],
+            "intelliSenseMode": "msvc-x64",
+            "cStandard": "c17",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}
