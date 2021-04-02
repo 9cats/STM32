@@ -190,7 +190,6 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim == &htim2)HAL_GPIO_TogglePin(LED_GPIO_Port,LED_Pin);
-  __HAL_TIM_SetCounter
 }
 /* USER CODE END 1 */
 
