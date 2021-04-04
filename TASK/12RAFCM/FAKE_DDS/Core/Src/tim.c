@@ -49,7 +49,7 @@ void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 7200-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 5000-1;
+  htim2.Init.Period = 10000-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -124,7 +124,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     __HAL_RCC_TIM2_CLK_ENABLE();
 
     /* TIM2 interrupt Init */
-    HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(TIM2_IRQn);
   /* USER CODE BEGIN TIM2_MspInit 1 */
 
@@ -176,17 +176,9 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 /* USER CODE BEGIN 1 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  uint16_t i,j;
-
   if(htim == &htim2)
   {
-		j = 4000/DAC_Fre;
-    for(i=0;i<j;i++) 
-    {
-      DAC_Buf[i] = Sin[DAC_Fre*i];
-    }
-    HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)DAC_Buf,j,DAC_ALIGN_12B_R);
-
+    HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)Sin[DAC_Fre],4000/DAC_Fre,DAC_ALIGN_12B_R);
     if(DAC_Fre++ == 20) DAC_Fre = 1;
   }
 }
