@@ -58,8 +58,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define TIM_CAPTURE_Pin GPIO_PIN_0
-#define TIM_CAPTURE_GPIO_Port GPIOA
+#define INPUT_CAP_Pin GPIO_PIN_0
+#define INPUT_CAP_GPIO_Port GPIOA
 #define DAC_OUT_Pin GPIO_PIN_4
 #define DAC_OUT_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
