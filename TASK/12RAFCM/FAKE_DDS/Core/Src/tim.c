@@ -26,6 +26,29 @@
 
 uint16_t DAC_Buf[4000] = {0};
 uint16_t DAC_Fre = 3;
+uint16_t DAC_Sta = 1;//1表示自动扫描
+const uint16_t *Sin[]={
+Sin1,
+Sin2,
+Sin3,
+Sin4,
+Sin5,
+Sin6,
+Sin7,
+Sin8,
+Sin9,
+Sin10,
+Sin11,
+Sin12,
+Sin13,
+Sin14,
+Sin15,
+Sin16,
+Sin17,
+Sin18,
+Sin19,
+Sin20,
+};
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim2;
@@ -178,9 +201,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim == &htim2)
   {
-    HAL_DAC_Stop_DMA(&hdac,DAC1_CHANNEL_1);
-    HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)Sin[DAC_Fre-1],4000/DAC_Fre,DAC_ALIGN_12B_R);
-    if(DAC_Fre++ == 20) DAC_Fre = 1;
+    if(DAC_Sta){
+			HAL_DAC_Stop_DMA(&hdac,DAC1_CHANNEL_1);
+			HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)Sin[DAC_Fre-1],4000/DAC_Fre,DAC_ALIGN_12B_R);
+			if(DAC_Fre++ == 20) 
+				DAC_Fre = 1;
+		}
   }
 }
 /* USER CODE END 1 */
