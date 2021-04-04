@@ -56,7 +56,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint32_t AD_Value;
 /* USER CODE END 0 */
 
 /**
@@ -90,7 +90,7 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_ADC_Start_DMA(&hadc1,&AD_Value,1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
