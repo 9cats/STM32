@@ -117,7 +117,7 @@ void MX_TIM6_Init(void)
   htim6.Instance = TIM6;
   htim6.Init.Prescaler = 0;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 18-1;
+  htim6.Init.Period = 36-1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -203,7 +203,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     if(DAC_Sta){
 			HAL_DAC_Stop_DMA(&hdac,DAC1_CHANNEL_1);
-			HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)Sin[DAC_Fre-1],4000/DAC_Fre,DAC_ALIGN_12B_R);
+			HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)Sin[DAC_Fre-1],2000/DAC_Fre,DAC_ALIGN_12B_R);
 			if(DAC_Fre++ == 20) 
 				DAC_Fre = 1;
 		}
