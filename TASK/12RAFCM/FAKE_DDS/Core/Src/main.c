@@ -22,6 +22,7 @@
 #include "dac.h"
 #include "dma.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -58,6 +59,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+uint8_t  RxBuf[4] = {0};
 /* USER CODE END 0 */
 
 /**
@@ -92,11 +94,13 @@ int main(void)
   MX_DAC_Init();
   MX_TIM6_Init();
   MX_TIM2_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start(&htim6);
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start(&htim2);
+  HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 
   /* Infinite loop */

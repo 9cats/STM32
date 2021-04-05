@@ -23,62 +23,14 @@
 /* USER CODE BEGIN 0 */
 #include "dac.h"
 #include "Sin.h"
+#include "usart.h"
 
 uint16_t DAC_Buf[4000] = {0};
 uint16_t DAC_Fre = 3;
 uint16_t DAC_Sta = 1;//1表示自动扫描
 
 const uint16_t *Sin[]={
-Sin1,
-Sin2,
-Sin3,
-Sin4,
-Sin5,
-Sin6,
-Sin7,
-Sin8,
-Sin9,
-Sin10,
-Sin11,
-Sin12,
-Sin13,
-Sin14,
-Sin15,
-Sin16,
-Sin17,
-Sin18,
-Sin19,
-Sin20,
-Sin21,
-Sin22,
-Sin23,
-Sin24,
-Sin25,
-Sin26,
-Sin27,
-Sin28,
-Sin29,
-Sin30,
-Sin31,
-Sin32,
-Sin33,
-Sin34,
-Sin35,
-Sin36,
-Sin37,
-Sin38,
-Sin39,
-Sin40,
-Sin41,
-Sin42,
-Sin43,
-Sin44,
-Sin45,
-Sin46,
-Sin47,
-Sin48,
-Sin49,
-Sin50,
+  Sin1,Sin2,Sin3,Sin4,Sin5,Sin6,Sin7,Sin8,Sin9,Sin10,Sin11,Sin12,Sin13,Sin14,Sin15,Sin16,Sin17,Sin18,Sin19,Sin20,Sin21,Sin22,Sin23,Sin24,Sin25,Sin26,Sin27,Sin28,Sin29,Sin30,Sin31,Sin32,Sin33,Sin34,Sin35,Sin36,Sin37,Sin38,Sin39,Sin40,Sin41,Sin42,Sin43,Sin44,Sin45,Sin46,Sin47,Sin48,Sin49,Sin50,
 };
 /* USER CODE END 0 */
 
@@ -148,7 +100,7 @@ void MX_TIM6_Init(void)
   htim6.Instance = TIM6;
   htim6.Init.Prescaler = 0;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 36-1;
+  htim6.Init.Period = 18-1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -178,7 +130,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     __HAL_RCC_TIM2_CLK_ENABLE();
 
     /* TIM2 interrupt Init */
-    HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(TIM2_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(TIM2_IRQn);
   /* USER CODE BEGIN TIM2_MspInit 1 */
 
