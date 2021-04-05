@@ -27,6 +27,7 @@
 uint16_t DAC_Buf[4000] = {0};
 uint16_t DAC_Fre = 3;
 uint16_t DAC_Sta = 1;//1表示自动扫描
+
 const uint16_t *Sin[]={
 Sin1,
 Sin2,
@@ -48,6 +49,36 @@ Sin17,
 Sin18,
 Sin19,
 Sin20,
+Sin21,
+Sin22,
+Sin23,
+Sin24,
+Sin25,
+Sin26,
+Sin27,
+Sin28,
+Sin29,
+Sin30,
+Sin31,
+Sin32,
+Sin33,
+Sin34,
+Sin35,
+Sin36,
+Sin37,
+Sin38,
+Sin39,
+Sin40,
+Sin41,
+Sin42,
+Sin43,
+Sin44,
+Sin45,
+Sin46,
+Sin47,
+Sin48,
+Sin49,
+Sin50,
 };
 /* USER CODE END 0 */
 
