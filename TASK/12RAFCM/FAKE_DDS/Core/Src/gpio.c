@@ -82,7 +82,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
   if(GPIO_Pin == GPIO_PIN_15) //KEY0
   {
-    DAC_Fre = DAC_Fre==20?1:DAC_Fre+1;
+    DAC_Fre = (DAC_Fre==40)?1:DAC_Fre+1;
 		HAL_DAC_Stop_DMA(&hdac,DAC1_CHANNEL_1);
 		HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)Sin[DAC_Fre-1],2000/DAC_Fre,DAC_ALIGN_12B_R);
   }

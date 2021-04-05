@@ -187,7 +187,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if(DAC_Sta){
 			HAL_DAC_Stop_DMA(&hdac,DAC1_CHANNEL_1);
 			HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)Sin[DAC_Fre-1],2000/DAC_Fre,DAC_ALIGN_12B_R);
-			if(DAC_Fre++ == 20) 
+			if(DAC_Fre++ == 40) 
 				DAC_Fre = 1;
 		}
   }
