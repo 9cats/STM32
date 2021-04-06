@@ -21,7 +21,10 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN 0 */
-
+extern uint8_t DAC_STA;          //状态
+extern uint8_t DAC_FRE;          //频率
+extern float Multiple ;
+extern float DAC_Multiple; //倍率
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -57,7 +60,24 @@ void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if(GPIO_Pin == S1_Pin) //S1
+  {
+    DAC_FRE = DAC_FRE+1>40 ? 1 : DAC_FRE+1;
+  }
+  if(GPIO_Pin == S2_Pin) //S2
+  {
+    // 3V     <-->  100mv <--> 10 *2048
+    // 0.09v  <-->    3mv <--> 0.3*2048
+    Multiple = Multiple-0.4<0.5?10:Multiple-0.4;
+    DAC_Multiple = Multiple*2048/11;
+  }
+  if(GPIO_Pin == S3_Pin) //S3
+  {
+    DAC_STA = !DAC_STA;
+  }
+}
 /* USER CODE END 2 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

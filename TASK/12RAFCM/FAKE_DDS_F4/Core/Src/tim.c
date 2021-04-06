@@ -21,7 +21,15 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
+#include "sin.h"
+#include "dac.h"
 
+uint8_t DAC_STA = 0;          //状态
+uint8_t DAC_FRE = 1;          //频率
+uint32_t TimeOffset = 0;      //偏移
+float Multiple = 10.0;        //倍率
+float DAC_Multiple = 10*2048/11.0; //倍率
+// uint16_t TIM_FRE = 200;
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim2;
@@ -107,7 +115,22 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  static uint32_t count = 0;
+  if(htim == &htim2)
+  {
+    //TIM -> 200K
+    // 2000个点
+    // 1K 对于 200次中断一个周期
+    // 1K 对于 每次步进10个点
+    HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*sin[TimeOffset]) + 2047 );
+    TimeOffset = (TimeOffset + DAC_FRE*10) % 2000;
+    if(count++ == 40000){
+      DAC_FRE = DAC_FRE+1>40 ? 1 : DAC_FRE+1;
+		}
+  }
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
