@@ -24,11 +24,11 @@
 #include "Sin.h"
 #include "dac.h"
 
-uint8_t DAC_STA = 0;          //çŠ¶æ€
-uint8_t DAC_FRE = 1;          //é¢‘ç‡
-uint32_t TimeOffset = 0;      //åç§»
-float Multiple = 10.0;        //å€ç‡
-float DAC_Multiple = 10*2048/11.0; //å€ç‡
+uint8_t DAC_STA = 0;          //×´Ì¬
+uint8_t DAC_FRE = 1;          //ÆµÂÊ
+uint32_t TimeOffset = 0;      //Æ«ÒÆ
+float Multiple = 10.0;        //±¶ÂÊ
+float DAC_Multiple = 10*2048/11.0; //±¶ÂÊ
 // uint16_t TIM_FRE = 200;
 /* USER CODE END 0 */
 
@@ -121,9 +121,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if(htim == &htim2)
   {
     //TIM -> 200K
-    // 2000ä¸ªç‚¹
-    // 1K å¯¹äº 200æ¬¡ä¸­æ–­ä¸€ä¸ªå‘¨æœŸ
-    // 1K å¯¹äº æ¯æ¬¡æ­¥è¿›10ä¸ªç‚¹
+    // 2000¸öµã
+    // 1K ¶ÔÓÚ 200´ÎÖĞ¶ÏÒ»¸öÖÜÆÚ
+    // 1K ¶ÔÓÚ Ã¿´Î²½½ø10¸öµã
     HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
     TimeOffset = (TimeOffset + DAC_FRE*10) % 2000;
     if(count++ == 40000){

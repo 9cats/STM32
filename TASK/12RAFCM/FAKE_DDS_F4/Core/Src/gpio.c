@@ -21,10 +21,10 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN 0 */
-extern uint8_t DAC_STA;          //çŠ¶æ€
-extern uint8_t DAC_FRE;          //é¢‘ç‡
+extern uint8_t DAC_STA;          //×´Ì¬
+extern uint8_t DAC_FRE;          //ÆµÂÊ
 extern float Multiple ;
-extern float DAC_Multiple; //å€ç‡
+extern float DAC_Multiple; //±¶ÂÊ
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
