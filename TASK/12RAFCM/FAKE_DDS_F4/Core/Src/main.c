@@ -94,6 +94,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_DAC_Start(&hdac,DAC_CHANNEL_1);
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 
