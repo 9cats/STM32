@@ -21,7 +21,7 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
-#include "sin.h"
+#include "Sin.h"
 #include "dac.h"
 
 uint8_t DAC_STA = 0;          //状态
@@ -124,7 +124,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     // 2000个点
     // 1K 对于 200次中断一个周期
     // 1K 对于 每次步进10个点
-    HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*sin[TimeOffset]) + 2047 );
+    HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
     TimeOffset = (TimeOffset + DAC_FRE*10) % 2000;
     if(count++ == 40000){
       DAC_FRE = DAC_FRE+1>40 ? 1 : DAC_FRE+1;

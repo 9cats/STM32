@@ -70,7 +70,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     // 3V     <-->  100mv <--> 10 *2048
     // 0.09v  <-->    3mv <--> 0.3*2048
-    Multiple = Multiple-0.4<0.5?10:Multiple-0.4;
+    Multiple = Multiple-0.4f<0.5f?10:Multiple-0.4f;
     DAC_Multiple = Multiple*2048/11;
   }
   if(GPIO_Pin == S3_Pin) //S3
