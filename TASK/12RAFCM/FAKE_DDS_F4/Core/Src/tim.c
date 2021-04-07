@@ -28,7 +28,7 @@ uint8_t DAC_STA = 0;          //状态
 uint8_t DAC_FRE = 40;          //频率
 uint32_t TimeOffset = 0;      //偏移
 float Multiple = 10.0;        //倍率
-float DAC_Multiple = 10*2048/11.0; //倍率
+float DAC_Multiple = 5*2048/11.0; //倍率
 // uint16_t TIM_FRE = 200;
 /* USER CODE END 0 */
 
@@ -120,14 +120,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   static uint32_t count = 0;
   if(htim == &htim2)
   {
-    //TIM -> 200K
-    // 2000个点
+    // TIM -> 200K
+    // 200个点
     // 1K 对于 200次中断一个周期
     // 1K 对于 每次步进10个点
     HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
     TimeOffset = (TimeOffset + DAC_FRE*5) % 2000;
     if(count++ == 40000 && DAC_STA){
-      DAC_FRE = DAC_FRE+1>40 ? 1 : DAC_FRE+1;
+			count = 0;
+			if(DAC_STA)	DAC_FRE = DAC_FRE+1>40 ? 1 : DAC_FRE+1;
 		}
   }
 }
