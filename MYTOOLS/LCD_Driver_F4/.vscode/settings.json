@@ -1,0 +1,8 @@
+{
+  "files.exclude": {
+    "Drivers":true,
+    "MDK-ARM":true,
+    ".mxproject":true,
+    "*.ioc":true
+  }
+}
