@@ -27,7 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,7 +68,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	uint8_t x=0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -93,10 +93,13 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM2_Init();
   MX_FSMC_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_DAC_Start(&hdac,DAC_CHANNEL_1);
+	LCD_Init();
+	POINT_COLOR=RED;
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 
@@ -105,7 +108,28 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  switch(x)
+		{
+			case 0:LCD_Clear(WHITE);break;
+			case 1:LCD_Clear(BLACK);break;
+			case 2:LCD_Clear(BLUE);break;
+			case 3:LCD_Clear(RED);break;
+			case 4:LCD_Clear(MAGENTA);break;
+			case 5:LCD_Clear(GREEN);break;
+			case 6:LCD_Clear(CYAN);break; 
+			case 7:LCD_Clear(YELLOW);break;
+			case 8:LCD_Clear(BRRED);break;
+			case 9:LCD_Clear(GRAY);break;
+			case 10:LCD_Clear(LGRAY);break;
+			case 11:LCD_Clear(BROWN);break;
+		}
+		POINT_COLOR=RED;	  
+		LCD_ShowString(30,40,210,24,24,(uint8_t *)"Explorer STM32F4");	
+		LCD_ShowString(30,70,200,16,16,(uint8_t *)"TFTLCD TEST");
+		LCD_ShowString(30,90,200,16,16,(uint8_t *)"ATOM@ALIENTEK");
+ 		LCD_ShowString(30,110,200,16,16,(uint8_t *)"The First Text");     					 
+		LCD_ShowString(30,130,200,12,12,(uint8_t *)"2020/9/24");
+		HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

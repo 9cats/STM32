@@ -67,7 +67,7 @@ void Error_Handler(void);
 #define S3_Pin GPIO_PIN_4
 #define S3_GPIO_Port GPIOE
 #define S3_EXTI_IRQn EXTI4_IRQn
-#define LCD_BL_Pin GPIO_PIN_0
+#define LCD_BL_Pin GPIO_PIN_15
 #define LCD_BL_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
