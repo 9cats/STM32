@@ -93,7 +93,18 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+void delay_us(uint16_t us)
+{
+	uint16_t differ=0xffff-us-5;
+	
+	HAL_TIM_Base_Start(&htim7);
+	__HAL_TIM_SetCounter(&htim7,differ);
+	while(differ < 0xffff-5)
+	{
+		differ = __HAL_TIM_GetCounter(&htim7);
+	}
+	HAL_TIM_Base_Stop(&htim7);
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

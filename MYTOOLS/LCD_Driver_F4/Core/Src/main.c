@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -90,7 +90,12 @@ int main(void)
   MX_FSMC_Init();
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
-
+	LCD_Init();
+	LCD_ShowString(30,40,210,24,24,(uint8_t *)"MINI STM32F4");	
+	LCD_ShowString(30,70,200,16,16,(uint8_t *)"TFTLCD TEST");
+	LCD_ShowString(30,90,200,16,16,(uint8_t *)"ATOM@ALIENTEK");
+ 	LCD_ShowString(30,110,200,16,16,(uint8_t *)"The First Test");     					 
+	LCD_ShowString(30,130,200,12,12,(uint8_t *)"2021/4/8");
   /* USER CODE END 2 */
 
   /* Infinite loop */
