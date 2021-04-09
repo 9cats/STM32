@@ -180,8 +180,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     // 200个点
     // 1K 对于 200次中断一个周期
     // 1K 对于 每次步进10个点
-    HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
-		//*(__IO uint32_t *)(0x40007400) = (int)(DAC_Multiple*Sin[TimeOffset]) + 2047;
+    //HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
+		hdac.Instance->DHR12R1 = Sin[TimeOffset];
     //*(__IO uint32_t *)(0x40007400) = count%2?0:4095;
     TimeOffset = (TimeOffset + DAC_FRE*5) % 2000;
     if(count++ == 40000 && DAC_STA){
