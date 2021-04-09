@@ -94,9 +94,11 @@ int main(void)
   MX_TIM2_Init();
   MX_FSMC_Init();
   MX_TIM7_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start_IT(&htim3);
   HAL_DAC_Start(&hdac,DAC_CHANNEL_1);
 	LCD_Init();
 	POINT_COLOR=RED;	  
