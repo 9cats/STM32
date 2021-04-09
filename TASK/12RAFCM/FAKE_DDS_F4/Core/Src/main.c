@@ -58,7 +58,9 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern uint8_t DAC_STA;
+extern uint8_t DAC_FRE;
+extern uint32_t TimeOffset;
 /* USER CODE END 0 */
 
 /**
@@ -102,12 +104,8 @@ int main(void)
   HAL_DAC_Start(&hdac,DAC_CHANNEL_1);
 	LCD_Init();
 	POINT_COLOR=RED;	  
-	LCD_ShowString(30,40,210,24,24,(uint8_t *)"MINI STM32F4");	
-	LCD_ShowString(30,70,200,16,16,(uint8_t *)"TFTLCD TEST");
-	LCD_ShowString(30,90,200,16,16,(uint8_t *)"ATOM@ALIENTEK");
- 	LCD_ShowString(30,110,200,16,16,(uint8_t *)"The First Test");     					 
-	LCD_ShowString(30,130,200,12,12,(uint8_t *)"2020/9/24");
-  // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
+	LCD_ShowString(30,40,210,16,16,(uint8_t *)"DAC_FRE:  KHz");	
+   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,6 +115,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    LCD_ShowxNum(90,40,DAC_FRE,2,16,0);
   }
   /* USER CODE END 3 */
 }
@@ -166,7 +165,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+uint8_t TP_CHECK(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+{
+	return (tp_dev.x[0] > x0 && tp_dev.y[0] > y0 && tp_dev.x[0] < x1 && tp_dev.y[0] < y1);
+}
 /* USER CODE END 4 */
 
 /**
