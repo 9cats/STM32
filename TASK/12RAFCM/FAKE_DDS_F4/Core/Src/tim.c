@@ -25,10 +25,10 @@
 #include "dac.h"
 
 uint8_t DAC_STA = 0;          //状态
-uint8_t DAC_FRE = 40;          //频率
+uint8_t DAC_FRE = 1;          //频率
 uint32_t TimeOffset = 0;      //偏移
 float Multiple = 10.0;        //倍率
-float DAC_Multiple = 5*2048/11.0; //倍率
+float DAC_Multiple = 10*2048/11.0; //倍率
 // uint16_t TIM_FRE = 200;
 /* USER CODE END 0 */
 
@@ -181,6 +181,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     // 1K 对于 200次中断一个周期
     // 1K 对于 每次步进10个点
     HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
+		//*(__IO uint32_t *)(0x40007400) = (int)(DAC_Multiple*Sin[TimeOffset]) + 2047;
+    //*(__IO uint32_t *)(0x40007400) = count%2?0:4095;
     TimeOffset = (TimeOffset + DAC_FRE*5) % 2000;
     if(count++ == 40000 && DAC_STA){
 			count = 0;
