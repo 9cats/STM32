@@ -261,7 +261,7 @@ void TIM2_IRQHandler(void)
   //HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
   //*(__IO uint32_t *)(0x40007400) = count%2?0:4095;
 	hdac.Instance->DHR12R1 = Sin[TimeOffset];
-  TimeOffset = (TimeOffset + DAC_FRE*5) % 4000;
+  TimeOffset = (TimeOffset + DAC_FRE*5) % 5000;
   htim2.Instance->SR=0;
   /* USER CODE END TIM2_IRQn 0 */
   //HAL_TIM_IRQHandler(&htim2);
