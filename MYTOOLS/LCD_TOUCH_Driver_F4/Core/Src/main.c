@@ -19,7 +19,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "tim.h"
 #include "gpio.h"
 #include "fsmc.h"
 
@@ -88,7 +87,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_FSMC_Init();
-  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
 	LCD_Init();
 	LCD_ShowString(30,40,210,24,24,(uint8_t *)"MINI STM32F4");	
