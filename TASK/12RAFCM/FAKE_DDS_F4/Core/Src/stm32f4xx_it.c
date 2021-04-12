@@ -225,7 +225,7 @@ void TIM2_IRQHandler(void)
 	DAC->DHR12R1 = Wavetable[TimeOffset];
   TimeOffset = (TimeOffset + DAC_FRE*10) % 5000;
   /* USER CODE END TIM2_IRQn 0 */
-  //HAL_TIM_IRQHandler(&htim2);
+  HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
 
   /* USER CODE END TIM2_IRQn 1 */

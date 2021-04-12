@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dac.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -110,6 +111,7 @@ int main(void)
   MX_TIM2_Init();
   MX_FSMC_Init();
   MX_TIM3_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
   DAC_VAL_Change();

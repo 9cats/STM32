@@ -80,8 +80,16 @@ void Error_Handler(void);
 #define DOUT_GPIO_Port GPIOB
 #define TDIN_Pin GPIO_PIN_11
 #define TDIN_GPIO_Port GPIOF
+#define NRF_ANTI_SPI_Pin GPIO_PIN_14
+#define NRF_ANTI_SPI_GPIO_Port GPIOB
 #define LCD_BL_Pin GPIO_PIN_15
 #define LCD_BL_GPIO_Port GPIOB
+#define NRF_TX1_Pin GPIO_PIN_6
+#define NRF_TX1_GPIO_Port GPIOG
+#define NRF_TX0_Pin GPIO_PIN_7
+#define NRF_TX0_GPIO_Port GPIOG
+#define NRF_RX_Pin GPIO_PIN_8
+#define NRF_RX_GPIO_Port GPIOG
 #define IIC_SCL_Pin GPIO_PIN_8
 #define IIC_SCL_GPIO_Port GPIOB
 #define IIC_SDA_Pin GPIO_PIN_9
