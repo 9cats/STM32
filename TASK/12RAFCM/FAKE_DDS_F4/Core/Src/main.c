@@ -54,15 +54,24 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+/* �?测是否在某区域按�? */
+u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
+void DAC_VAL_Change(void);
+void AMP_MUL_Change(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 extern uint8_t DAC_STA;
 extern uint8_t DAC_FRE;
+extern uint8_t DAC_VAL;
+extern uint8_t AMP_MUL; 
 extern uint32_t TimeOffset;
-u8 presStatus = 0; //记录触摸屏的按下情况，用于防止连按
+extern uint16_t Wavetable[];
+extern uint16_t Sin[];
+uint8_t PRE_DAC_FRE;
+uint8_t PRE_DAC_VAL;
+uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
 /**
@@ -72,7 +81,10 @@ u8 presStatus = 0; //记录触摸屏的按下情况，用于防止连按
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  uint8_t presStatus = 0; //记录触摸屏的按下情况，用于防止连�?
+  PRE_DAC_FRE = DAC_FRE;
+  PRE_DAC_VAL = DAC_VAL;
+  PRE_AMP_MUL = AMP_MUL;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -100,13 +112,15 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
+  DAC_VAL_Change();
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+  delay_init(168);
   LCD_Init();
+	tp_dev.init();
 
   POINT_COLOR = RED;
-
   //显示频率信息
   //     (28,40)                     (68,40)                                      (192,40)    (202,44)
   //       (32,48) - (44,49)                    DAC_FRE    ()                          (196,48)    +     (208,49)
@@ -117,7 +131,7 @@ int main(void)
   LCD_Fill(192,40,212,56,GRAY);
   LCD_Fill(196,48,208,49,RED);
   LCD_Fill(202,44,203,52,RED);
-  LCD_ShowxNum(132,40,12,2,16,0);
+  // LCD_ShowxNum(132,40,12,2,16,0);
 
   //显示输出幅度信息
   LCD_ShowString(64, 90, 112, 16, 16, (uint8_t *)"DAC_VAL:    mV");
@@ -126,7 +140,7 @@ int main(void)
   LCD_Fill(192,90,212,106,GRAY);
   LCD_Fill(196,98,208,99,RED);
   LCD_Fill(202,94,203,102,RED);
-  LCD_ShowxNum(128,90,1122,4,16,0);
+  // LCD_ShowxNum(128,90,1122,4,16,0);
 
   //显示放大倍数信息
   LCD_ShowString(72, 140, 96, 16, 16, (uint8_t *)"AMP_MUL:X   ");
@@ -135,7 +149,7 @@ int main(void)
   LCD_Fill(192,140,212,156,GRAY);
   LCD_Fill(196,148,208,149,RED);
   LCD_Fill(202,144,203,152,RED);
-  LCD_ShowxNum(148,140,123,3,16,0);
+  // LCD_ShowxNum(148,140,123,3,16,0);
 
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
@@ -148,18 +162,68 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
+    //按键扫描部分
     tp_dev.scan(0);
+
+
+
+
     if (tp_dev.sta & TP_PRES_DOWN)
     {
       if (presStatus == 0)
       {
         presStatus = 1;
 
+        //按下DAC_FRE�? '-'
+        if(TP_CHECK(28,40,48,56)){
+          PRE_DAC_FRE = PRE_DAC_FRE==1?1:PRE_DAC_FRE-1;
+        }
+        //按下DAC_FRE�? '+'
+        if(TP_CHECK(192,40,212,56)) {
+          PRE_DAC_FRE = PRE_DAC_FRE==40?40:PRE_DAC_FRE+1;
+        }
+        //按下DAC_VAL�? '-'
+        if(TP_CHECK(28,90,48,106)) {
+          PRE_DAC_VAL = PRE_DAC_VAL==3?3:PRE_DAC_VAL-1;
+        }
+        //按下DAC_VAL�? '+'
+        if(TP_CHECK(192,90,212,106)) {
+          PRE_DAC_VAL = PRE_DAC_VAL==100?100:PRE_DAC_VAL+1;
+        }
+        //按下AMP_MUL�? '-'
+        if(TP_CHECK(28,140,48,156)) {
+          PRE_AMP_MUL = PRE_AMP_MUL==1?1:PRE_AMP_MUL-1;
+        }
+        //按下AMP_MUL�? '+'
+        if(TP_CHECK(192,140,212,156)) {
+          PRE_AMP_MUL = PRE_AMP_MUL==100?100:PRE_AMP_MUL+1;
+        }
       }
     }
     else {
       presStatus = 0;
     }
+
+    //�?查更新部�?
+    if(DAC_FRE != PRE_DAC_FRE)
+    {
+      DAC_FRE = PRE_DAC_FRE;
+    }
+    if(DAC_VAL != PRE_DAC_VAL)
+    {
+      DAC_VAL = PRE_DAC_VAL;
+      DAC_VAL_Change();
+    }
+    if(AMP_MUL != PRE_AMP_MUL)
+    {
+      AMP_MUL = PRE_AMP_MUL;
+      AMP_MUL_Change();
+    }
+
+    //日常刷新
+    LCD_ShowxNum(132,40,DAC_FRE,2,16,0);
+    LCD_ShowxNum(128,90,DAC_VAL,4,16,0);
+    LCD_ShowxNum(148,140,AMP_MUL,3,16,0);
   }
   /* USER CODE END 3 */
 }
@@ -195,7 +259,8 @@ void SystemClock_Config(void)
   }
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
@@ -208,10 +273,22 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-/* 检测是否在某区域按下 */
 u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1)
 {
 	return (tp_dev.x[0] > x0 && tp_dev.y[0] > y0 && tp_dev.x[0] < x1 && tp_dev.y[0] < y1);
+}
+void DAC_VAL_Change(void) {
+  uint16_t i;
+	uint16_t * Wavetable_p = Wavetable;
+  for(i=0;i<5000;i++) {
+		*(Wavetable_p++) = ((int32_t)Sin[i]-2028)*DAC_VAL*AMP_MUL/1000+2028;
+  }
+}
+void AMP_MUL_Change(void) {
+  uint16_t i;
+  for(i=0;i<10;i++) {
+    Wavetable[i] = ((int32_t)Sin[i]-2028)*DAC_VAL*AMP_MUL/1000+2028;
+  }
 }
 /* USER CODE END 4 */
 
@@ -230,7 +307,7 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef USE_FULL_ASSERT
+#ifdef  USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.

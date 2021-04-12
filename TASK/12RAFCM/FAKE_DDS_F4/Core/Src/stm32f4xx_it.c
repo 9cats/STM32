@@ -56,8 +56,10 @@
 /* USER CODE BEGIN 0 */
 uint8_t DAC_STA = 0;
 uint8_t DAC_FRE = 1;
+uint8_t DAC_VAL = 100;
+uint8_t AMP_MUL = 10; 
 uint32_t TimeOffset = 0;
-uint16_t Wavetable[4000] = {0};
+uint16_t Wavetable[5000] = {0};
 // float Multiple = 10.0;
 // float DAC_Multiple = 10*2048/11.0;
 /* USER CODE END 0 */
@@ -219,11 +221,11 @@ void TIM2_IRQHandler(void)
   // 1K 对于 每次步进5个点
   //HAL_DAC_SetValue(&hdac,DAC_CHANNEL_1,DAC_ALIGN_12B_R,(int)(DAC_Multiple*Sin[TimeOffset]) + 2047 );
   //*(__IO uint32_t *)(0x40007400) = count%2?0:4095;
-	hdac.Instance->DHR12R1 = Sin[TimeOffset];
-  TimeOffset = (TimeOffset + DAC_FRE*5) % 5000;
-  htim2.Instance->SR=0;
+  TIM2->SR=0;
+	DAC->DHR12R1 = Wavetable[TimeOffset];
+  TimeOffset = (TimeOffset + DAC_FRE*10) % 5000;
   /* USER CODE END TIM2_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim2);
+  //HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
 
   /* USER CODE END TIM2_IRQn 1 */
