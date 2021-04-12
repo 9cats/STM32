@@ -1,9 +1,7 @@
 #ifndef __LCD_H
 #define __LCD_H		
-//#include "sys.h"	 
-#include "stdlib.h" 
-#include "stm32f4xx_hal.h"
-#include "tim.h"
+//#include "sys.h"  
+#include "base.h"
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32F407开发板

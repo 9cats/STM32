@@ -33,7 +33,6 @@ extern "C" {
 
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
-extern TIM_HandleTypeDef htim7;
 
 /* USER CODE BEGIN Private defines */
 
@@ -41,10 +40,9 @@ extern TIM_HandleTypeDef htim7;
 
 void MX_TIM2_Init(void);
 void MX_TIM3_Init(void);
-void MX_TIM7_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void delay_us(uint16_t us);
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

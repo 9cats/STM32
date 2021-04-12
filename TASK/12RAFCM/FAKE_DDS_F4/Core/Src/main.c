@@ -28,6 +28,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
+#include "touch.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,7 +96,6 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM2_Init();
   MX_FSMC_Init();
-  MX_TIM7_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
@@ -115,7 +115,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    LCD_ShowxNum(90,40,DAC_FRE,2,16,0);
+
+    // tp_dev.scan
+    LCD_ShowxNum(90,40,TP_Scan(0),2,16,0);
   }
   /* USER CODE END 3 */
 }
@@ -165,10 +167,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-uint8_t TP_CHECK(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
-{
-	return (tp_dev.x[0] > x0 && tp_dev.y[0] > y0 && tp_dev.x[0] < x1 && tp_dev.y[0] < y1);
-}
+
 /* USER CODE END 4 */
 
 /**
