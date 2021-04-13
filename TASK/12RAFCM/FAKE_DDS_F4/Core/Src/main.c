@@ -55,7 +55,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-/* �?测是否在某区域按�? */
+/* �?测是否在某区域按�? */
 u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
 void DAC_VAL_Change(void);
 void AMP_MUL_Change(void);
@@ -66,13 +66,13 @@ void AMP_MUL_Change(void);
 extern uint8_t DAC_STA;
 extern uint8_t DAC_FRE;
 extern uint8_t DAC_VAL;
-extern uint8_t AMP_MUL; 
+// extern uint8_t AMP_MUL; 
 extern uint32_t TimeOffset;
 extern uint16_t Wavetable[];
 extern uint16_t Sin[];
 uint8_t PRE_DAC_FRE;
 uint8_t PRE_DAC_VAL;
-uint8_t PRE_AMP_MUL;
+// uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
 /**
@@ -82,10 +82,10 @@ uint8_t PRE_AMP_MUL;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t presStatus = 0; //记录触摸屏的按下情况，用于防止连�?
+  uint8_t presStatus = 0; //记录触摸屏的按下情况，用于防止连�?
   PRE_DAC_FRE = DAC_FRE;
   PRE_DAC_VAL = DAC_VAL;
-  PRE_AMP_MUL = AMP_MUL;
+  // PRE_AMP_MUL = AMP_MUL;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -145,12 +145,12 @@ int main(void)
   // LCD_ShowxNum(128,90,1122,4,16,0);
 
   //显示放大倍数信息
-  LCD_ShowString(72, 140, 96, 16, 16, (uint8_t *)"AMP_MUL:X   ");
-  LCD_Fill(28,140,48,156,GRAY);
-  LCD_Fill(32,148,44,149,GREEN);
-  LCD_Fill(192,140,212,156,GRAY);
-  LCD_Fill(196,148,208,149,RED);
-  LCD_Fill(202,144,203,152,RED);
+  // LCD_ShowString(72, 140, 96, 16, 16, (uint8_t *)"AMP_MUL:X   ");
+  // LCD_Fill(28,140,48,156,GRAY);
+  // LCD_Fill(32,148,44,149,GREEN);
+  // LCD_Fill(192,140,212,156,GRAY);
+  // LCD_Fill(196,148,208,149,RED);
+  // LCD_Fill(202,144,203,152,RED);
   // LCD_ShowxNum(148,140,123,3,16,0);
 
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
@@ -176,37 +176,37 @@ int main(void)
       {
         presStatus = 1;
 
-        //按下DAC_FRE�? '-'
+        //按下DAC_FRE�? '-'
         if(TP_CHECK(28,40,48,56)){
           PRE_DAC_FRE = PRE_DAC_FRE==1?1:PRE_DAC_FRE-1;
         }
-        //按下DAC_FRE�? '+'
+        //按下DAC_FRE�? '+'
         if(TP_CHECK(192,40,212,56)) {
           PRE_DAC_FRE = PRE_DAC_FRE==40?40:PRE_DAC_FRE+1;
         }
-        //按下DAC_VAL�? '-'
+        //按下DAC_VAL�? '-'
         if(TP_CHECK(28,90,48,106)) {
           PRE_DAC_VAL = PRE_DAC_VAL==3?3:PRE_DAC_VAL-1;
         }
-        //按下DAC_VAL�? '+'
+        //按下DAC_VAL�? '+'
         if(TP_CHECK(192,90,212,106)) {
           PRE_DAC_VAL = PRE_DAC_VAL==100?100:PRE_DAC_VAL+1;
         }
-        //按下AMP_MUL�? '-'
-        if(TP_CHECK(28,140,48,156)) {
-          PRE_AMP_MUL = PRE_AMP_MUL==1?1:PRE_AMP_MUL-1;
-        }
-        //按下AMP_MUL�? '+'
-        if(TP_CHECK(192,140,212,156)) {
-          PRE_AMP_MUL = PRE_AMP_MUL==100?100:PRE_AMP_MUL+1;
-        }
+        //按下AMP_MUL�? '-'
+        // if(TP_CHECK(28,140,48,156)) {
+        //   PRE_AMP_MUL = PRE_AMP_MUL==1?1:PRE_AMP_MUL-1;
+        // }
+        // //按下AMP_MUL�? '+'
+        // if(TP_CHECK(192,140,212,156)) {
+        //   PRE_AMP_MUL = PRE_AMP_MUL==100?100:PRE_AMP_MUL+1;
+        // }
       }
     }
     else {
       presStatus = 0;
     }
 
-    //�?查更新部�?
+    //�?查更新部�?
     if(DAC_FRE != PRE_DAC_FRE)
     {
       DAC_FRE = PRE_DAC_FRE;
@@ -216,16 +216,16 @@ int main(void)
       DAC_VAL = PRE_DAC_VAL;
       DAC_VAL_Change();
     }
-    if(AMP_MUL != PRE_AMP_MUL)
-    {
-      AMP_MUL = PRE_AMP_MUL;
-      AMP_MUL_Change();
-    }
+    // if(AMP_MUL != PRE_AMP_MUL)
+    // {
+    //   AMP_MUL = PRE_AMP_MUL;
+    //   AMP_MUL_Change();
+    // }
 
     //日常刷新
     LCD_ShowxNum(132,40,DAC_FRE,2,16,0);
     LCD_ShowxNum(128,90,DAC_VAL,4,16,0);
-    LCD_ShowxNum(148,140,AMP_MUL,3,16,0);
+    // LCD_ShowxNum(148,140,AMP_MUL,3,16,0);
   }
   /* USER CODE END 3 */
 }
@@ -283,15 +283,15 @@ void DAC_VAL_Change(void) {
   uint16_t i;
 	uint16_t * Wavetable_p = Wavetable;
   for(i=0;i<5000;i++) {
-		*(Wavetable_p++) = ((int32_t)Sin[i]-2028)*DAC_VAL*AMP_MUL/1000+2028;
+		*(Wavetable_p++) = ((int32_t)Sin[i]-2028)*DAC_VAL/1000+2028;
   }
 }
-void AMP_MUL_Change(void) {
-  uint16_t i;
-  for(i=0;i<10;i++) {
-    Wavetable[i] = ((int32_t)Sin[i]-2028)*DAC_VAL*AMP_MUL/1000+2028;
-  }
-}
+// void AMP_MUL_Change(void) {
+//   uint16_t i;
+//   for(i=0;i<10;i++) {
+//     Wavetable[i] = ((int32_t)Sin[i]-2028)*DAC_VAL*AMP_MUL/1000+2028;
+//   }
+// }
 /* USER CODE END 4 */
 
 /**

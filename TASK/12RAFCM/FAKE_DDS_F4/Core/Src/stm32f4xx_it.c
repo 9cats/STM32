@@ -57,7 +57,7 @@
 uint8_t DAC_STA = 0;
 uint8_t DAC_FRE = 1;
 uint8_t DAC_VAL = 100;
-uint8_t AMP_MUL = 10; 
+// uint8_t AMP_MUL = 10; 
 uint32_t TimeOffset = 0;
 uint16_t Wavetable[5000] = {0};
 // float Multiple = 10.0;
