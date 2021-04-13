@@ -56,15 +56,12 @@
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
-void AMP_MUL_Change(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint16_t ADC_CAPTURE[1400] = {0};
-uint16_t DAC_OUTPUT[1400] = {0};
 uint8_t AMP_MUL = 1;
-uint8_t PRE_AMP_MUL = 1;
+uint16_t ADC_CAP = 0; 
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
@@ -75,7 +72,7 @@ uint8_t PRE_AMP_MUL = 1;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t presStatus = 0; //标记按键是否按下，防止连�?
+  uint8_t presStatus = 0; //标记按键是否按下，防止连
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -104,8 +101,9 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-  HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_CAPTURE,1400);
-  AMP_MUL_Change();
+  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_CAP,2);
+  HAL_DAC_Start(&hdac,DAC_ALIGN_12B_R);
   delay_init(168);
   LCD_Init();
 	tp_dev.init();
@@ -143,21 +141,15 @@ int main(void)
         presStatus = 1;
 
         if(TP_CHECK(28,40,48,56)) {
-          PRE_AMP_MUL = PRE_AMP_MUL==1?1:PRE_AMP_MUL-1;
+          AMP_MUL = AMP_MUL==1?1:AMP_MUL-1;
         }
         if(TP_CHECK(192,40,212,56)) {
-          PRE_AMP_MUL = PRE_AMP_MUL==100?100:PRE_AMP_MUL+1;
+          AMP_MUL = AMP_MUL==100?100:AMP_MUL+1;
         }
       }
     }
     else {
       presStatus = 0;
-    }
-
-    if(AMP_MUL != PRE_AMP_MUL)
-    {
-      AMP_MUL = PRE_AMP_MUL;
-      AMP_MUL_Change();
     }
 
     //日常刷新
@@ -214,18 +206,6 @@ void SystemClock_Config(void)
 u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1)
 {
 	return (tp_dev.x[0] > x0 && tp_dev.y[0] > y0 && tp_dev.x[0] < x1 && tp_dev.y[0] < y1);
-}
-void AMP_MUL_Change(void) {
-  uint16_t i;
-
-  HAL_DAC_Stop_DMA(&hdac,DAC1_CHANNEL_1);
-
-  for(i=0;i<1400;i++) 
-  {
-    DAC_OUTPUT[i] = ((int16_t)ADC_CAPTURE[i]-2028)*AMP_MUL/10+2028;
-  }
-
-  HAL_DAC_Start_DMA(&hdac,DAC1_CHANNEL_1,(uint32_t *)ADC_CAPTURE,1400,DAC_ALIGN_12B_R);
 }
 /* USER CODE END 4 */
 
