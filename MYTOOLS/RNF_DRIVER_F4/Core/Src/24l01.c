@@ -66,7 +66,8 @@ void NRF24L01_Init(void)
 	//   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//输入
 	//   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
 	//   GPIO_Init(GPIOG, &GPIO_InitStructure);//初始化PG8
-	GPIO_SetBits(GPIOB, GPIO_PIN_14); //PB14输出1,防止SPI FLASH干扰NRF的通信
+	// GPIO_SetBits(GPIOB, GPIO_PIN_14); //PB14输出1,防止SPI FLASH干扰NRF的通信
+	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_14,GPIO_PIN_SET);
 	SPI1_Init();					  //初始化SPI1
 	NRF24L01_SPI_Init();			  //针对NRF的特点修改SPI的设置
 	NRF24L01_CE = 0;				  //使能24L01
