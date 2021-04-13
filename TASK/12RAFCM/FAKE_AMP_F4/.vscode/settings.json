@@ -6,8 +6,9 @@
     "*.ioc":true
   },
   "files.associations": {
-    "main.h":"c",
+    "main.h": "c",
     "stdlib.h": "c",
-    "lcd.h": "c"
+    "lcd.h": "c",
+    "spi.h": "c"
   }
 }
