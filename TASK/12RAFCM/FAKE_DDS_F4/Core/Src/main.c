@@ -55,7 +55,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-/* �?测是否在某区域按�? */
+/* 锟�?娴嬫槸鍚﹀湪鏌愬尯鍩熸寜锟�? */
 u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
 void DAC_VAL_Change(void);
 void AMP_MUL_Change(void);
@@ -82,7 +82,7 @@ uint8_t PRE_DAC_VAL;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t presStatus = 0; //记录触摸屏的按下情况，用于防止连�?
+  uint8_t presStatus = 0; //璁板綍瑙︽懜灞忕殑鎸変笅鎯呭喌锛岀敤浜庨槻姝㈣繛锟�?
   PRE_DAC_FRE = DAC_FRE;
   PRE_DAC_VAL = DAC_VAL;
   // PRE_AMP_MUL = AMP_MUL;
@@ -123,7 +123,7 @@ int main(void)
 	tp_dev.init();
 
   POINT_COLOR = RED;
-  //显示频率信息
+  //鏄剧ず棰戠巼淇℃伅
   //     (28,40)                     (68,40)                                      (192,40)    (202,44)
   //       (32,48) - (44,49)                    DAC_FRE    ()                          (196,48)    +     (208,49)
   //                   (48,56)                                 (172,56)                     (203,52)   (212,56)
@@ -135,7 +135,7 @@ int main(void)
   LCD_Fill(202,44,203,52,RED);
   // LCD_ShowxNum(132,40,12,2,16,0);
 
-  //显示输出幅度信息
+  //鏄剧ず杈撳嚭骞呭害淇℃伅
   LCD_ShowString(64, 90, 112, 16, 16, (uint8_t *)"DAC_VAL:    mV");
   LCD_Fill(28,90,48,106,GRAY);
   LCD_Fill(32,98,44,99,GREEN);
@@ -144,7 +144,7 @@ int main(void)
   LCD_Fill(202,94,203,102,RED);
   // LCD_ShowxNum(128,90,1122,4,16,0);
 
-  //显示放大倍数信息
+  //鏄剧ず鏀惧ぇ鍊嶆暟淇℃伅
   // LCD_ShowString(72, 140, 96, 16, 16, (uint8_t *)"AMP_MUL:X   ");
   // LCD_Fill(28,140,48,156,GRAY);
   // LCD_Fill(32,148,44,149,GREEN);
@@ -164,7 +164,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    //按键扫描部分
+    //鎸夐敭鎵弿閮ㄥ垎
     tp_dev.scan(0);
 
 
@@ -176,27 +176,27 @@ int main(void)
       {
         presStatus = 1;
 
-        //按下DAC_FRE�? '-'
+        //鎸変笅DAC_FRE锟�? '-'
         if(TP_CHECK(28,40,48,56)){
           PRE_DAC_FRE = PRE_DAC_FRE==1?1:PRE_DAC_FRE-1;
         }
-        //按下DAC_FRE�? '+'
+        //鎸変笅DAC_FRE锟�? '+'
         if(TP_CHECK(192,40,212,56)) {
           PRE_DAC_FRE = PRE_DAC_FRE==40?40:PRE_DAC_FRE+1;
         }
-        //按下DAC_VAL�? '-'
+        //鎸変笅DAC_VAL锟�? '-'
         if(TP_CHECK(28,90,48,106)) {
           PRE_DAC_VAL = PRE_DAC_VAL==3?3:PRE_DAC_VAL-1;
         }
-        //按下DAC_VAL�? '+'
+        //鎸変笅DAC_VAL锟�? '+'
         if(TP_CHECK(192,90,212,106)) {
           PRE_DAC_VAL = PRE_DAC_VAL==100?100:PRE_DAC_VAL+1;
         }
-        //按下AMP_MUL�? '-'
+        //鎸変笅AMP_MUL锟�? '-'
         // if(TP_CHECK(28,140,48,156)) {
         //   PRE_AMP_MUL = PRE_AMP_MUL==1?1:PRE_AMP_MUL-1;
         // }
-        // //按下AMP_MUL�? '+'
+        // //鎸変笅AMP_MUL锟�? '+'
         // if(TP_CHECK(192,140,212,156)) {
         //   PRE_AMP_MUL = PRE_AMP_MUL==100?100:PRE_AMP_MUL+1;
         // }
@@ -206,7 +206,7 @@ int main(void)
       presStatus = 0;
     }
 
-    //�?查更新部�?
+    //锟�?鏌ユ洿鏂伴儴锟�?
     if(DAC_FRE != PRE_DAC_FRE)
     {
       DAC_FRE = PRE_DAC_FRE;
@@ -222,7 +222,7 @@ int main(void)
     //   AMP_MUL_Change();
     // }
 
-    //日常刷新
+    //鏃ュ父鍒锋柊
     LCD_ShowxNum(132,40,DAC_FRE,2,16,0);
     LCD_ShowxNum(128,90,DAC_VAL,4,16,0);
     // LCD_ShowxNum(148,140,AMP_MUL,3,16,0);
@@ -283,7 +283,7 @@ void DAC_VAL_Change(void) {
   uint16_t i;
 	uint16_t * Wavetable_p = Wavetable;
   for(i=0;i<5000;i++) {
-		*(Wavetable_p++) = ((int32_t)Sin[i]-2028)*DAC_VAL/1000+2028;
+		*(Wavetable_p++) = ((int32_t)Sin[i]-2028)*DAC_VAL/100+2028;
   }
 }
 // void AMP_MUL_Change(void) {
