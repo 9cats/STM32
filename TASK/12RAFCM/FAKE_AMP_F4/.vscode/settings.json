@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    "Drivers":true,
+    "MDK-ARM":true,
+    ".mxproject":true,
+    "*.ioc":true
+  },
+  "files.associations": {
+    "main.h":"c",
+    "stdlib.h": "c",
+    "lcd.h": "c"
+  }
+}
