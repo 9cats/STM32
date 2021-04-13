@@ -9,6 +9,7 @@
     "main.h": "c",
     "stdlib.h": "c",
     "lcd.h": "c",
-    "spi.h": "c"
+    "spi.h": "c",
+    "stm32f4xx_hal_spi.h": "c"
   }
 }
