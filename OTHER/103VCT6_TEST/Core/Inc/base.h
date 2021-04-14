@@ -12,22 +12,14 @@
 #define s32 int32_t
 #define s16 int16_t
 #define s8 int8_t
-#define LED1(n) (n?HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET):HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_RESET))
+#define LED1 PCout(0)// PC0
+#define LED2 PCout(1)// PC0
+#define LED3 PCout(2)// PC0
+#define LED4 PCout(3)// PC0
 #define LED1_T (HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin))
-#define LED1_ON LED1(0)
-#define LED1_OFF LED1(1)
-#define LED2(n) (n?HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin,GPIO_PIN_SET):HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin,GPIO_PIN_RESET))
 #define LED2_T (HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin))
-#define LED2_ON LED2(0)
-#define LED2_OFF LED2(1)
-#define LED3(n) (n?HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_SET):HAL_GPIO_WritePin(LED3_GPIO_Port,LED3_Pin,GPIO_PIN_RESET))
 #define LED3_T (HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin))
-#define LED3_ON LED3(0)
-#define LED3_OFF LED3(1)
-#define LED4(n) (n?HAL_GPIO_WritePin(LED4_GPIO_Port,LED4_Pin,GPIO_PIN_SET):HAL_GPIO_WritePin(LED4_GPIO_Port,LED4_Pin,GPIO_PIN_RESET))
 #define LED4_T (HAL_GPIO_TogglePin(LED4_GPIO_Port, LED4_Pin))
-#define LED4_ON LED4(0)
-#define LED4_OFF LED4(1)
 #define KEY1 HAL_GPIO_ReadPin(KEY1_GPIO_Port,KEY1_Pin)//读取按键1
 #define KEY2 HAL_GPIO_ReadPin(KEY2_GPIO_Port,KEY2_Pin)//读取按键2
 #define KEY3 HAL_GPIO_ReadPin(KEY3_GPIO_Port,KEY3_Pin)//读取按键1
