@@ -55,7 +55,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-/* 锟�?娴嬫槸鍚﹀湪鏌愬尯鍩熸寜锟�? */
+/* 锟�?娴�?槸鍚�?�?���?��鍩熸寜锟�?? */
 u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
 void DAC_VAL_Change(void);
 void AMP_MUL_Change(void);
@@ -70,8 +70,6 @@ extern uint8_t DAC_VAL;
 extern uint32_t TimeOffset;
 extern uint16_t Wavetable[];
 extern uint16_t Sin[];
-uint8_t PRE_DAC_FRE;
-uint8_t PRE_DAC_VAL;
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
@@ -82,9 +80,7 @@ uint8_t PRE_DAC_VAL;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t presStatus = 0; //璁板綍瑙︽懜灞忕殑鎸変笅鎯呭喌锛岀敤浜庨槻姝㈣繛锟�?
-  PRE_DAC_FRE = DAC_FRE;
-  PRE_DAC_VAL = DAC_VAL;
+  uint8_t presStatus = 0; //璁板綍瑙︽懜灞忕殑鎸変笅�?��喌锛�?敤浜庨槻姝㈣繛锟�??
   // PRE_AMP_MUL = AMP_MUL;
   /* USER CODE END 1 */
 
@@ -118,12 +114,14 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+  HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 2028);
   delay_init(168);
   LCD_Init();
 	tp_dev.init();
 
   POINT_COLOR = RED;
-  //鏄剧ず棰戠巼淇℃伅
+  //鏄剧ず棰戠巼淇℃�?
   //     (28,40)                     (68,40)                                      (192,40)    (202,44)
   //       (32,48) - (44,49)                    DAC_FRE    ()                          (196,48)    +     (208,49)
   //                   (48,56)                                 (172,56)                     (203,52)   (212,56)
@@ -144,14 +142,8 @@ int main(void)
   LCD_Fill(202,94,203,102,RED);
   // LCD_ShowxNum(128,90,1122,4,16,0);
 
-  //鏄剧ず鏀惧ぇ鍊嶆暟淇℃伅
-  // LCD_ShowString(72, 140, 96, 16, 16, (uint8_t *)"AMP_MUL:X   ");
-  // LCD_Fill(28,140,48,156,GRAY);
-  // LCD_Fill(32,148,44,149,GREEN);
-  // LCD_Fill(192,140,212,156,GRAY);
-  // LCD_Fill(196,148,208,149,RED);
-  // LCD_Fill(202,144,203,152,RED);
-  // LCD_ShowxNum(148,140,123,3,16,0);
+  LCD_Fill(40,140,200,170,GREEN);
+  LCD_ShowString(72, 147, 168, 163, 16, (uint8_t *)"Start Detect");
 
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
@@ -164,7 +156,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    //鎸夐敭鎵弿閮ㄥ垎
+    //鎸�?�?��弿�?���?
     tp_dev.scan(0);
 
 
@@ -176,45 +168,40 @@ int main(void)
       {
         presStatus = 1;
 
-        //鎸変笅DAC_FRE锟�? '-'
+        //鎸�?笅DAC_FRE锟�? '-'
         if(TP_CHECK(28,40,48,56)){
-          PRE_DAC_FRE = PRE_DAC_FRE==1?1:PRE_DAC_FRE-1;
+          DAC_FRE = DAC_FRE==1?1:DAC_FRE-1;
         }
-        //鎸変笅DAC_FRE锟�? '+'
+        //鎸�?笅DAC_FRE锟�? '+'
         if(TP_CHECK(192,40,212,56)) {
-          PRE_DAC_FRE = PRE_DAC_FRE==40?40:PRE_DAC_FRE+1;
+          DAC_FRE = DAC_FRE==40?40:DAC_FRE+1;
         }
-        //鎸変笅DAC_VAL锟�? '-'
+        //鎸�?笅DAC_VAL锟�? '-'
         if(TP_CHECK(28,90,48,106)) {
-          PRE_DAC_VAL = PRE_DAC_VAL==3?3:PRE_DAC_VAL-1;
+          DAC_VAL = DAC_VAL==3?3:DAC_VAL-1;
+          DAC_VAL_Change();
         }
-        //鎸変笅DAC_VAL锟�? '+'
+        //鎸�?笅DAC_VAL锟�? '+'
         if(TP_CHECK(192,90,212,106)) {
-          PRE_DAC_VAL = PRE_DAC_VAL==100?100:PRE_DAC_VAL+1;
+          DAC_VAL = DAC_VAL==100?100:DAC_VAL+1;
+          DAC_VAL_Change();
         }
-        //鎸変笅AMP_MUL锟�? '-'
-        // if(TP_CHECK(28,140,48,156)) {
-        //   PRE_AMP_MUL = PRE_AMP_MUL==1?1:PRE_AMP_MUL-1;
-        // }
-        // //鎸変笅AMP_MUL锟�? '+'
-        // if(TP_CHECK(192,140,212,156)) {
-        //   PRE_AMP_MUL = PRE_AMP_MUL==100?100:PRE_AMP_MUL+1;
-        // }
+        if(TP_CHECK(40,140,200,170)) {
+          if(DAC_STA) {
+            LCD_Fill(40,140,200,170,GREEN);
+            LCD_ShowString(72, 147, 168, 163, 16, (uint8_t *)"Start Detect");
+          }else {
+            POINT_COLOR = GREEN;
+            LCD_Fill(40,140,200,170,RED);
+            LCD_ShowString(76, 147, 164, 163, 16, (uint8_t *)"Stop Detect");
+            POINT_COLOR = RED;
+          }
+					DAC_STA = !DAC_STA;
+        }
       }
     }
     else {
       presStatus = 0;
-    }
-
-    //锟�?鏌ユ洿鏂伴儴锟�?
-    if(DAC_FRE != PRE_DAC_FRE)
-    {
-      DAC_FRE = PRE_DAC_FRE;
-    }
-    if(DAC_VAL != PRE_DAC_VAL)
-    {
-      DAC_VAL = PRE_DAC_VAL;
-      DAC_VAL_Change();
     }
     // if(AMP_MUL != PRE_AMP_MUL)
     // {
