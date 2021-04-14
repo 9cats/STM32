@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -49,14 +50,12 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void Display_7Seg(unsigned char data);
-void Display_7Seg_Single(unsigned char data,unsigned char index);
-void Display_7Seg_Multi(unsigned int data);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-unsigned char dis_code[10] = {0x3f,0x06,0x5b,0x4f,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+
 /* USER CODE END 0 */
 
 /**
@@ -66,7 +65,7 @@ unsigned char dis_code[10] = {0x3f,0x06,0x5b,0x4f,0x66,0x6D,0x7D,0x07,0x7F,0x6F}
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  u8 key_data;
+  u8 i=0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -87,8 +86,11 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim2);
   delay_init(72);
+  LED4_T;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -98,13 +100,26 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		LED1_T;
-		LED2_T;
-		LED3_T;
-		LED4_T;
-    delay_ms(500);
-		key_data=KEY_Scan(1);  	
-		Display_7Seg_Single(key_data,1);
+    if(i==0){
+      LED4_T;
+      LED1_T;
+    }
+    if(i==1){
+      LED2_T;
+      LED1_T;
+    }
+    if(i==2){
+      LED3_T;
+      LED2_T;
+    }
+    if(i++==3){
+      LED3_T;
+      LED4_T;
+      i=0;
+    }
+    delay_ms(50);
+		// key_data=KEY_Scan(1);  	
+		// Display_7Seg_Single(key_data,1);
   }
   /* USER CODE END 3 */
 }
@@ -148,57 +163,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void Display_7Seg(unsigned char data)
-{
-			
-	    GPIOD->ODR = dis_code[data];
-			delay_ms(200);
-}	
 
-
-void Display_7Seg_Single(unsigned char data,unsigned char index)
-{
-			switch(index)
-			{
-				case 1: HAL_GPIO_WritePin(LCD0_GPIO_Port,LCD0_Pin,GPIO_PIN_RESET); break;
-				case 2: HAL_GPIO_WritePin(LCD1_GPIO_Port,LCD1_Pin,GPIO_PIN_RESET); break;
-				case 3: HAL_GPIO_WritePin(LCD2_GPIO_Port,LCD2_Pin,GPIO_PIN_RESET); break;
-				case 4: HAL_GPIO_WritePin(LCD3_GPIO_Port,LCD3_Pin,GPIO_PIN_RESET); break;
-				default: GPIOC->ODR&=0xF0FF; break;  //PC.15-PC.8输出�?,4个共阴LED全亮
-				
-			}
-	    GPIOD->ODR = dis_code[data];
-			delay_ms(200);
-}	
-
-
-// 动�?�扫�?
-void Display_7Seg_Multi(unsigned int data)
-{
-	if(data<9999)
-	{ 
-		unsigned int i;
-		unsigned int s;	
-		s = data;
-		i=0;
-		for (i=0;i<4;i++)  // 4位轮流扫�?
-		{
-			GPIOC->ODR|=0x0F00;  // 全灭
-			switch(i)      
-			{
-				case 0: LCD0=0; break;
-				case 1: LCD1=0; break;
-				case 2: LCD2=0; break;
-				case 3: LCD3=0; break;
-      }
-			GPIOD->ODR = dis_code[s%10]; 
-			s = s/10;
-			delay_ms(5);
-			if (s==0)
-				 break;
-		}	 
-	}
-}
 /* USER CODE END 4 */
 
 /**
