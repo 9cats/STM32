@@ -11,7 +11,7 @@
             ],
             "defines": [
                 "USE_HAL_DRIVER",
-                "STM32F407xx",
+                "STM32F103xE",
                 "__STATIC_INLINE=static"
             ],
             "intelliSenseMode": "msvc-x64",
