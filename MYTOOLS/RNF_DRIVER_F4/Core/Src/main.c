@@ -136,8 +136,8 @@ int main(void)
 		}
 		delay_ms(5);	  
 	}   
- 	LCD_Fill(10,150,240,166,WHITE);//清空上面的显示		  
- 	POINT_COLOR=BLUE;//设置字体为蓝色
+ 	LCD_Fill(10,150,240,166,WHITE);//清空上面的显�?		  
+ 	POINT_COLOR=BLUE;//设置字体为蓝�?
    	if(mode==0)//RX模式
 	{
 		LCD_ShowString(30,150,200,16,16,"NRF24L01 RX_Mode");	
@@ -145,13 +145,13 @@ int main(void)
 		NRF24L01_RX_Mode();		  
 		while(1)
 		{	  		    		    				 
-			if(NRF24L01_RxPacket(tmp_buf)==0)//一旦接收到信息,则显示出来.
+			if(NRF24L01_RxPacket(tmp_buf)==0)//�?旦接收到信息,则显示出�?.
 			{
 				tmp_buf[32]=0;//加入字符串结束符
 				LCD_ShowString(0,190,lcddev.width-1,32,16,tmp_buf);    
 			}else delay_us(100);	   
 			t++;
-			if(t==10000)//大约1s钟改变一次状态
+			if(t==10000)//大约1s钟改变一次状�?
 			{
 				t=0;
 				LED0_T;
@@ -161,7 +161,7 @@ int main(void)
 	{							    
 		LCD_ShowString(30,150,200,16,16,"NRF24L01 TX_Mode");	
 		NRF24L01_TX_Mode();
-		mode=' ';//从空格键开始  
+		mode=' ';//从空格键�?�?  
 		while(1)
 		{	  		   				 
 			if(NRF24L01_TxPacket(tmp_buf)==TX_OK)
@@ -177,7 +177,7 @@ int main(void)
 				}
 				mode++; 
 				if(mode>'~')mode=' ';  	  
-				tmp_buf[32]=0;//加入结束符		   
+				tmp_buf[32]=0;//加入结束�?		   
 			}else
 			{										   	
  				LCD_Fill(0,170,lcddev.width,170+16*3,WHITE);//清空显示			   
