@@ -36,6 +36,10 @@
 #define KEY2_PRES 2
 #define KEY3_PRES 3
 #define KEY4_PRES 4
+#define LCD0 PCout(11) //PC11
+#define LCD1 PCout(10) //PC10
+#define LCD2 PCout(9)  //PC9
+#define LCD3 PCout(8)  //PC8
 void delay_init(u8 SYSCLK);
 void delay_ms(u16 nms);
 void delay_us(u32 nus);

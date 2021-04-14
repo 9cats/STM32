@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "base.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,7 +54,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+unsigned char dis_code[10] = {0x3f,0x06,0x5b,0x4f,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
 /* USER CODE END 0 */
 
 /**
@@ -139,7 +139,58 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void Display_7Seg(unsigned char data)
+{
+			
+	    GPIOD->ODR = dis_code[data];
+			delay_ms(200);
+}	
 
+
+void Display_7Seg_Single(unsigned char data,unsigned char index)
+	
+{
+			switch(index)
+			{
+				case 1: LCD0=0; break;
+				case 2: LCD1=0; break;
+				case 3: LCD2=0; break;
+				case 4: LCD3=0; break;
+				default: GPIOC->ODR&=0xF0FF; break;  //PC.15-PC.8输出�?,4个共阴LED全亮
+				
+			}
+	    GPIOD->ODR = dis_code[data];
+			delay_ms(200);
+}	
+
+
+// 动�?�扫�?
+void Display_7Seg_Multi(unsigned int data)
+{
+	if(data<9999)
+	{ 
+		unsigned int i;
+		unsigned int s;	
+		s = data;
+		i=0;
+		for (i=0;i<4;i++)  // 4位轮流扫�?
+		{
+			GPIOC->ODR|=0x0F00;  // 全灭
+			switch(i)      
+			{
+				case 0: LCD0=0; break;
+				case 1: LCD1=0; break;
+				case 2: LCD2=0; break;
+				case 3: LCD3=0; break;
+      }
+			GPIOD->ODR = dis_code[s%10]; 
+			s = s/10;
+			delay_ms(5);
+			if (s==0)
+				 break;
+		}	 
+	}
+}
 /* USER CODE END 4 */
 
 /**
