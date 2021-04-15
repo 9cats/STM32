@@ -54,26 +54,26 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void Load_Drow_Dialog(void)
 {
-	LCD_Clear(WHITE);//濞撳懎鐫�   
- 	POINT_COLOR=BLUE;//鐠佸墽鐤嗙€涙ぞ缍嬫稉楦挎憫閿燂拷? 
-	LCD_ShowString(lcddev.width-24,0,200,16,16,"RST");//閺勫墽銇氬〒鍛潌閸栧搫鐓�
+	LCD_Clear(WHITE);//濞撳懎鐫�?   
+ 	POINT_COLOR=BLUE;//鐠佸墽鐤嗙€涙ぞ缍嬫稉楦挎憫閿燂�?? 
+	LCD_ShowString(lcddev.width-24,0,200,16,16,"RST");//閺勫墽銇氬�?�鍛潌閸栧搫鐓�?
   	POINT_COLOR=RED;//鐠佸墽鐤嗛悽鑽ょ應閽冩繆澹� 
 }
 ////////////////////////////////////////////////////////////////////////////////
-//閻㈤潧顔愮憴锔芥嚋鐏炲繋绗撻張澶愬劥閿燂拷?
-//閻㈢粯鎸夐獮宕囧殠
+//閻㈤潧顔愮憴锔芥嚋鐏炲繋绗撻張澶愬劥閿燂�??
+//閻㈢粯鎸夐獮宕囧�?
 //x0,y0:閸ф劖鐖�
 //len:缁惧潡鏆遍敓锟�?
-//color:妫版粏澹�
+//color:妫版粏澹�?
 void gui_draw_hline(u16 x0,u16 y0,u16 len,u16 color)
 {
 	if(len==0)return;
 	LCD_Fill(x0,y0,x0+len-1,y0,color);	
 }
-//閻㈣鐤勮箛鍐ㄦ妇
+//閻㈣鐤勮箛鍐ㄦ�?
 //x0,y0:閸ф劖鐖�
-//r:閸楀﹤绶�
-//color:妫版粏澹�
+//r:閸楀﹤绶�?
+//color:妫版粏澹�?
 void gui_fill_circle(u16 x0,u16 y0,u16 r,u16 color)
 {											  
 	u32 i;
@@ -97,7 +97,7 @@ void gui_fill_circle(u16 x0,u16 y0,u16 r,u16 color)
 		gui_draw_hline(x0-x,y0-i,2*x,color);
 	}
 }  
-//娑撱倓閲滈弫棰佺瀹割喚娈戠紒婵嗩嚠閿燂拷? 
+//娑撱倓閲滈弫棰佺�?�割喚娈戠紒婵嗩嚠閿燂拷? 
 //x1,x2閿涙岸娓堕崣鏍ф▕閸婅偐娈戞稉銈勯嚋閿燂拷?
 //鏉╂柨娲栭崐纭风窗|x1-x2|
 u16 my_abs(u16 x1,u16 x2)
@@ -106,8 +106,8 @@ u16 my_abs(u16 x1,u16 x2)
 	else return x2-x1;
 }  
 //閻㈣绔撮弶锛勭煐閿燂拷?
-//(x1,y1),(x2,y2):缁炬寧娼惃鍕崳婵娼楅敓锟�?
-//size閿涙氨鍤庨弶锛勬畱缁绮忕粙瀣
+//(x1,y1),(x2,y2):缁炬寧娼惃鍕崳婵娼楅敓锟�??
+//size閿涙氨鍤庨弶锛勬畱缁绮忕粙�?��?
 //color閿涙氨鍤庨弶锛勬畱妫版粏澹�
 void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
 {
@@ -115,7 +115,7 @@ void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
 	int xerr=0,yerr=0,delta_x,delta_y,distance; 
 	int incx,incy,uRow,uCol; 
 	if(x1<size|| x2<size||y1<size|| y2<size)return; 
-	delta_x=x2-x1; //鐠侊紕鐣婚崸鎰垼婢х偤鍣� 
+	delta_x=x2-x1; //鐠侊紕鐣婚崸鎰垼婢х偤鍣�? 
 	delta_y=y2-y1; 
 	uRow=x1; 
 	uCol=y1; 
@@ -127,9 +127,9 @@ void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
 	else{incy=-1;delta_y=-delta_y;} 
 	if( delta_x>delta_y)distance=delta_x; //闁褰囬崺鐑樻拱婢х偤鍣洪崸鎰垼閿燂拷? 
 	else distance=delta_y; 
-	for(t=0;t<=distance+1;t++ )//閻㈣崵鍤庢潏鎾冲毉 
+	for(t=0;t<=distance+1;t++ )//閻㈣崵鍤庢潏鎾冲�? 
 	{  
-		gui_fill_circle(uRow,uCol,size,color);//閻㈣崵鍋� 
+		gui_fill_circle(uRow,uCol,size,color);//閻㈣崵鍋�? 
 		xerr+=delta_x ; 
 		yerr+=delta_y ; 
 		if(xerr>distance) 
@@ -145,9 +145,9 @@ void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
 	}  
 }   
 ////////////////////////////////////////////////////////////////////////////////
- //5娑擃亣袝閹貉呭仯閻ㄥ嫰顤侀敓锟�?(閻㈤潧顔愮憴锔芥嚋鐏炲繒鏁�)												 
+ //5娑擃亣袝閹貉呭仯閻ㄥ嫰顤�?敓锟�??(閻㈤潧顔愮憴锔芥嚋鐏炲繒鏁�)												 
 const u16 POINT_COLOR_TBL[OTT_MAX_TOUCH]={RED,GREEN,BLUE,BROWN,GRED};  
-//閻㈢敻妯嗙憴锔芥嚋鐏炲繑绁寸拠鏇炲毐閿燂拷?
+//閻㈢敻妯嗙憴锔芥嚋鐏炲繑绁寸拠鏇炲毐閿燂�??
 void rtp_test(void)
 {
 	u8 key;
@@ -160,14 +160,14 @@ void rtp_test(void)
 		{	
 		 	if(tp_dev.x[0]<lcddev.width&&tp_dev.y[0]<lcddev.height)
 			{	
-				if(tp_dev.x[0]>(lcddev.width-24)&&tp_dev.y[0]<16)Load_Drow_Dialog();//濞撳懘娅�
-				else TP_Draw_Big_Point(tp_dev.x[0],tp_dev.y[0],RED);		//閻㈣娴�	  			   
+				if(tp_dev.x[0]>(lcddev.width-24)&&tp_dev.y[0]<16)Load_Drow_Dialog();//濞撳懘娅�?
+				else TP_Draw_Big_Point(tp_dev.x[0],tp_dev.y[0],RED);		//閻㈣娴�?	  			   
 			}
-		}else delay_ms(10);	//濞屸剝婀侀幐澶愭暛閹稿绗呴惃鍕閿燂拷? 	    
-		if(key==KEY0_PRES)	//KEY0閹稿绗�,閸掓瑦澧界悰灞剧墡閸戝棛鈻奸敓锟�?
+		}else delay_ms(10);	//濞屸剝婀�?幐澶愭暛閹稿绗呴惃鍕閿燂拷? 	    
+		if(key==KEY0_PRES)	//KEY0閹稿绗�?,閸掓瑦澧界悰灞剧墡閸戝棛鈻奸敓锟�??
 		{
-			LCD_Clear(WHITE);	//濞撳懎鐫�
-		    TP_Adjust();  		//鐏炲繐绠烽弽鈥冲櫙 
+			LCD_Clear(WHITE);	//濞撳懎鐫�?
+		    TP_Adjust();  		//鐏炲繐绠烽弽鈥冲�? 
 			TP_Save_Adjdata();	 
 			Load_Drow_Dialog();
 		}
@@ -175,12 +175,12 @@ void rtp_test(void)
 		if(i%20==0)LED0_T;
 	}
 }
-//閻㈤潧顔愮憴锔芥嚋鐏炲繑绁寸拠鏇炲毐閿燂拷?
+//閻㈤潧顔愮憴锔芥嚋鐏炲繑绁寸拠鏇炲毐閿燂�??
 void ctp_test(void)
 {
 	u8 t=0;
 	u8 i=0;	  	    
- 	u16 lastpos[5][2];		//閿燂拷?閸氬簼绔村▎锛勬畱閺佺増宓� 
+ 	u16 lastpos[5][2];		//閿燂�??閸氬簼绔村▎锛勬畱閺佺増宓� 
 	while(1)
 	{
 		tp_dev.scan(0);
@@ -195,12 +195,12 @@ void ctp_test(void)
 						lastpos[t][0] = tp_dev.x[t];
 						lastpos[t][1] = tp_dev.y[t];
 					}
-					lcd_draw_bline(lastpos[t][0],lastpos[t][1],tp_dev.x[t],tp_dev.y[t],2,POINT_COLOR_TBL[t]);//閻㈣崵鍤�
+					lcd_draw_bline(lastpos[t][0],lastpos[t][1],tp_dev.x[t],tp_dev.y[t],2,POINT_COLOR_TBL[t]);//閻㈣崵鍤�?
 					lastpos[t][0]=tp_dev.x[t];
 					lastpos[t][1]=tp_dev.y[t];
 					if(tp_dev.x[t]>(lcddev.width-24)&&tp_dev.y[t]<20)
 					{
-						Load_Drow_Dialog();//濞撳懘娅�
+						Load_Drow_Dialog();//濞撳懘娅�?
 					}
 				}
 			}else lastpos[t][0]=0XFFFF;
@@ -251,7 +251,7 @@ int main(void)
 	LCD_Init();
 	tp_dev.init();
 
- 	POINT_COLOR=RED;//鐠佸墽鐤嗙€涙ぞ缍嬫稉铏瑰閿燂拷? 
+ 	POINT_COLOR=RED;//鐠佸墽鐤嗙€涙ぞ缍嬫稉铏瑰閿燂�?? 
 	LCD_ShowString(30,40,210,24,24,(uint8_t *)"MINI STM32F4");	
 	LCD_ShowString(30,70,200,16,16,(uint8_t *)"TFTLCD TEST");
 	LCD_ShowString(30,90,200,16,16,(uint8_t *)"ATOM@ALIENTEK");

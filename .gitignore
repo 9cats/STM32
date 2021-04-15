@@ -1,12 +1,10 @@
-#忽略库函数例程和HAL库例程
 库函数
 HAL库
 MDK-ARM
 Drivers
 OBJ
 .COMMON
-
-#忽略编译文件
+.metadata
 *.crf
 *.d
 *.o
@@ -16,3 +14,5 @@ OBJ
 *.lst
 *.lnp
 *.dep
+*.launch
+.settings
