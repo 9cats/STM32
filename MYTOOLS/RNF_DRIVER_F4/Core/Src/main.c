@@ -100,7 +100,7 @@ int main(void)
   delay_init(168);
 	LCD_Init();
 	tp_dev.init();
- 	NRF24L01_Init();    		//初始化NRF24L01 
+ 	NRF24L01_Init();
 
  	POINT_COLOR=RED;//
 	LCD_ShowString(30,50,200,16,16,"Explorer STM32F4");	

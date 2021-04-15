@@ -20,58 +20,71 @@ const u8 RX_ADDRESS[RX_ADR_WIDTH] = {0x34, 0x43, 0x10, 0x10, 0x01}; //发送地址
 void NRF24L01_SPI_Init(void)
 {
 
-	// SPI_InitTypeDef  SPI_InitStructure;
+	// SPI_InitTypeDef SPI_InitStructure;
 
 	// SPI_Cmd(SPI1, DISABLE); //失能SPI外设
 
-	// SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;  //设置SPI单向或者双向的数据模式:SPI设置为双线双向全双工
-	// SPI_InitStructure.SPI_Mode = SPI_Mode_Master;		//设置SPI工作模式:设置为主SPI
-	// SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;		//设置SPI的数据大小:SPI发送接收8位帧结构
-	// SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;		//串行同步时钟的空闲状态为低电平
-	// SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;	//串行同步时钟的第1个跳变沿（上升或下降）数据被采样
-	// SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;		//NSS信号由硬件（NSS管脚）还是软件（使用SSI位）管理:内部NSS信号有SSI位控制
-	// SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;		//定义波特率预分频的值:波特率预分频值为256
-	// SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;	//指定数据传输从MSB位还是LSB位开始:数据传输从MSB位开始
-	// SPI_InitStructure.SPI_CRCPolynomial = 7;	//CRC值计算的多项式
-	// SPI_Init(SPI1, &SPI_InitStructure);  //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器
+	// SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;	 //设置SPI单向或者双向的数据模式:SPI设置为双线双向全双工
+	// SPI_InitStructure.SPI_Mode = SPI_Mode_Master;						 //设置SPI工作模式:设置为主SPI
+	// SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;					 //设置SPI的数据大小:SPI发送接收8位帧结构
+	// SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;							 //串行同步时钟的空闲状态为低电平
+	// SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;						 //串行同步时钟的第1个跳变沿（上升或下降）数据被采样
+	// SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;							 //NSS信号由硬件（NSS管脚）还是软件（使用SSI位）管理:内部NSS信号有SSI位控制
+	// SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256; //定义波特率预分频的值:波特率预分频值为256
+	// SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;					 //指定数据传输从MSB位还是LSB位开始:数据传输从MSB位开始
+	// SPI_InitStructure.SPI_CRCPolynomial = 7;							 //CRC值计算的多项式
+	// SPI_Init(SPI1, &SPI_InitStructure);									 //根据SPI_InitStruct中指定的参数初始化外设SPIx寄存器
 
 	// SPI_Cmd(SPI1, ENABLE); //使能SPI外设
+	
+  //以上内容用以下代替
+  __HAL_RCC_SPI1_CLK_DISABLE();
+
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK) Error_Handler();
+
+  __HAL_RCC_SPI1_CLK_ENABLE();
 }
 
 //初始化24L01的IO口
 void NRF24L01_Init(void)
 {
-	// 	GPIO_InitTypeDef  GPIO_InitStructure;
+	// GPIO_InitTypeDef GPIO_InitStructure;
 
-	// 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOG, ENABLE);//使能GPIOB,G时钟
+	// RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG, ENABLE); //使能GPIOB,G时钟
 
-	//   //GPIOB14初始化设置:推挽输出
-	//   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
-	//   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//普通输出模式
-	//   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
-	//   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-	//   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-	//   GPIO_Init(GPIOB, &GPIO_InitStructure);//初始化PB14
+	// //GPIOB14初始化设置:推挽输出
+	// GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
+	// GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;	   //普通输出模式
+	// GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;	   //推挽输出
+	// GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz; //100MHz
+	// GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	   //上拉
+	// GPIO_Init(GPIOB, &GPIO_InitStructure);			   //初始化PB14
 
-	// 	//GPIOG6,7推挽输出
-	//   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;
-	//   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//普通输出模式
-	//   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;//推挽输出
-	//   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;//100MHz
-	//   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-	//   GPIO_Init(GPIOG, &GPIO_InitStructure);//初始化PG6,7
+	// //GPIOG6,7推挽输出
+	// GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
+	// GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;	   //普通输出模式
+	// GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;	   //推挽输出
+	// GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz; //100MHz
+	// GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;	   //上拉
+	// GPIO_Init(GPIOG, &GPIO_InitStructure);			   //初始化PG6,7
 
-	// 	//GPIOG.8上拉输入
-	// 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-	//   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;//输入
-	//   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//上拉
-	//   GPIO_Init(GPIOG, &GPIO_InitStructure);//初始化PG8
-	// GPIO_SetBits(GPIOB, GPIO_PIN_14); //PB14输出1,防止SPI FLASH干扰NRF的通信
-	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_14,GPIO_PIN_SET);
-	SPI1_Init();					  //初始化SPI1
-	NRF24L01_SPI_Init();			  //针对NRF的特点修改SPI的设置
-	NRF24L01_CE = 0;				  //使能24L01
-	NRF24L01_CSN = 1;				  //SPI片选取消
+	// //GPIOG.8上拉输入
+	// GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	// GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN; //输入
+	// GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //上拉
+	// GPIO_Init(GPIOG, &GPIO_InitStructure);		 //初始化PG8
+
+	// GPIO_SetBits(GPIOB, GPIO_Pin_14); //PB14输出1,防止SPI FLASH干扰NRF的通信
+
+  //以上内容都已通过CubeMX配置
+	SPI1_Init(); //初始化SPI1
+
+	NRF24L01_SPI_Init(); //针对NRF的特点修改SPI的设置
+
+	NRF24L01_CE = 0;  //使能24L01
+	NRF24L01_CSN = 1; //SPI片选取消
 }
 //检测24L01是否存在
 //返回值:0，成功;1，失败
