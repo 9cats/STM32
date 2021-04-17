@@ -23,6 +23,8 @@
 /* USER CODE BEGIN 0 */
 extern uint8_t DAC_FRE;
 extern uint8_t DAC_STA;
+extern uint16_t pressTime;
+extern uint8_t presStatus;
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim2;
@@ -183,6 +185,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   if(htim == &htim3)
   {
     if(DAC_STA) DAC_FRE = DAC_FRE==40?1:DAC_FRE+1;
+		if(presStatus) pressTime++;
   }
 }
 /* USER CODE END 1 */

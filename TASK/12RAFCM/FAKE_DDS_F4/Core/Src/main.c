@@ -70,6 +70,9 @@ extern uint8_t DAC_VAL;
 extern uint32_t TimeOffset;
 extern uint16_t Wavetable[];
 extern uint16_t Sin[];
+extern uint16_t pressTime;
+uint8_t presStatus = 0; //璁板綍瑙︽懜灞忕殑鎸変笅�?��喌锛�?敤浜庨槻姝㈣繛锟�??
+uint16_t PRE_DAC_VAL;
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
@@ -80,7 +83,6 @@ extern uint16_t Sin[];
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t presStatus = 0; //璁板綍瑙︽懜灞忕殑鎸変笅�?��喌锛�?敤浜庨槻姝㈣繛锟�??
   // PRE_AMP_MUL = AMP_MUL;
   /* USER CODE END 1 */
 
@@ -120,6 +122,7 @@ int main(void)
   LCD_Init();
 	tp_dev.init();
 
+	PRE_DAC_VAL = DAC_VAL;
   POINT_COLOR = RED;
   //鏄剧ず棰戠巼淇℃�?
   //     (28,40)                     (68,40)                                      (192,40)    (202,44)
@@ -163,11 +166,10 @@ int main(void)
 
 
     if (tp_dev.sta & TP_PRES_DOWN)
-    {
-      if (presStatus == 0)
+    {			
+      presStatus = 1;
+      if (pressTime++ == 0 || (pressTime > 200 && pressTime%20 == 0))
       {
-        presStatus = 1;
-
         //鎸�?笅DAC_FRE锟�? '-'
         if(TP_CHECK(28,40,48,56)){
           DAC_FRE = DAC_FRE==1?1:DAC_FRE-1;
@@ -178,13 +180,11 @@ int main(void)
         }
         //鎸�?笅DAC_VAL锟�? '-'
         if(TP_CHECK(28,90,48,106)) {
-          DAC_VAL = DAC_VAL==3?3:DAC_VAL-1;
-          DAC_VAL_Change();
+          PRE_DAC_VAL = PRE_DAC_VAL==3?3:PRE_DAC_VAL-1;
         }
         //鎸�?笅DAC_VAL锟�? '+'
         if(TP_CHECK(192,90,212,106)) {
-          DAC_VAL = DAC_VAL==100?100:DAC_VAL+1;
-          DAC_VAL_Change();
+          PRE_DAC_VAL = PRE_DAC_VAL==100?100:PRE_DAC_VAL+1;
         }
         if(TP_CHECK(40,140,200,170)) {
           if(DAC_STA) {
@@ -202,6 +202,11 @@ int main(void)
     }
     else {
       presStatus = 0;
+			pressTime = 0;
+			if(PRE_DAC_VAL != DAC_VAL) {
+				DAC_VAL = PRE_DAC_VAL;
+				DAC_VAL_Change();
+			}
     }
     // if(AMP_MUL != PRE_AMP_MUL)
     // {
@@ -211,7 +216,7 @@ int main(void)
 
     //鏃ュ父鍒锋柊
     LCD_ShowxNum(132,40,DAC_FRE,2,16,0);
-    LCD_ShowxNum(128,90,DAC_VAL,4,16,0);
+    LCD_ShowxNum(128,90,PRE_DAC_VAL,4,16,0);
     // LCD_ShowxNum(148,140,AMP_MUL,3,16,0);
   }
   /* USER CODE END 3 */
