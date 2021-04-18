@@ -61,9 +61,9 @@ u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t AMP_MUL = 1;
-uint16_t ADC_CAP = 0; 
-uint8_t presStatus = 0; //标记按键是否按下，防止连
+uint32_t ADC_CAP = 0; 
 uint16_t pressTime = 0;
+uint8_t presStatus = 0; //标记按键是否按下，防止连
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
@@ -102,8 +102,9 @@ int main(void)
   MX_ADC1_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-  HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_CAP,2);
-  HAL_DAC_Start(&hdac,DAC_ALIGN_12B_R);
+  HAL_TIM_Base_Start_IT(&htim3);
+  HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_CAP,1);
+  HAL_DAC_Start(&hdac,DAC1_CHANNEL_2);
   delay_init(168);
   LCD_Init();
 	tp_dev.init();
@@ -134,13 +135,16 @@ int main(void)
 
     //ćéŽćŤćé¨ĺ
     tp_dev.scan(0);
-		DAC->DHR12R1 = ((int32_t) ADC_CAP - 2028)* AMP_MUL / 10 + 2028;
-
+		//DAC->DHR12R1 = ((int32_t) ADC_CAP - 2028)* AMP_MUL / 10 + 2028;
+		DAC->DHR12R2 = ((int32_t) ADC_CAP - 2028)* AMP_MUL / 10 + 2028;
+		// DAC->DHR12R2 = ADC_CAP;
+		
     if (tp_dev.sta & TP_PRES_DOWN)
     {
-      if (pressTime++ == 0 || (pressTime > 200 && pressTime%20 == 0))
+      if (pressTime == 0 || ((pressTime > 1000) && (pressTime%50 == 0)))
       {
-        presStatus = 1;
+				pressTime++;
+        presStatus = 1; 
 
         if(TP_CHECK(28,40,48,56)) {
           AMP_MUL = AMP_MUL==1?1:AMP_MUL-1;
