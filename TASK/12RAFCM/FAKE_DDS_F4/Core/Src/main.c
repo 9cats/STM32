@@ -117,7 +117,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim3);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
-  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 2028);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 1750);
   delay_init(168);
   LCD_Init();
 	tp_dev.init();
