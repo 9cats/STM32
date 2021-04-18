@@ -62,6 +62,8 @@ u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
 /* USER CODE BEGIN 0 */
 uint8_t AMP_MUL = 1;
 uint16_t ADC_CAP = 0; 
+uint8_t presStatus = 0; //标记按键是否按下，防止连
+uint16_t pressTime = 0;
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
@@ -72,7 +74,7 @@ uint16_t ADC_CAP = 0;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t presStatus = 0; //标记按键是否按下，防止连
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -95,13 +97,11 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_DAC_Init();
-  MX_TIM2_Init();
   MX_FSMC_Init();
   MX_TIM3_Init();
   MX_ADC1_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
   HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_CAP,2);
   HAL_DAC_Start(&hdac,DAC_ALIGN_12B_R);
   delay_init(168);
@@ -120,6 +120,7 @@ int main(void)
   LCD_Fill(196,48,208,49,RED);
   LCD_Fill(202,44,203,52,RED);
   // LCD_ShowxNum(148,140,123,3,16,0);
+  LCD_ShowxNum(148,40,AMP_MUL,3,16,0);
 
   /* USER CODE END 2 */
 
@@ -133,27 +134,30 @@ int main(void)
 
     //ćéŽćŤćé¨ĺ
     tp_dev.scan(0);
+		DAC->DHR12R1 = ((int32_t) ADC_CAP - 2028)* AMP_MUL / 10 + 2028;
 
     if (tp_dev.sta & TP_PRES_DOWN)
     {
-      if (presStatus == 0)
+      if (pressTime++ == 0 || (pressTime > 200 && pressTime%20 == 0))
       {
         presStatus = 1;
 
         if(TP_CHECK(28,40,48,56)) {
           AMP_MUL = AMP_MUL==1?1:AMP_MUL-1;
+          LCD_ShowxNum(148,40,AMP_MUL,3,16,0);
         }
         if(TP_CHECK(192,40,212,56)) {
           AMP_MUL = AMP_MUL==100?100:AMP_MUL+1;
+          LCD_ShowxNum(148,40,AMP_MUL,3,16,0);
         }
       }
     }
     else {
       presStatus = 0;
+      pressTime = 0;
     }
 
     //日常刷新
-    LCD_ShowxNum(148,40,AMP_MUL,3,16,0);
   }
   /* USER CODE END 3 */
 }
