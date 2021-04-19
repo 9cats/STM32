@@ -136,7 +136,7 @@ int main(void)
     //ćéŽćŤćé¨ĺ
     tp_dev.scan(0);
 		//DAC->DHR12R1 = ((int32_t) ADC_CAP - 2028)* AMP_MUL / 10 + 2028;
-		DAC->DHR12R2 = ((int32_t) ADC_CAP - 2028)* AMP_MUL / 10 + 2028;
+		DAC->DHR12R2 = ((int32_t) ADC_CAP - 1975)* AMP_MUL / 10 + 1975;
 		// DAC->DHR12R2 = ADC_CAP;
 		
     if (tp_dev.sta & TP_PRES_DOWN)
