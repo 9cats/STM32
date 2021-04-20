@@ -30,6 +30,7 @@
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
 #include "touch.h"
+#include "24l01.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -121,6 +122,7 @@ int main(void)
   delay_init(168);
   LCD_Init();
 	tp_dev.init();
+	NRF24L01_Init();
 
 	PRE_DAC_VAL = DAC_VAL;
   POINT_COLOR = RED;
@@ -148,6 +150,10 @@ int main(void)
   LCD_Fill(40,140,200,170,GREEN);
   LCD_ShowString(72, 147, 168, 163, 16, (uint8_t *)"Start Detect");
 
+	//ÏÔÊ¾24L01×´Ì¬
+	LCD_ShowString(20, 220, 150, 16, 16,(uint8_t *)"NRF24L01: ");
+	while(NRF24L01_Check())LCD_ShowString(100,220,60,16,16,(uint8_t *)"Error");
+	LCD_ShowString(100,220,60,16,16,(uint8_t *)"Sending...");
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 

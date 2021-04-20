@@ -21,6 +21,8 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
+#inlcude "spi.h"
+
 extern uint8_t DAC_FRE;
 extern uint8_t DAC_STA;
 extern uint16_t pressTime;
@@ -186,6 +188,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     if(DAC_STA) DAC_FRE = DAC_FRE==40?1:DAC_FRE+1;
 		if(presStatus) pressTime++;
+		 HAL_SPI_Transmit(&hspi1,);
+		
   }
 }
 /* USER CODE END 1 */
