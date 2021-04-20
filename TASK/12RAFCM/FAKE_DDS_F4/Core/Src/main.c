@@ -74,6 +74,7 @@ extern uint16_t Sin[];
 extern uint16_t pressTime;
 uint8_t presStatus = 0; //璁板綍瑙︽懜灞忕殑鎸変笅�?��喌锛�?敤浜庨槻姝㈣繛锟�??
 uint16_t PRE_DAC_VAL;
+uint8_t RX_BUF = 0;
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
@@ -154,6 +155,19 @@ int main(void)
 	LCD_ShowString(20, 220, 150, 16, 16,(uint8_t *)"NRF24L01: ");
 	while(NRF24L01_Check())LCD_ShowString(100,220,60,16,16,(uint8_t *)"Error");
 	LCD_ShowString(100,220,80,16,16,(uint8_t *)"Sending...");
+  NRF24L01_TX_ON :{
+    NRF24L01_CE = 0;
+	  NRF24L01_Write_Buf(NRF_WRITE_REG + TX_ADDR, &DAC_FRE, 1);	//?TX????
+	  NRF24L01_Write_Buf(NRF_WRITE_REG + RX_ADDR_P0, &RX_BUF, 1); //??TX????,??????ACK
+
+	  NRF24L01_Write_Reg(NRF_WRITE_REG + EN_AA, 0x01);	  //????0?????
+	  NRF24L01_Write_Reg(NRF_WRITE_REG + EN_RXADDR, 0x01);  //????0?????
+	  NRF24L01_Write_Reg(NRF_WRITE_REG + SETUP_RETR, 0x1a); //??????????:500us + 86us;????????:10?
+	  NRF24L01_Write_Reg(NRF_WRITE_REG + RF_CH, 40);		  //??RF???40
+	  NRF24L01_Write_Reg(NRF_WRITE_REG + RF_SETUP, 0x0f);	  //??TX????,0db??,2Mbps,???????
+	  NRF24L01_Write_Reg(NRF_WRITE_REG + CONFIG, 0x0e);	  //???????????;PWR_UP,EN_CRC,16BIT_CRC,????,??????
+	  NRF24L01_CE = 1;		
+  }
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 
