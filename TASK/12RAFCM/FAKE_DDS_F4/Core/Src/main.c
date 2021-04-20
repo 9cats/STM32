@@ -153,7 +153,7 @@ int main(void)
 	//ÏÔÊ¾24L01×´Ì¬
 	LCD_ShowString(20, 220, 150, 16, 16,(uint8_t *)"NRF24L01: ");
 	while(NRF24L01_Check())LCD_ShowString(100,220,60,16,16,(uint8_t *)"Error");
-	LCD_ShowString(100,220,60,16,16,(uint8_t *)"Sending...");
+	LCD_ShowString(100,220,80,16,16,(uint8_t *)"Sending...");
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 
