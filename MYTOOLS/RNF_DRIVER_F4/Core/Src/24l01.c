@@ -38,13 +38,15 @@ void NRF24L01_SPI_Init(void)
 	// SPI_Cmd(SPI1, ENABLE); //使能SPI外设
 	
   //以上内容用以下代替
-  __HAL_RCC_SPI1_CLK_DISABLE();
+  __HAL_SPI_DISABLE(&hspi1);
 
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_ENABLE;
+  hspi1.Init.CRCPolynomial = 10;
   if (HAL_SPI_Init(&hspi1) != HAL_OK) Error_Handler();
 
-  __HAL_RCC_SPI1_CLK_ENABLE();
+  __HAL_SPI_ENABLE(&hspi1);
 }
 
 //初始化24L01的IO口

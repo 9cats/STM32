@@ -47,14 +47,14 @@ void MX_SPI1_Init(void)
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_ENABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 10;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
   }
   /* USER CODE BEGIN SPI1_Init 2 */
-
+   __HAL_SPI_ENABLE(&hspi1);                    //??SPI1
   /* USER CODE END SPI1_Init 2 */
 
 }
@@ -79,13 +79,13 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     */
     GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* USER CODE BEGIN SPI1_MspInit 1 */
-
+		
   /* USER CODE END SPI1_MspInit 1 */
   }
 }
@@ -164,10 +164,10 @@ void SPI1_Init(void)
 //fAPB2时钟一般为84Mhz：
 void SPI1_SetSpeed(u8 SPI_BaudRatePrescaler)
 {
-	assert_param(IS_SPI_BAUDRATE_PRESCALER(SPI_BaudRatePrescaler)); //判断有效性
+  __HAL_SPI_DISABLE(&hspi1);                    //??SPI1
 	SPI1->CR1 &= 0XFFC7;											//位3-5清零，用来设置波特率
 	SPI1->CR1 |= SPI_BaudRatePrescaler;								//设置SPI1速度
-  __HAL_RCC_SPI1_CLK_ENABLE();
+  __HAL_SPI_ENABLE(&hspi1);                    //??SPI1
 }
 //SPI1 读写一个字节
 //TxData:要写入的字节
@@ -178,9 +178,7 @@ u8 SPI1_ReadWriteByte(u8 TxData)
 
 	SPI1->DR = TxData;
 
-	while (__HAL_SPI_GET_FLAG(&hspi1, SPI_FLAG_RXNE) == RESET)
-	{
-	} //等待接收完一个byte
+	while (__HAL_SPI_GET_FLAG(&hspi1, SPI_FLAG_RXNE) == RESET); //等待接收完一个byte
 
 	return SPI1->DR; //返回通过SPIx最近接收的数据
 }
