@@ -39,6 +39,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TP_CHECK(x0,y0,x1,y1) tp_dev.x[0] > x0 && tp_dev.y[0] > y0 && tp_dev.x[0] < x1 && tp_dev.y[0] < y1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,13 +50,65 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t Mode = 0;         //当前模式：0-均不开启 1-开启示波器显示 2-wifi模块
+uint8_t NRF24L01_STA = 0; //NRF24L01_状态 0-未成功启用
+uint8_t presStatus = 0; //标记按下
+uint8_t DAC_FRE = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void modeOn(uint8_t mode){
+  switch (mode)
+  {
+    //示波器
+    case 1:{
+      LCD_Fill(40,30,200,60,RED);
+ 	    POINT_COLOR=GREEN;
+      LCD_ShowString(40+37,30+7,200,60,16,(uint8_t *)"Osc Mode On");
+			NRF24L01_RX_Mode();
+      //TODO:初始化
+      while (DAC_FRE != 1)	NRF24L01_RxPacket(&DAC_FRE);
+			
+    }break;
+    //WIFI
+    case 2:{
+      LCD_Fill(40,80,200,110,RED);
+      POINT_COLOR=GREEN;
+      LCD_ShowString(40+37,80+7,200,110,16,(uint8_t *)"WiF Mode On");
+    }break;
+  default:
+    break;
+  }
+};
+void modeOff(uint8_t mode){
+  switch (mode)
+  {
+    //示波器
+    case 1:{
+      LCD_Fill(40,30,200,60,GREEN);
+ 	    POINT_COLOR=RED;
+      LCD_ShowString(40+33,30+7,200,60,16,(uint8_t *)"Osc Mode Off");
+      //TODO:初始化
+    }break;
+    //WIFI
+    case 2:{
+      LCD_Fill(40,80,200,110,GREEN);
+      POINT_COLOR=RED;
+      LCD_ShowString(40+33,80+7,200,110,16,(uint8_t *)"WiF Mode Off");
+    }break;
+  default:
+    break;
+  }
+}
+void modeSwitchTo(uint8_t nextMode){
+  //如果Mode不为0，则关掉当前模式
+  if(Mode)    modeOff(Mode);
+  //如果nextMode不为0，则开启当前模式
+  if(nextMode)modeOn(nextMode);
+  Mode = nextMode;
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -70,9 +123,8 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	u8 key,mode;
-	u16 t=0;			 
-	u8 tmp_buf[33];	
+  uint8_t nextMode;     //预备的模式
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -102,92 +154,25 @@ int main(void)
 	tp_dev.init();
  	NRF24L01_Init();
 
- 	POINT_COLOR=RED;//
-	LCD_ShowString(30,50,200,16,16,"Explorer STM32F4");	
-	LCD_ShowString(30,70,200,16,16,"NRF24L01 TEST");	
-	LCD_ShowString(30,90,200,16,16,"ATOM@ALIENTEK");
-	LCD_ShowString(30,110,200,16,16,"2014/5/9");
-	while(NRF24L01_Check())
+ 	POINT_COLOR=RED;
+
+  modeOff(1);
+  modeOff(2);
+
+  //查看NRF24L01初始化情况并进入接收状态，若没有成功初始化则进入死循环
+  LCD_ShowString(30,130,200,16,16,(uint8_t *)"NRF24L01:");
+	while(!(NRF24L01_STA = !NRF24L01_Check()))
 	{
-		LCD_ShowString(30,130,200,16,16,"NRF24L01 Error");
+		LCD_ShowString(103,130,200,16,16,(uint8_t *)"Error");
 		delay_ms(200);
-		LCD_Fill(30,130,239,130+16,WHITE);
+		LCD_Fill(103,130,200,150,WHITE);
  		delay_ms(200);
 	}
-	LCD_ShowString(30,130,200,16,16,"NRF24L01 OK");
- 	while(1)
-	{	
-		key=KEY_Scan(0);
-		if(key==KEY0_PRES)
-		{
-			mode=0;   
-			break;
-		}else if(key==KEY1_PRES)
-		{
-			mode=1;
-			break;
-		}
-		t++;
-		if(t==100)LCD_ShowString(10,150,230,16,16,"KEY0:RX_Mode  KEY1:TX_Mode"); //闂儊鏄剧ず鎻愮ず淇℃伅
- 		if(t==200)
-		{	
-			LCD_Fill(10,150,230,150+16,WHITE);
-			t=0; 
-		}
-		delay_ms(5);	  
-	}   
- 	LCD_Fill(10,150,240,166,WHITE);//娓呯┖涓婇潰鐨勬樉绀?		  
- 	POINT_COLOR=BLUE;//璁剧疆瀛椾綋涓鸿摑鑹?
-   	if(mode==0)//RX妯″紡
-	{
-		LCD_ShowString(30,150,200,16,16,"NRF24L01 RX_Mode");	
-		LCD_ShowString(30,170,200,16,16,"Received DATA:");	
-		NRF24L01_RX_Mode();		  
-		while(1)
-		{	  		    		    				 
-			if(NRF24L01_RxPacket(tmp_buf)==0)//涓?鏃︽帴鏀跺埌淇℃伅,鍒欐樉绀哄嚭鏉?.
-			{
-				tmp_buf[32]=0;//鍔犲叆瀛楃涓茬粨鏉熺
-				LCD_ShowString(0,190,lcddev.width-1,32,16,tmp_buf);    
-			}else delay_us(100);	   
-			t++;
-			if(t==10000)//澶х害1s閽熸敼鍙樹竴娆＄姸鎬?
-			{
-				t=0;
-				LED0_T;
-			} 				    
-		};	
-	}else//TX妯″紡
-	{							    
-		LCD_ShowString(30,150,200,16,16,"NRF24L01 TX_Mode");	
-		NRF24L01_TX_Mode();
-		mode=' ';//浠庣┖鏍奸敭寮?濮?  
-		while(1)
-		{	  		   				 
-			if(NRF24L01_TxPacket(tmp_buf)==TX_OK)
-			{
-				LCD_ShowString(30,170,239,32,16,"Sended DATA:");	
-				LCD_ShowString(0,190,lcddev.width-1,32,16,tmp_buf); 
-				LCD_ShowChar(0,190,tmp_buf[0]+0x30,16,1);
-				key=mode;
-				for(t=0;t<32;t++)
-				{
-					key++;
-					if(key>('~'))key=' ';
-					tmp_buf[t]=key;	
-				}
-				mode++; 
-				if(mode>'~')mode=' ';  	  
-				tmp_buf[32]=0;//鍔犲叆缁撴潫绗?		   
-			}else
-			{										   	
- 				LCD_Fill(0,170,lcddev.width,170+16*3,WHITE);//娓呯┖鏄剧ず			   
-				LCD_ShowString(30,170,lcddev.width-1,32,16,"Send Failed "); 
-			};
-			LED0_T;
-			delay_ms(1500);				    
-		};
-	}
+	LCD_ShowString(103,130,200,16,16,(uint8_t *)"Ready");
+  NRF24L01_RX_Mode();
+	LCD_Fill(103,130,200,150,WHITE);
+	LCD_ShowString(103,130,200,16,16,(uint8_t *)"Receiving..");
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -195,8 +180,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    
     /* USER CODE BEGIN 3 */
+    //扫描并且切换模式
+    tp_dev.scan(0);
+    if(TP_CHECK(40,30,200,60))  nextMode = 1;
+    if(TP_CHECK(40,80,200,130)) nextMode = 2;
+    if(Mode != nextMode) modeSwitchTo(nextMode);
   }
   /* USER CODE END 3 */
 }

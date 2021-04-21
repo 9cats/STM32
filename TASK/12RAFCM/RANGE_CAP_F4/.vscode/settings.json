@@ -10,6 +10,7 @@
     "stdlib.h": "c",
     "lcd.h": "c",
     "spi.h": "c",
-    "stm32f4xx_hal_spi.h": "c"
+    "stm32f4xx_hal_spi.h": "c",
+    "24l01.h": "c"
   }
 }
