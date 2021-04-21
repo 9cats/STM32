@@ -223,12 +223,12 @@ int main(void)
     if(RNF24L01_STA != LAST_RNF24L01_STA){
 			LCD_Fill(100,220,180,240,WHITE);
 			LAST_RNF24L01_STA = RNF24L01_STA;
-		}
-    if(RNF24L01_STA==TX_OK) {
+		
+    if(RNF24L01_STA==TX_OK)
 	    LCD_ShowString(100,220,80,16,16,(uint8_t *)"Sending...");
-    }
     else
       LCD_ShowString(100,220,80,16,16,(uint8_t *)"Send Error");
+		}
   }
   /* USER CODE END 3 */
 }
