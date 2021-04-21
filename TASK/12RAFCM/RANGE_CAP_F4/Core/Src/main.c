@@ -19,7 +19,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
+#include "dac.h"
+#include "dma.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 #include "fsmc.h"
@@ -54,6 +58,7 @@ uint8_t Mode = 0;         //当前模式：0-均不开启 1-开启示波器显示 2-wifi模块
 uint8_t NRF24L01_STA = 0; //NRF24L01_状态 0-未成功启用
 uint8_t presStatus = 0; //标记按下
 uint8_t DAC_FRE = 0;
+uint32_t ADC_CAP = 0; 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -145,14 +150,22 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_FSMC_Init();
   MX_SPI1_Init();
   MX_USART1_UART_Init();
+  MX_ADC1_Init();
+  MX_DAC_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   delay_init(168);
 	LCD_Init();
 	tp_dev.init();
  	NRF24L01_Init();
+  HAL_ADC_Start_DMA(&hadc1,(uint32_t *)&ADC_CAP,1);
+  HAL_DAC_Start(&hdac,DAC1_CHANNEL_1);
+  HAL_DAC_Start(&hdac,DAC1_CHANNEL_2);
+  HAL_TIM_Base_Start_IT(&htim2);
 
  	POINT_COLOR=RED;
 
@@ -180,7 +193,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    
+
     /* USER CODE BEGIN 3 */
     //扫描并且切换模式
     tp_dev.scan(0);
