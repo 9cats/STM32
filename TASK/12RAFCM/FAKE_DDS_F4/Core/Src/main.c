@@ -75,6 +75,7 @@ extern uint16_t pressTime;
 uint8_t presStatus = 0; //鐠佹澘缍嶇憴锔芥嚋鐏炲繒娈戦幐澶夌瑓閹?懎鍠岄敍宀?鏁ゆ禍搴ㄦЩ濮濄垼绻涢敓锟??
 uint16_t PRE_DAC_VAL;
 uint8_t RX_BUF = 0;
+uint8_t RNF24L01_STA = 0; //RNF24L01_STA状态 0-未启动 1-发送成功 2-发送失败
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
@@ -85,6 +86,7 @@ uint8_t RX_BUF = 0;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+  uint8_t LAST_RNF24L01_STA = 0;
   // PRE_AMP_MUL = AMP_MUL;
   /* USER CODE END 1 */
 
@@ -151,23 +153,12 @@ int main(void)
   LCD_Fill(40,140,200,170,GREEN);
   LCD_ShowString(72, 147, 168, 163, 16, (uint8_t *)"Start Detect");
 
-	//显示24L01状态
+	//显示24L01状态 并切换成发送模式
 	LCD_ShowString(20, 220, 150, 16, 16,(uint8_t *)"NRF24L01: ");
-	while(NRF24L01_Check())LCD_ShowString(100,220,60,16,16,(uint8_t *)"Error");
-	LCD_ShowString(100,220,80,16,16,(uint8_t *)"Sending...");
-  NRF24L01_TX_ON :{
-    NRF24L01_CE = 0;
-	  NRF24L01_Write_Buf(NRF_WRITE_REG + TX_ADDR, &DAC_FRE, 1);	//?TX????
-	  NRF24L01_Write_Buf(NRF_WRITE_REG + RX_ADDR_P0, &RX_BUF, 1); //??TX????,??????ACK
+  while(!(RNF24L01_STA = !NRF24L01_Check()))
+  LCD_ShowString(100,220,60,16,16,(uint8_t *)"Error");
+	NRF24L01_TX_Mode();
 
-	  NRF24L01_Write_Reg(NRF_WRITE_REG + EN_AA, 0x01);	  //????0?????
-	  NRF24L01_Write_Reg(NRF_WRITE_REG + EN_RXADDR, 0x01);  //????0?????
-	  NRF24L01_Write_Reg(NRF_WRITE_REG + SETUP_RETR, 0x1a); //??????????:500us + 86us;????????:10?
-	  NRF24L01_Write_Reg(NRF_WRITE_REG + RF_CH, 40);		  //??RF???40
-	  NRF24L01_Write_Reg(NRF_WRITE_REG + RF_SETUP, 0x0f);	  //??TX????,0db??,2Mbps,???????
-	  NRF24L01_Write_Reg(NRF_WRITE_REG + CONFIG, 0x0e);	  //???????????;PWR_UP,EN_CRC,16BIT_CRC,????,??????
-	  NRF24L01_CE = 1;		
-  }
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 
@@ -179,12 +170,8 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    //閹稿?鏁?幍顐ｅ伎闁?劌鍨?
+    //扫描触摸屏
     tp_dev.scan(0);
-
-
-
-
     if (tp_dev.sta & TP_PRES_DOWN)
     {			
       presStatus = 1;
@@ -228,16 +215,20 @@ int main(void)
 				DAC_VAL_Change();
 			}
     }
-    // if(AMP_MUL != PRE_AMP_MUL)
-    // {
-    //   AMP_MUL = PRE_AMP_MUL;
-    //   AMP_MUL_Change();
-    // }
 
-    //閺冦儱鐖堕崚閿嬫煀
+
     LCD_ShowxNum(132,40,DAC_FRE,2,16,0);
     LCD_ShowxNum(128,90,PRE_DAC_VAL,4,16,0);
-    // LCD_ShowxNum(148,140,AMP_MUL,3,16,0);
+    
+    if(RNF24L01_STA != LAST_RNF24L01_STA){
+			LCD_Fill(100,220,180,240,WHITE);
+			LAST_RNF24L01_STA = RNF24L01_STA;
+		}
+    if(RNF24L01_STA==TX_OK) {
+	    LCD_ShowString(100,220,80,16,16,(uint8_t *)"Sending...");
+    }
+    else
+      LCD_ShowString(100,220,80,16,16,(uint8_t *)"Send Error");
   }
   /* USER CODE END 3 */
 }

@@ -183,14 +183,15 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+extern uint8_t RNF24L01_STA;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if(htim == &htim3)
   {
     if(DAC_STA) DAC_FRE = DAC_FRE==40?1:DAC_FRE+1;
 		if(presStatus) pressTime++;
-    NRF24L01_RxPacket(&DAC_STA);
+    if(RNF24L01_STA)
+      RNF24L01_STA = NRF24L01_TxPacket(&DAC_FRE);
   }
 }
 
