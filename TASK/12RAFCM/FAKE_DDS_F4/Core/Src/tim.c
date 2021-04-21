@@ -190,8 +190,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     if(DAC_STA) DAC_FRE = DAC_FRE==40?1:DAC_FRE+1;
 		if(presStatus) pressTime++;
-    //if(RNF24L01_STA)
-   //   RNF24L01_STA = NRF24L01_TxPacket(&DAC_FRE);
+    if(RNF24L01_STA)
+       RNF24L01_STA = NRF24L01_TxPacket(&DAC_FRE);
   }
 }
 
