@@ -128,7 +128,7 @@ int main(void)
 			break;
 		}
 		t++;
-		if(t==100)LCD_ShowString(10,150,230,16,16,"KEY0:RX_Mode  KEY1:TX_Mode"); //闪烁显示提示信息
+		if(t==100)LCD_ShowString(10,150,230,16,16,"KEY0:RX_Mode  KEY1:TX_Mode"); //�?��显示提示信息
  		if(t==200)
 		{	
 			LCD_Fill(10,150,230,150+16,WHITE);
@@ -147,7 +147,7 @@ int main(void)
 		{	  		    		    				 
 			if(NRF24L01_RxPacket(tmp_buf)==0)//�?旦接收到信息,则显示出�?.
 			{
-				tmp_buf[32]=0;//加入字符串结束符
+				tmp_buf[32]=0;//加入字�?串结束�?
 				LCD_ShowString(0,190,lcddev.width-1,32,16,tmp_buf);    
 			}else delay_us(100);	   
 			t++;
