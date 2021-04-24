@@ -76,6 +76,7 @@ uint8_t presStatus = 0; //鐠佹澘缍嶇憴锔芥嚋鐏炲繒娈戦幐澶夌瑓閹?懎鍠岄敍宀?鏁ゆ
 uint16_t PRE_DAC_VAL;
 uint8_t RX_BUF = 0;
 uint8_t RNF24L01_STA = 0; //RNF24L01_STA状态 0-未启动 1-发送成功 2-发送失败
+int8_t DAC_CD = 1;       //DAC_CD改变方向
 // uint8_t PRE_AMP_MUL;
 /* USER CODE END 0 */
 
