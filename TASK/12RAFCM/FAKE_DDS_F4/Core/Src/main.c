@@ -72,6 +72,7 @@ extern uint32_t TimeOffset;
 extern uint16_t Wavetable[];
 extern uint16_t Sin[];
 extern uint16_t pressTime;
+extern float FRE_Compensate[];
 uint8_t presStatus = 0; //璁板綍瑙︽懜灞忕殑鎸変笅�?��喌锛�?敤浜庨槻姝㈣繛锟�??
 uint16_t PRE_DAC_VAL;
 uint8_t RX_BUF = 0;
@@ -88,6 +89,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   uint8_t LAST_RNF24L01_STA = 0;
+	uint8_t i,temp;
   // PRE_AMP_MUL = AMP_MUL;
   /* USER CODE END 1 */
 
@@ -160,6 +162,8 @@ int main(void)
   LCD_ShowString(100,220,60,16,16,(uint8_t *)"Error");
 	NRF24L01_TX_Mode();
 
+	temp = FRE_Compensate[0];
+	for(i=0;i<40;i++) FRE_Compensate[i] = temp/FRE_Compensate[i];
   // HAL_UART_Receive_IT(&huart1,RxBuf,sizeof(RxBuf));
   /* USER CODE END 2 */
 

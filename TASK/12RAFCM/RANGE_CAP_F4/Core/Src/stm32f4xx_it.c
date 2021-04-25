@@ -44,7 +44,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern uint32_t ADC_CAP;
-uint16_t tick_hu; 
+uint16_t tick_hu;
+uint8_t  tick_dr = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -210,15 +211,21 @@ void TIM2_IRQHandler(void)
   static uint16_t ADC_AVG = 0;
 
 	TIM2->SR = 0;
-  DAC->DHR12R1 = line[tick_hu];
+  if(tick_dr) DAC->DHR12R1 = line[tick_hu];
+  else        DAC->DHR12R1 = line[4000-tick_hu];
   // if(++tick_hu<4000)tick_hu = 0;
-  if(++tick_hu%500==0 && tick_hu<2048)
-  {
-    ADC_AVG += ADC_CAP;
+  if(++tick_hu >= 1000 && tick_hu<=3000 && !(tick_hu%500)) {
+		ADC_AVG += ADC_CAP;
+    if(tick_hu == 3000)
+    {
+      DAC->DHR12R2 = ADC_AVG/8;
+      ADC_AVG = 0;
+    }
   }
-  if(tick_hu == 4000) {
-    DAC->DHR12R2 = ADC_AVG/8;
-    tick_hu = 0;
+  if(tick_hu/4000)
+  {
+	  tick_hu %= 4000;
+    tick_dr  = !tick_dr;
   }
   /* USER CODE END TIM2_IRQn 0 */
   //HAL_TIM_IRQHandler(&htim2);

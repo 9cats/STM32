@@ -59,6 +59,8 @@ uint8_t NRF24L01_STA = 0; //NRF24L01_状态 0-未成功启用
 uint8_t presStatus = 0; //标记按下
 uint8_t DAC_FRE = 0;
 uint32_t ADC_CAP = 0; 
+extern uint16_t tick_hu;
+extern uint8_t tick_dr;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,8 +76,6 @@ void modeOn(uint8_t mode){
       LCD_ShowString(40+37,30+7,200,60,16,(uint8_t *)"Osc Mode On");
 			NRF24L01_RX_Mode();
       //TODO:初始化
-      while (DAC_FRE != 1)	NRF24L01_RxPacket(&DAC_FRE);
-			
     }break;
     //WIFI
     case 2:{
@@ -196,6 +196,16 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     //扫描并且切换模式
+		if(Mode == 1) {
+			while(1)
+			{
+				while(NRF24L01_RxPacket(&DAC_FRE));
+				tick_hu = 0;
+				tick_dr = 1;
+			}
+		}
+		
+		
     tp_dev.scan(0);
     if(TP_CHECK(40,30,200,60))  nextMode = 1;
     if(TP_CHECK(40,80,200,130)) nextMode = 2;

@@ -61,7 +61,7 @@ u8 TP_CHECK(u16 x0, u16 y0, u16 x1, u16 y1);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t AMP_MUL = 1;
-uint32_t ADC_CAP = 0; 
+int32_t ADC_CAP = 0; 
 uint16_t pressTime = 0;
 uint8_t presStatus = 0; //标记按键是否按下，防止连
 // uint8_t PRE_AMP_MUL;
@@ -74,7 +74,7 @@ uint8_t presStatus = 0; //标记按键是否按下，防止连
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -130,13 +130,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+		
     /* USER CODE BEGIN 3 */
 
     //ćéŽćŤćé¨ĺ
     tp_dev.scan(0);
 		//DAC->DHR12R1 = ((int32_t) ADC_CAP - 2028)* AMP_MUL / 10 + 2028;
-		DAC->DHR12R2 = ((int32_t) ADC_CAP - 1975)* AMP_MUL / 10 + 1975;
+		DAC->DHR12R2 = ((ADC_CAP - 1975)* AMP_MUL / 10) + offset;
 		// DAC->DHR12R2 = ADC_CAP;
 		
     if (tp_dev.sta & TP_PRES_DOWN)
