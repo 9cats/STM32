@@ -100,19 +100,21 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    if(i==0){
+		
+		//通过delay来实现跑马
+    if(i==0){ // Q X X X
       LED4_T;
       LED1_T;
     }
-    if(i==1){
+    if(i==1){ // X Q X X
       LED2_T;
       LED1_T;
     }
-    if(i==2){
+    if(i==2){ // X X Q X
       LED3_T;
       LED2_T;
     }
-    if(i++==3){
+    if(i++==3){// X X X Q
       LED3_T;
       LED4_T;
       i=0;

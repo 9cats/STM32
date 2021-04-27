@@ -143,7 +143,7 @@ void Display_7Seg_Multi(unsigned int data)
 		unsigned int s;	
 		s = data;
 		i=0;
-		for (i=0;i<4;i++)  // 4位轮流扫�??
+		for (i=0;i<4;i++)  // 4位轮流扫
 		{
 			GPIOC->ODR|=0x0F00;  // 全灭
 			switch(i)      

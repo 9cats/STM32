@@ -199,8 +199,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				RNF24L01_STA = NRF24L01_TxPacket(&DAC_FRE);
 		}
 		
+		}
 		if(presStatus) pressTime++;
-	}
 }
 
 /* USER CODE END 1 */

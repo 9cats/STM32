@@ -56,7 +56,7 @@
 /* USER CODE BEGIN PV */
 uint8_t Mode = 0;         //当前模式：0-均不开启 1-开启示波器显示 2-wifi模块
 uint8_t NRF24L01_STA = 0; //NRF24L01_状态 0-未成功启用
-uint8_t presStatus = 0; //标记按下
+uint8_t presStatus = 0;   //标记按下
 uint8_t DAC_FRE = 0;
 uint32_t ADC_CAP = 0; 
 extern uint16_t tick_hu;
@@ -200,8 +200,8 @@ int main(void)
 			while(1)
 			{
 				while(NRF24L01_RxPacket(&DAC_FRE));
-				tick_hu = 0;
-				tick_dr = 1;
+				tick_hu = 2750;
+				tick_dr = 0;
 			}
 		}
 		
