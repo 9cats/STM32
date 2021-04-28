@@ -200,7 +200,7 @@ int main(void)
 			while(1)
 			{
 				while(NRF24L01_RxPacket(&DAC_FRE));
-				tick_hu = 2750;
+				tick_hu = 2700;
 				tick_dr = 0;
 			}
 		}

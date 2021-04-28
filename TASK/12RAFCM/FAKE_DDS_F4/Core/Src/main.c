@@ -196,7 +196,7 @@ int main(void)
         }
         //鎸�?笅DAC_VAL锟�? '+'
         if(TP_CHECK(192,90,212,106)) {
-          PRE_DAC_VAL = PRE_DAC_VAL==100?100:PRE_DAC_VAL+1;
+          PRE_DAC_VAL = PRE_DAC_VAL==120?120:PRE_DAC_VAL+1;
         }
         if(TP_CHECK(40,140,200,170)) {
           if(DAC_STA) {
@@ -291,7 +291,7 @@ void DAC_VAL_Change(void) {
   uint16_t i;
 	uint16_t * Wavetable_p = Wavetable;
   for(i=0;i<5000;i++) {
-		*(Wavetable_p++) = ((int32_t)Sin[i]-2028)*DAC_VAL/100+2028;
+		*(Wavetable_p++) = ((int32_t)Sin[i]-2048)*DAC_VAL/100+2048;
   }
 }
 // void AMP_MUL_Change(void) {
