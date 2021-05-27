@@ -21,7 +21,13 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include "string.h"
+#include "stdio.h"
 
+u8  WIFI_TX_BUF[WIFI_MAX_SEND_LEN]; 	//发送缓冲,最大USART3_MAX_SEND_LEN字节
+u8  WIFI_RX_BUF[WIFI_MAX_RECV_LEN]; 	//接收缓冲,最大USART3_MAX_RECV_LEN个字节.
+u8 * msg = WIFI_RX_BUF;               //定义一个指针指向接收缓存区
+u16 WIFI_RX_STA=0;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -80,6 +86,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+    /* USART1 interrupt Init */
+    HAL_NVIC_SetPriority(USART1_IRQn, 2, 3);
+    HAL_NVIC_EnableIRQ(USART1_IRQn);
   /* USER CODE BEGIN USART1_MspInit 1 */
 
   /* USER CODE END USART1_MspInit 1 */
@@ -103,6 +112,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
 
+    /* USART1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(USART1_IRQn);
   /* USER CODE BEGIN USART1_MspDeInit 1 */
 
   /* USER CODE END USART1_MspDeInit 1 */
@@ -110,7 +121,32 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-
+void u1_printf(u8* fmt)
+{
+	memset(WIFI_TX_BUF,0,WIFI_MAX_SEND_LEN);
+	sprintf((char *)WIFI_TX_BUF,"%s",(char *)fmt);
+	HAL_UART_Transmit(&huart1, WIFI_TX_BUF, strlen((char*)WIFI_TX_BUF), 1000);
+}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	/*
+	uint8_t ret = HAL_OK;
+	
+  if(huart->Instance == huart1.Instance)
+  {
+		if( msg++ == WIFI_RX_BUF + WIFI_MAX_RECV_LEN - 1)
+    {
+        msg = WIFI_RX_BUF;
+    }
+		if( msg <= WIFI_RX_BUF + WIFI_MAX_RECV_LEN - 1)
+		{
+			do{
+				ret = HAL_UART_Receive_IT(&huart1,(uint8_t *)msg,1);
+			}while(ret != HAL_OK);
+		}
+  }
+	*/
+}
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

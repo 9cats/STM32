@@ -34,6 +34,7 @@
 #include "lcd.h"
 #include "touch.h"
 #include "24l01.h"
+#include "wifi.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -157,6 +158,7 @@ int main(void)
   MX_ADC1_Init();
   MX_DAC_Init();
   MX_TIM2_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
   delay_init(168);
 	LCD_Init();
@@ -166,6 +168,8 @@ int main(void)
   HAL_DAC_Start(&hdac,DAC1_CHANNEL_1);
   HAL_DAC_Start(&hdac,DAC1_CHANNEL_2);
   HAL_TIM_Base_Start_IT(&htim2);
+	//HAL_TIM_Base_Start_IT(&htim7);
+	atk_8266_Init();
 
  	POINT_COLOR=RED;
 
