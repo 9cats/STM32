@@ -121,8 +121,15 @@ int main(void)
   LCD_Fill(192,40,212,56,GRAY);
   LCD_Fill(196,48,208,49,RED);
   LCD_Fill(202,44,203,52,RED);
+  LCD_ShowString(72, 70, 96, 16, 16, (uint8_t *)"AMP_OFS:    ");
+  LCD_Fill(28,70,48,86,GRAY);
+  LCD_Fill(32,78,44,79,GREEN);
+  LCD_Fill(192,70,212,86,GRAY);
+  LCD_Fill(196,78,208,79,RED);
+  LCD_Fill(202,74,203,82,RED);
   // LCD_ShowxNum(148,140,123,3,16,0);
   LCD_ShowxNum(148,40,AMP_MUL,3,16,0);
+  LCD_ShowxNum(140,70,offset,4,16,0);
 
   /* USER CODE END 2 */
 
@@ -156,6 +163,12 @@ int main(void)
         if(TP_CHECK(192,40,212,56)) {
           AMP_MUL = AMP_MUL==300?300:AMP_MUL+1;
           LCD_ShowxNum(148,40,AMP_MUL,3,16,0);
+        }
+        if(TP_CHECK(28,70,48,86)) {
+          LCD_ShowxNum(140,70,--offset,4,16,0);
+        }
+        if(TP_CHECK(192,70,212,86)) {
+          LCD_ShowxNum(140,70,++offset,4,16,0);
         }
       }
     }
