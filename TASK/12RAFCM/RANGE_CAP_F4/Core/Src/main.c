@@ -60,6 +60,19 @@ uint8_t NRF24L01_STA = 0; //NRF24L01_状态 0-未成功启用
 uint8_t presStatus = 0;   //标记按下
 uint8_t DAC_FRE = 0;
 uint32_t ADC_CAP = 0; 
+uint8_t vol[40] = {0};
+uint8_t vol_cmd[54] = 
+{ /*BEGIN CMD*/0xee,
+	/*CMD1:*/0xb1,
+	/*CMD2:*/0x32,
+	/*SCREEN  ID:*/0,0,
+	/*CONTROL ID:*/0,1,
+	/*CHANNEL ID:*/0,
+  /*DATA LENGTG*/0,40
+  /*DATA*/};
+//EE |B1 |32 |00 00 |00 01 |00| 00 28| 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3F 3F 3F 3F 
+//EE B1 32 00 00 00 01 00 00 28 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3F 3F 3F 3F 
+//EE B1 32 00 00 00 01 00 00 28 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3F 3F 3F 3F 
 extern uint16_t tick_hu;
 extern uint8_t tick_dr;
 /* USER CODE END PV */
@@ -130,7 +143,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   uint8_t nextMode;     //预备的模式
-
+	uint32_t i = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -169,10 +182,14 @@ int main(void)
   HAL_DAC_Start(&hdac,DAC1_CHANNEL_2);
   HAL_TIM_Base_Start_IT(&htim2);
 	//HAL_TIM_Base_Start_IT(&htim7);
+ 	POINT_COLOR=RED;
 	atk_8266_Init();
 
- 	POINT_COLOR=RED;
-
+	delay_ms(100);
+	vol_cmd[50] = 0xFF;
+	vol_cmd[51] = 0xFC;
+	vol_cmd[52] = 0xFF;
+	vol_cmd[53] = 0xFF;
   modeOff(1);
   modeOff(2);
 
@@ -203,9 +220,16 @@ int main(void)
 		if(Mode == 1) {
 			while(1)
 			{
-				while(NRF24L01_RxPacket(&DAC_FRE));
-				tick_hu = 2700;
-				tick_dr = 0;
+				if(NRF24L01_RxPacket(&DAC_FRE) == 0)
+				{
+					tick_hu = 2700;
+					tick_dr = 0;
+				}
+				
+				if(i++ == 0xffff){
+					HAL_UART_Transmit(&huart1, vol_cmd, 54, 5);
+					i = 0;
+				}
 			}
 		}
 		

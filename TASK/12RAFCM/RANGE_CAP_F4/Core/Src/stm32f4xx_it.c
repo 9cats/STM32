@@ -45,6 +45,7 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
 extern uint32_t ADC_CAP;
+extern uint8_t vol_cmd[50];
 uint16_t tick_hu;
 uint8_t  tick_dr = 1;
 /* USER CODE END PV */
@@ -214,12 +215,11 @@ void TIM2_IRQHandler(void)
 	
 	TIM2->SR = 0;
 	DAC->DHR12R2 = ADC_CAP;
+	vol_cmd[tick_hu++/100 + 10] = ADC_CAP/16;
 
   if(tick_dr) DAC->DHR12R1 = line[tick_hu];
   else        DAC->DHR12R1 = line[4000-tick_hu];
 	
-	if((++tick_hu == 3800 && tick_dr == 0) || (tick_hu ==  2000 && tick_dr == 1))
-		DAC->DHR12R2 = ADC_CAP;
   if(tick_hu/4000)
   {
 	  tick_hu %= 4000;

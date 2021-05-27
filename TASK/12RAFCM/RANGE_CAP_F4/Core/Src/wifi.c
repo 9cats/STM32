@@ -5,8 +5,8 @@
 
 const u8* wifista_ssid      =(u8 *)"dxxy16-403-1";			//路由器SSID号
 const u8* wifista_password  =(u8 *)"1234567890"; 	
-const u8* link_ip = (u8 *)"233";
-const u8* portnum = (u8 *)"233";
+const u8* link_ip = (u8 *)"192.168.0.144";
+const u8* portnum = (u8 *)"8266";
 //向ATK-ESP8266发送命令
 //cmd:发送的命令字符串
 //ack:期待的应答结果,如果为空,则表示不需要等待应答
@@ -70,6 +70,22 @@ void atk_8266_Init(void)
 		LCD_Fill(30,150,210,170,WHITE);
 		LCD_ShowString(30,150,200,16,16,(uint8_t *)"ATK-8266: WIFI LINKED");
 	}
-	LCD_ShowString(30,150,200,16,16,(uint8_t *)"ATK-8266: WIFI OK");
+	memset(p,0,400);
+	sprintf((char*)p,"AT+CIPSTART=\"TCP\",\"%s\",%s",link_ip,portnum);
+	if(!atk_8266_send_cmd(p,"OK",3000))
+	{
+		LCD_Fill(30,150,210,170,WHITE);
+		LCD_ShowString(30,150,200,16,16,(uint8_t *)"ATK-8266:TCP LINKED");
+	}
+	if(!atk_8266_send_cmd("AT+CIPMODE=1","OK",100))
+	{
+		LCD_Fill(30,150,210,170,WHITE);
+		LCD_ShowString(30,150,200,16,16,(uint8_t *)"ATK-8266:CIPMODE ON ");
+	}
+	if(!atk_8266_send_cmd("AT+CIPSEND",">",100))
+	{
+		LCD_Fill(30,150,210,170,WHITE);
+		LCD_ShowString(30,150,200,16,16,(uint8_t *)"ATK-8266:CIPMODEING");
+	}
 }
 
