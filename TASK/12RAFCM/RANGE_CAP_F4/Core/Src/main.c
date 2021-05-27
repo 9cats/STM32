@@ -60,6 +60,7 @@ uint8_t NRF24L01_STA = 0; //NRF24L01_状态 0-未成功启用
 uint8_t presStatus = 0;   //标记按下
 uint8_t DAC_FRE = 0;
 uint32_t ADC_CAP = 0; 
+uint16_t myOFT = 2700;
 uint8_t vol[40] = {0};
 uint8_t vol_cmd[54] = 
 { /*BEGIN CMD*/0xee,
@@ -143,7 +144,6 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   uint8_t nextMode;     //预备的模式
-	uint32_t i = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -220,16 +220,10 @@ int main(void)
 		if(Mode == 1) {
 			while(1)
 			{
-				if(NRF24L01_RxPacket(&DAC_FRE) == 0)
-				{
-					tick_hu = 2700;
-					tick_dr = 0;
-				}
-				
-				if(i++ == 0xffff){
-					HAL_UART_Transmit(&huart1, vol_cmd, 54, 5);
-					i = 0;
-				}
+				while(NRF24L01_RxPacket(&DAC_FRE));
+				tick_hu = myOFT;
+				tick_dr = 0;
+				HAL_UART_Transmit(&huart1, vol_cmd, 54, 5);
 			}
 		}
 		

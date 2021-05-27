@@ -46,6 +46,7 @@
 /* USER CODE BEGIN PV */
 extern uint32_t ADC_CAP;
 extern uint8_t vol_cmd[50];
+extern uint16_t myOFT;
 uint16_t tick_hu;
 uint8_t  tick_dr = 1;
 /* USER CODE END PV */
@@ -212,19 +213,24 @@ void SysTick_Handler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
+	u16 temp;
 	
 	TIM2->SR = 0;
-	DAC->DHR12R2 = ADC_CAP;
-	vol_cmd[tick_hu++/100 + 10] = ADC_CAP/16;
+	temp = ADC_CAP;
+	DAC->DHR12R2 = temp;
 
   if(tick_dr) DAC->DHR12R1 = line[tick_hu];
   else        DAC->DHR12R1 = line[4000-tick_hu];
 	
-  if(tick_hu/4000)
+  if(tick_hu++/4000)
   {
 	  tick_hu %= 4000;
     tick_dr  = !tick_dr;
   }
+	if(tick_dr && tick_hu%100)
+	{
+		vol_cmd[tick_hu/100+10] = temp*10/16;
+	}
 
 	
   /* USER CODE END TIM2_IRQn 0 */
